@@ -50,8 +50,13 @@
             </span>
           </a>
           <ul class="treeview-menu">          	
-          	<li><?= $this->Html->link('<i class="fa fa-users"></i><span>' . __("Users") . "</span>",["controller" => "users", "action" => "index"],["escape" => false]) ?></li>            
-            <li><?= $this->Html->link('<i class="fa fa-circle-o"></i><span>' . __("Groups") . "</span>",["controller" => "groups", "action" => "index"],["escape" => false]) ?></li>                           
+          	<li><?= $this->Html->link('<i class="fa fa-users"></i><span>' . __("Users") . "</span>",["controller" => "users", "action" => "index"],["escape" => false]) ?></li>
+            <li><?= $this->Html->link('<i class="fa fa-circle-o"></i><span>' . __("Groups") . "</span>",["controller" => "groups", "action" => "index"],["escape" => false]) ?></li>
+            <!-- <li><?= $this->Html->link('<i class="fa fa-circle-o"></i><span>' . __("Sources") . "</span>",["controller" => "sources", "action" => "index"],["escape" => false]) ?></li>
+            <li><?= $this->Html->link('<i class="fa fa-circle-o"></i><span>' . __("Status") . "</span>",["controller" => "statuses", "action" => "index"],["escape" => false]) ?></li>
+            <li><?= $this->Html->link('<i class="fa fa-circle-o"></i><span>' . __("Lead Type") . "</span>",["controller" => "LeadTypes", "action" => "index"],["escape" => false]) ?></li> -->                           
+
+
           </ul>
         </li>
        

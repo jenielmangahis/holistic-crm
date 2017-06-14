@@ -1,11 +1,11 @@
 -- phpMyAdmin SQL Dump
--- version 4.0.10.8
--- http://www.phpmyadmin.net
+-- version 4.6.5.2
+-- https://www.phpmyadmin.net/
 --
--- Host: 127.0.0.1
--- Generation Time: Jun 13, 2017 at 02:40 AM
--- Server version: 5.6.14
--- PHP Version: 5.5.24
+-- Host: 127.0.0.1:3307
+-- Generation Time: Jun 14, 2017 at 11:08 AM
+-- Server version: 10.1.21-MariaDB
+-- PHP Version: 7.1.1
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 SET time_zone = "+00:00";
@@ -14,7 +14,7 @@ SET time_zone = "+00:00";
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
 /*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
-/*!40101 SET NAMES utf8 */;
+/*!40101 SET NAMES utf8mb4 */;
 
 --
 -- Database: `holistic_crm_db`
@@ -27,11 +27,10 @@ SET time_zone = "+00:00";
 --
 
 DROP TABLE IF EXISTS `acl_phinxlog`;
-CREATE TABLE IF NOT EXISTS `acl_phinxlog` (
+CREATE TABLE `acl_phinxlog` (
   `version` bigint(20) NOT NULL,
   `start_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  `end_time` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
-  PRIMARY KEY (`version`)
+  `end_time` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
@@ -48,18 +47,15 @@ INSERT INTO `acl_phinxlog` (`version`, `start_time`, `end_time`) VALUES
 --
 
 DROP TABLE IF EXISTS `acos`;
-CREATE TABLE IF NOT EXISTS `acos` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
+CREATE TABLE `acos` (
+  `id` int(11) NOT NULL,
   `parent_id` int(11) DEFAULT NULL,
   `model` varchar(255) DEFAULT NULL,
   `foreign_key` int(11) DEFAULT NULL,
   `alias` varchar(255) DEFAULT NULL,
   `lft` int(11) DEFAULT NULL,
-  `rght` int(11) DEFAULT NULL,
-  PRIMARY KEY (`id`),
-  KEY `lft` (`lft`,`rght`),
-  KEY `alias` (`alias`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=158 ;
+  `rght` int(11) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
 -- Dumping data for table `acos`
@@ -229,18 +225,15 @@ INSERT INTO `acos` (`id`, `parent_id`, `model`, `foreign_key`, `alias`, `lft`, `
 --
 
 DROP TABLE IF EXISTS `aros`;
-CREATE TABLE IF NOT EXISTS `aros` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
+CREATE TABLE `aros` (
+  `id` int(11) NOT NULL,
   `parent_id` int(11) DEFAULT NULL,
   `model` varchar(255) DEFAULT NULL,
   `foreign_key` int(11) DEFAULT NULL,
   `alias` varchar(255) DEFAULT NULL,
   `lft` int(11) DEFAULT NULL,
-  `rght` int(11) DEFAULT NULL,
-  PRIMARY KEY (`id`),
-  KEY `lft` (`lft`,`rght`),
-  KEY `alias` (`alias`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=9 ;
+  `rght` int(11) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
 -- Dumping data for table `aros`
@@ -263,18 +256,15 @@ INSERT INTO `aros` (`id`, `parent_id`, `model`, `foreign_key`, `alias`, `lft`, `
 --
 
 DROP TABLE IF EXISTS `aros_acos`;
-CREATE TABLE IF NOT EXISTS `aros_acos` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
+CREATE TABLE `aros_acos` (
+  `id` int(11) NOT NULL,
   `aro_id` int(11) NOT NULL,
   `aco_id` int(11) NOT NULL,
   `_create` varchar(2) NOT NULL DEFAULT '0',
   `_read` varchar(2) NOT NULL DEFAULT '0',
   `_update` varchar(2) NOT NULL DEFAULT '0',
-  `_delete` varchar(2) NOT NULL DEFAULT '0',
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `aro_id` (`aro_id`,`aco_id`),
-  KEY `aco_id` (`aco_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=2 ;
+  `_delete` varchar(2) NOT NULL DEFAULT '0'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
 -- Dumping data for table `aros_acos`
@@ -290,13 +280,12 @@ INSERT INTO `aros_acos` (`id`, `aro_id`, `aco_id`, `_create`, `_read`, `_update`
 --
 
 DROP TABLE IF EXISTS `groups`;
-CREATE TABLE IF NOT EXISTS `groups` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
+CREATE TABLE `groups` (
+  `id` int(11) NOT NULL,
   `name` varchar(180) CHARACTER SET latin1 NOT NULL,
   `created` datetime NOT NULL,
-  `modified` datetime NOT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=3 ;
+  `modified` datetime NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 --
 -- Dumping data for table `groups`
@@ -309,12 +298,68 @@ INSERT INTO `groups` (`id`, `name`, `created`, `modified`) VALUES
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `lead_types`
+--
+
+DROP TABLE IF EXISTS `lead_types`;
+CREATE TABLE `lead_types` (
+  `id` int(11) NOT NULL,
+  `name` varchar(180) COLLATE utf16_unicode_ci NOT NULL,
+  `created` datetime NOT NULL,
+  `modified` datetime NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf16 COLLATE=utf16_unicode_ci;
+
+--
+-- Dumping data for table `lead_types`
+--
+
+INSERT INTO `lead_types` (`id`, `name`, `created`, `modified`) VALUES
+(1, 'Type01', '2017-06-14 16:55:03', '2017-06-14 16:55:03');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `sources`
+--
+
+DROP TABLE IF EXISTS `sources`;
+CREATE TABLE `sources` (
+  `id` int(11) NOT NULL,
+  `name` varchar(180) COLLATE utf16_unicode_ci NOT NULL,
+  `created` datetime NOT NULL,
+  `modified` datetime NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf16 COLLATE=utf16_unicode_ci;
+
+--
+-- Dumping data for table `sources`
+--
+
+INSERT INTO `sources` (`id`, `name`, `created`, `modified`) VALUES
+(1, 'test', '2017-06-14 17:01:12', '2017-06-14 17:01:12');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `statuses`
+--
+
+DROP TABLE IF EXISTS `statuses`;
+CREATE TABLE `statuses` (
+  `id` int(11) NOT NULL,
+  `name` varchar(180) COLLATE utf16_unicode_ci NOT NULL,
+  `created` datetime NOT NULL,
+  `modified` datetime NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf16 COLLATE=utf16_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `users`
 --
 
 DROP TABLE IF EXISTS `users`;
-CREATE TABLE IF NOT EXISTS `users` (
-  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+CREATE TABLE `users` (
+  `id` int(10) UNSIGNED NOT NULL,
   `firstname` varchar(110) COLLATE utf8_unicode_ci NOT NULL,
   `middlename` varchar(110) COLLATE utf8_unicode_ci NOT NULL,
   `lastname` varchar(110) COLLATE utf8_unicode_ci NOT NULL,
@@ -325,10 +370,8 @@ CREATE TABLE IF NOT EXISTS `users` (
   `group_id` int(11) NOT NULL,
   `reset_code` text COLLATE utf8_unicode_ci,
   `created` datetime DEFAULT NULL,
-  `modified` datetime DEFAULT NULL,
-  PRIMARY KEY (`id`),
-  KEY `group_id` (`group_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=5 ;
+  `modified` datetime DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 --
 -- Dumping data for table `users`
@@ -337,6 +380,115 @@ CREATE TABLE IF NOT EXISTS `users` (
 INSERT INTO `users` (`id`, `firstname`, `middlename`, `lastname`, `email`, `username`, `password`, `photo`, `group_id`, `reset_code`, `created`, `modified`) VALUES
 (1, 'Holistic', 'Holistic', 'Holistic', 'admin@holisticwebpresence.com', 'admin', '$2y$10$mYGUizPndXHwttfHVUDAmuKng4jNGZI4O0PicQMFlQRvI.sEMphB6', '1496085384_579772.jpg', 1, NULL, '2016-01-08 03:01:56', '2017-06-01 04:16:21');
 
+--
+-- Indexes for dumped tables
+--
+
+--
+-- Indexes for table `acl_phinxlog`
+--
+ALTER TABLE `acl_phinxlog`
+  ADD PRIMARY KEY (`version`);
+
+--
+-- Indexes for table `acos`
+--
+ALTER TABLE `acos`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `lft` (`lft`,`rght`),
+  ADD KEY `alias` (`alias`);
+
+--
+-- Indexes for table `aros`
+--
+ALTER TABLE `aros`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `lft` (`lft`,`rght`),
+  ADD KEY `alias` (`alias`);
+
+--
+-- Indexes for table `aros_acos`
+--
+ALTER TABLE `aros_acos`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `aro_id` (`aro_id`,`aco_id`),
+  ADD KEY `aco_id` (`aco_id`);
+
+--
+-- Indexes for table `groups`
+--
+ALTER TABLE `groups`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `lead_types`
+--
+ALTER TABLE `lead_types`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `sources`
+--
+ALTER TABLE `sources`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `statuses`
+--
+ALTER TABLE `statuses`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `users`
+--
+ALTER TABLE `users`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `group_id` (`group_id`);
+
+--
+-- AUTO_INCREMENT for dumped tables
+--
+
+--
+-- AUTO_INCREMENT for table `acos`
+--
+ALTER TABLE `acos`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=158;
+--
+-- AUTO_INCREMENT for table `aros`
+--
+ALTER TABLE `aros`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+--
+-- AUTO_INCREMENT for table `aros_acos`
+--
+ALTER TABLE `aros_acos`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+--
+-- AUTO_INCREMENT for table `groups`
+--
+ALTER TABLE `groups`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+--
+-- AUTO_INCREMENT for table `lead_types`
+--
+ALTER TABLE `lead_types`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+--
+-- AUTO_INCREMENT for table `sources`
+--
+ALTER TABLE `sources`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+--
+-- AUTO_INCREMENT for table `statuses`
+--
+ALTER TABLE `statuses`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+--
+-- AUTO_INCREMENT for table `users`
+--
+ALTER TABLE `users`
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 --
 -- Constraints for dumped tables
 --
