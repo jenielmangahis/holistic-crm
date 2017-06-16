@@ -33,7 +33,8 @@ class NavigationSelectorHelper extends Helper
         $navigation = array(
             "dashboard" => "",                        
             "groups"  => "",
-            "users"   => "",  
+            "users"   => "",
+            "leads" => "",  
             "system_settings" => ""            
         );
         $navigation[$selected] = "active";

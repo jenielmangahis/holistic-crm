@@ -42,6 +42,9 @@
         <li id="groups_nav" title="Groups" class="<?= $nav_selected["dashboard"] ?>">
             <?= $this->Html->link('<i class="fa fa-dashboard"></i><span>' . __("Dashboard") . "</span>",["controller" => "users", "action" => "dashboard"],["escape" => false]) ?>
         </li>                     
+        <li id="groups_nav" title="Groups" class="<?= $nav_selected["leads"] ?>">
+            <?= $this->Html->link('<i class="fa fa-users"></i><span>' . __("Leads") . "</span>",["controller" => "leads", "action" => "index"],["escape" => false]) ?>
+        </li>                     
         <li id="groups_nav" title="Groups" class="treeview <?= $nav_selected["system_settings"] ?>">
           <a href="#">
             <i class="fa fa-gear"></i> <span>System Settings</span>
@@ -52,6 +55,7 @@
           <ul class="treeview-menu">          	
           	<li><?= $this->Html->link('<i class="fa fa-users"></i><span>' . __("Users") . "</span>",["controller" => "users", "action" => "index"],["escape" => false]) ?></li>
             <li><?= $this->Html->link('<i class="fa fa-circle-o"></i><span>' . __("Groups") . "</span>",["controller" => "groups", "action" => "index"],["escape" => false]) ?></li>
+            <li><?= $this->Html->link('<i class="fa fa-circle-o"></i><span>' . __("Allocations") . "</span>",["controller" => "allocations", "action" => "index"],["escape" => false]) ?></li>
             <li><?= $this->Html->link('<i class="fa fa-circle-o"></i><span>' . __("Sources") . "</span>",["controller" => "sources", "action" => "index"],["escape" => false]) ?></li>
             <li><?= $this->Html->link('<i class="fa fa-circle-o"></i><span>' . __("Status") . "</span>",["controller" => "statuses", "action" => "index"],["escape" => false]) ?></li>
             <li><?= $this->Html->link('<i class="fa fa-circle-o"></i><span>' . __("Lead Type") . "</span>",["controller" => "LeadTypes", "action" => "index"],["escape" => false]) ?></li>
