@@ -11,29 +11,50 @@
     <!-- Main Row -->
     <div class="row">
         <section class="col-lg-12 ">
-            <div class="box " >
-                <div class="box-header">
-                    <?= $this->Html->link(__('Add New Lead'), ['action' => 'add'], ['class' => 'btn btn-primary btn-sm', 'escape' => false]) ?>
-                    <h3 class="box-title text-black" ></h3>
-                </div>
-                <div class="box-body">
-                    <table id="dt-users-list" class="table table-bordered table-hover">
-                        <thead>
+            <div class="box box-primary box-solid">   
+                <div class="box-header with-border">  
+                    <div class="user-block">   
+                        <?= $this->Form->create(null,[                
+                          'url' => ['action' => 'index'],
+                          'class' => 'form-inline',
+                          'type' => 'GET'
+                        ]) ?>                         
+                        <div class="input-group input-group-sm">
+                            <input class="form-control" name="query" type="text" placeholder="Enter query to search">
+                            <span class="input-group-btn">
+                                <?= $this->Form->button('<i class="fa fa-search"></i>',['name' => 'search', 'value' => 'search', 'class' => 'btn btn-info btn-flat', 'escape' => false]) ?>                                    
+                                <?= $this->Html->link(__('Reset'), ['action' => 'index'],['class' => 'btn btn-success btn-flat', 'escape' => false]) ?>                            
+                            </span>
+                        </div>                        
+                        <?= $this->Form->end() ?>
+                    </div>
+
+                    <div class="box-tools" style="top:9px;">                         
+                        <?= $this->Html->link('<i class="fa fa-plus"></i> Add New', ['action' => 'add'],['class' => 'btn btn-box-tool', 'escape' => false]) ?>
+                        <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>                        
+                    </div>                    
+                    
+                    <div class="box-tools" style="top:9px;">                                                 
+                        <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>                        
+                    </div>         
+                </div>             
+                <div class="box-body">                    
+                    <table id="dt-users-list" class="table table-hover table-striped">
+                        <thead class="thead-inverse">
                             <tr>
-                                <th class="actions"><?= __('Actions') ?></th>
-                                                <th><?= $this->Paginator->sort('id') ?></th>
-                                                <th><?= $this->Paginator->sort('status_id') ?></th>
-                                                <th><?= $this->Paginator->sort('source_id') ?></th>
-                                                <th><?= $this->Paginator->sort('allocation_id') ?></th>
-                                                <th><?= $this->Paginator->sort('allocation_date') ?></th>
-                                                <th><?= $this->Paginator->sort('firstname') ?></th>
-                                                <th><?= $this->Paginator->sort('surname') ?></th>
-                                                
+                                <th class="actions"></th>
+                                <th><?= $this->Paginator->sort('id', __("Id") . "<i class='fa fa-sort pull-right'> </i>", array('escape' => false)) ?></th>
+                                <th><?= $this->Paginator->sort('status_id', __("Status") . "<i class='fa fa-sort pull-right'> </i>", array('escape' => false)) ?></th>
+                                <th><?= $this->Paginator->sort('source_id', __("Source") . "<i class='fa fa-sort pull-right'> </i>", array('escape' => false)) ?></th>
+                                <th><?= $this->Paginator->sort('allocation_id', __("Allocation") . "<i class='fa fa-sort pull-right'> </i>", array('escape' => false)) ?></th>
+                                <th><?= $this->Paginator->sort('allocation_date', __("Allocation Date") . "<i class='fa fa-sort pull-right'> </i>", array('escape' => false)) ?></th>
+                                <th><?= $this->Paginator->sort('firstname', __("Firstname") . "<i class='fa fa-sort pull-right'> </i>", array('escape' => false)) ?></th>
+                                <th><?= $this->Paginator->sort('surname', __("Surname") . "<i class='fa fa-sort pull-right'> </i>", array('escape' => false)) ?></th>
                             </tr>
                         </thead>
                         <tbody>
-                            <?php foreach ($leads as $lead): ?>
-                                                        <tr>
+                            <?php foreach ($leads as $lead) { ?>
+                            <tr>
                                 <td class="table-actions">
                                     <div class="dropdown">
                                         <button class="btn btn-default dropdown-toggle" type="button" id="drpdwn" data-toggle="dropdown" aria-expanded="true">
@@ -68,19 +89,17 @@
                                         </div>                              
                                     </div>                       
                                 </td>
-                                                <td><?= $this->Number->format($lead->id) ?></td>
-                                                <td <?php if( $isKey == 1 ? 'class="tbl-field-id"' : '' ) ?>><?= $lead->has('status') ? $this->Html->link($lead->status->name, ['controller' => 'Statuses', 'action' => 'view', $lead->status->id]) : '' ?></td>
-                                                <td <?php if( $isKey == 1 ? 'class="tbl-field-id"' : '' ) ?>><?= $lead->has('source') ? $this->Html->link($lead->source->name, ['controller' => 'Sources', 'action' => 'view', $lead->source->id]) : '' ?></td>
-                                                <td <?php if( $isKey == 1 ? 'class="tbl-field-id"' : '' ) ?>><?= $lead->has('allocation') ? $this->Html->link($lead->allocation->name, ['controller' => 'Allocations', 'action' => 'view', $lead->allocation->id]) : '' ?></td>
-                                                <td><?= h($lead->allocation_date) ?></td>
-                                                <td><?= h($lead->firstname) ?></td>
-                                                <td><?= h($lead->surname) ?></td>
-                  
+                                <td class="tbl-field-id"><?= $this->Number->format($lead->id) ?></td>
+                                <td><?= $lead->status_id; ?></td>
+                                <td><?= $lead->source_id ?></td>
+                                <td><?= $lead->allocation_id ?></td>                          
+                                <td><?= $lead->allocation_date ?></td>                          
+                                <td><?= $lead->firstname ?></td>                          
+                                <td><?= $lead->surname ?></td>                          
                             </tr>
-                            <?php ;endforeach; ?>
+                            <?php } ?>
                         </tbody>
                     </table>
-                    </div>
                     <div class="paginator" style="text-align:center;">
                         <ul class="pagination">
                         <?= $this->Paginator->prev('«') ?>
@@ -88,9 +107,9 @@
                             <?= $this->Paginator->next('»') ?>
                         </ul>
                         <p class="hidden"><?= $this->Paginator->counter() ?></p>
-                    </div>
+                    </div>                     
                 </div>
-            </div>
+            </div>                
         </section>
     </div>
 </section>
