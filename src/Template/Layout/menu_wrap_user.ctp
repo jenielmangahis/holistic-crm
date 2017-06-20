@@ -58,9 +58,8 @@
             <li><?= $this->Html->link('<i class="fa fa-circle-o"></i><span>' . __("Allocations") . "</span>",["controller" => "allocations", "action" => "index"],["escape" => false]) ?></li>
             <li><?= $this->Html->link('<i class="fa fa-circle-o"></i><span>' . __("Sources") . "</span>",["controller" => "sources", "action" => "index"],["escape" => false]) ?></li>
             <li><?= $this->Html->link('<i class="fa fa-circle-o"></i><span>' . __("Status") . "</span>",["controller" => "statuses", "action" => "index"],["escape" => false]) ?></li>
-            <li><?= $this->Html->link('<i class="fa fa-circle-o"></i><span>' . __("Lead Type") . "</span>",["controller" => "LeadTypes", "action" => "index"],["escape" => false]) ?></li>
-
-
+            <li><?= $this->Html->link('<i class="fa fa-circle-o"></i><span>' . __("Lead Type") . "</span>",["controller" => "lead_types", "action" => "index"],["escape" => false]) ?></li>
+            <li><?= $this->Html->link('<i class="fa fa-circle-o"></i><span>' . __("Interest Type") . "</span>",["controller" => "interest_types", "action" => "index"],["escape" => false]) ?></li>
           </ul>
         </li>
        

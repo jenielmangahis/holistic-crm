@@ -29,9 +29,10 @@ class LeadsFixture extends TestFixture
         'address' => ['type' => 'text', 'length' => null, 'null' => false, 'default' => null, 'collate' => 'utf8_unicode_ci', 'comment' => '', 'precision' => null],
         'city' => ['type' => 'string', 'length' => 80, 'null' => false, 'default' => null, 'collate' => 'utf8_unicode_ci', 'comment' => '', 'precision' => null, 'fixed' => null],
         'state' => ['type' => 'string', 'length' => 80, 'null' => false, 'default' => null, 'collate' => 'utf8_unicode_ci', 'comment' => '', 'precision' => null, 'fixed' => null],
-        'interest_type' => ['type' => 'string', 'length' => 100, 'null' => false, 'default' => null, 'collate' => 'utf8_unicode_ci', 'comment' => '', 'precision' => null, 'fixed' => null],
+        'interest_type_id' => ['type' => 'integer', 'length' => 11, 'unsigned' => false, 'null' => false, 'default' => null, 'comment' => '', 'precision' => null, 'autoIncrement' => null],
         'followup_date' => ['type' => 'date', 'length' => null, 'null' => false, 'default' => null, 'comment' => '', 'precision' => null],
         'followup_action_reminder_date' => ['type' => 'date', 'length' => null, 'null' => false, 'default' => null, 'comment' => '', 'precision' => null],
+        'notes' => ['type' => 'text', 'length' => null, 'null' => true, 'default' => null, 'collate' => 'utf8_unicode_ci', 'comment' => '', 'precision' => null],
         'created' => ['type' => 'datetime', 'length' => null, 'null' => true, 'default' => null, 'comment' => '', 'precision' => null],
         'modified' => ['type' => 'datetime', 'length' => null, 'null' => true, 'default' => null, 'comment' => '', 'precision' => null],
         '_constraints' => [
@@ -55,7 +56,7 @@ class LeadsFixture extends TestFixture
             'status_id' => 1,
             'source_id' => 1,
             'allocation_id' => 1,
-            'allocation_date' => '2017-06-16',
+            'allocation_date' => '2017-06-20',
             'firstname' => 'Lorem ipsum dolor sit amet',
             'surname' => 'Lorem ipsum dolor sit amet',
             'email' => 'Lorem ipsum dolor sit amet',
@@ -63,11 +64,12 @@ class LeadsFixture extends TestFixture
             'address' => 'Lorem ipsum dolor sit amet, aliquet feugiat. Convallis morbi fringilla gravida, phasellus feugiat dapibus velit nunc, pulvinar eget sollicitudin venenatis cum nullam, vivamus ut a sed, mollitia lectus. Nulla vestibulum massa neque ut et, id hendrerit sit, feugiat in taciti enim proin nibh, tempor dignissim, rhoncus duis vestibulum nunc mattis convallis.',
             'city' => 'Lorem ipsum dolor sit amet',
             'state' => 'Lorem ipsum dolor sit amet',
-            'interest_type' => 'Lorem ipsum dolor sit amet',
-            'followup_date' => '2017-06-16',
-            'followup_action_reminder_date' => '2017-06-16',
-            'created' => '2017-06-16 14:49:56',
-            'modified' => '2017-06-16 14:49:56'
+            'interest_type_id' => 1,
+            'followup_date' => '2017-06-20',
+            'followup_action_reminder_date' => '2017-06-20',
+            'notes' => 'Lorem ipsum dolor sit amet, aliquet feugiat. Convallis morbi fringilla gravida, phasellus feugiat dapibus velit nunc, pulvinar eget sollicitudin venenatis cum nullam, vivamus ut a sed, mollitia lectus. Nulla vestibulum massa neque ut et, id hendrerit sit, feugiat in taciti enim proin nibh, tempor dignissim, rhoncus duis vestibulum nunc mattis convallis.',
+            'created' => '2017-06-20 12:34:55',
+            'modified' => '2017-06-20 12:34:55'
         ],
     ];
 }

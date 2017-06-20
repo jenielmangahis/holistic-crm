@@ -43,16 +43,20 @@
             <td><?= h($lead->state) ?></td>
         </tr>
         <tr>
-            <th><?= __('Interest Type') ?></th>
-            <td><?= h($lead->interest_type) ?></td>
-        </tr>
-        <tr>
             <th><?= __('Id') ?></th>
             <td><?= $this->Number->format($lead->id) ?></td>
+        </tr>
+        <tr>
+            <th><?= __('Interest Type Id') ?></th>
+            <td><?= $this->Number->format($lead->interest_type_id) ?></td>
         </tr>
     <tr>
         <th><?= __('Address') ?></th>
         <td><?= $this->Text->autoParagraph(h($lead->address)); ?></td>        
+    </tr>
+    <tr>
+        <th><?= __('Notes') ?></th>
+        <td><?= $this->Text->autoParagraph(h($lead->notes)); ?></td>        
     </tr>
         <tr>
             <th><?= __('Allocation Date') ?></th>
@@ -77,12 +81,11 @@
     </tbody>
     </table>
 
-    <table class="table table-striped table-bordered table-hover">
-        <tbody>
-            <tr>
-                <th></th>
-                <td><br/><?= $this->Html->link('<i class="fa fa-angle-left"> </i> Back To list', ['action' => 'index'],['class' => 'btn btn-warning', 'escape' => false]) ?></td>
-            </tr>                                      
-        </tbody>
-    </table> 
+    <div class="form-group" style="margin-top: 80px;">
+    <div class="col-sm-offset-2 col-sm-10">
+        <div class="action-fixed-bottom">        
+        <?= $this->Html->link('<i class="fa fa-angle-left"> </i> Back To list', ['action' => 'index'],['class' => 'btn btn-warning', 'escape' => false]) ?>
+        </div>
+    </div>
+    </div>
 </section>

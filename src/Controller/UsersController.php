@@ -23,7 +23,7 @@ class UsersController extends AppController
     public function initialize()
     {
         parent::initialize();
-        $nav_selected = ["dashboard"];
+        $nav_selected = ["system_settings"];
         $this->set('nav_selected', $nav_selected);        
 
         $this->Auth->allow(['request_forgot_password']);

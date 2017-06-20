@@ -95,9 +95,9 @@
                                     
                                                             echo "
                                     <div class='form-group'>
-                                        <label for='interest_type' class='col-sm-2 control-label'>" . __('Interest Type') . "</label>
+                                        <label for='interest_type_id' class='col-sm-2 control-label'>" . __('Interest Type Id') . "</label>
                                         <div class='col-sm-6'>";
-                                        echo $this->Form->input('interest_type', ['class' => 'form-control', 'id' => 'interest_type', 'label' => false]);                
+                                        echo $this->Form->input('interest_type_id', ['class' => 'form-control', 'id' => 'interest_type_id', 'label' => false]);                
                                     echo " </div></div>";    
                                     
                                                             echo "
@@ -112,6 +112,13 @@
                                         <label for='followup_action_reminder_date' class='col-sm-2 control-label'>" . __('Followup Action Reminder Date') . "</label>
                                         <div class='col-sm-6'>";
                                         echo $this->Form->input('followup_action_reminder_date', ['class' => 'form-control', 'id' => 'followup_action_reminder_date', 'label' => false]);                
+                                    echo " </div></div>";    
+                                    
+                                                            echo "
+                                    <div class='form-group'>
+                                        <label for='notes' class='col-sm-2 control-label'>" . __('Notes') . "</label>
+                                        <div class='col-sm-6'>";
+                                        echo $this->Form->input('notes', ['class' => 'form-control', 'id' => 'notes', 'label' => false]);                
                                     echo " </div></div>";    
                                     
                                                 ?>

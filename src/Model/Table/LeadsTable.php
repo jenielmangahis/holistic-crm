@@ -12,6 +12,7 @@ use Cake\Validation\Validator;
  * @property \Cake\ORM\Association\BelongsTo $Statuses
  * @property \Cake\ORM\Association\BelongsTo $Sources
  * @property \Cake\ORM\Association\BelongsTo $Allocations
+ * @property \Cake\ORM\Association\BelongsTo $InterestTypes
  *
  * @method \App\Model\Entity\Lead get($primaryKey, $options = [])
  * @method \App\Model\Entity\Lead newEntity($data = null, array $options = [])
@@ -52,6 +53,10 @@ class LeadsTable extends Table
         ]);
         $this->belongsTo('Allocations', [
             'foreignKey' => 'allocation_id',
+            'joinType' => 'INNER'
+        ]);
+        $this->belongsTo('InterestTypes', [
+            'foreignKey' => 'interest_type_id',
             'joinType' => 'INNER'
         ]);
     }
@@ -103,10 +108,6 @@ class LeadsTable extends Table
             ->notEmpty('state');
 
         $validator
-            ->requirePresence('interest_type', 'create')
-            ->notEmpty('interest_type');
-
-        $validator
             ->date('followup_date')
             ->requirePresence('followup_date', 'create')
             ->notEmpty('followup_date');
@@ -115,6 +116,9 @@ class LeadsTable extends Table
             ->date('followup_action_reminder_date')
             ->requirePresence('followup_action_reminder_date', 'create')
             ->notEmpty('followup_action_reminder_date');
+
+        $validator
+            ->allowEmpty('notes');
 
         return $validator;
     }
@@ -132,6 +136,7 @@ class LeadsTable extends Table
         $rules->add($rules->existsIn(['status_id'], 'Statuses'));
         $rules->add($rules->existsIn(['source_id'], 'Sources'));
         $rules->add($rules->existsIn(['allocation_id'], 'Allocations'));
+        $rules->add($rules->existsIn(['interest_type_id'], 'InterestTypes'));
 
         return $rules;
     }

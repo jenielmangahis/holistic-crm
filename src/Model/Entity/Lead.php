@@ -18,9 +18,10 @@ use Cake\ORM\Entity;
  * @property string $address
  * @property string $city
  * @property string $state
- * @property string $interest_type
+ * @property int $interest_type_id
  * @property \Cake\I18n\Time $followup_date
  * @property \Cake\I18n\Time $followup_action_reminder_date
+ * @property string $notes
  * @property \Cake\I18n\Time $created
  * @property \Cake\I18n\Time $modified
  *

@@ -32,6 +32,7 @@ div.box-body{
     <h1><?= __('Sources') ?></h1>
     <ol class="breadcrumb">
         <li><a href="<?php echo $base_url; ?>"><i class="fa fa-dashboard"></i> Home</a></li>
+        <li><a href="<?php echo $base_url; ?>"><i class="fa fa-gear"></i> System Settings</a></li>
         <li class="active"><?= __('Sources') ?></li>
     </ol>
 </section>
