@@ -1,4 +1,32 @@
+<?php use Cake\Utility\Inflector; ?>
+<style>
+.label{
+    padding:10px;    
+    display: block;
     
+    font-size: 12px;
+}
+.thead-inverse th {
+    background-color: #2A80B9;
+    color: #fff;
+    padding:13px !important;
+}
+th a{
+    color:#ffffff;
+}
+div.box-body{
+    padding: 0px;
+}
+.box-header.with-border {
+    border-bottom: 1px solid #2A80B9;
+}
+.box-body, .box-header{
+    overflow:auto;
+}
+.fa-sort{
+    line-height: 19px;
+}
+</style>    
 <section class="content-header">
     <h1><?= __('Interest Types') ?></h1>
     <ol class="breadcrumb">
@@ -12,26 +40,48 @@
     <!-- Main Row -->
     <div class="row">
         <section class="col-lg-12 ">
-            <div class="box " >
-                <div class="box-header">
-                    <?= $this->Html->link(__('Add New Interest Type'), ['action' => 'add'], ['class' => 'btn btn-primary btn-sm', 'escape' => false]) ?>
-                    <h3 class="box-title text-black" ></h3>
-                </div>
-                <div class="box-body">
-                    <table id="dt-users-list" class="table table-bordered table-hover">
-                        <thead>
+
+            <div class="box box-primary box-solid">   
+                <div class="box-header with-border">  
+                    <div class="user-block">   
+                        <?= $this->Form->create(null,[                
+                          'url' => ['action' => 'index'],
+                          'class' => 'form-inline',
+                          'type' => 'GET'
+                        ]) ?>                         
+                        <div class="input-group input-group-sm">
+                            <input class="form-control" name="query" type="text" placeholder="Enter query to search">
+                            <span class="input-group-btn">
+                                <?= $this->Form->button('<i class="fa fa-search"></i>',['name' => 'search', 'value' => 'search', 'class' => 'btn btn-info btn-flat', 'escape' => false]) ?>                                    
+                                <?= $this->Html->link(__('Reset'), ['action' => 'index'],['class' => 'btn btn-success btn-flat', 'escape' => false]) ?>                            
+                            </span>
+                        </div>                        
+                        <?= $this->Form->end() ?>
+                    </div>
+
+                    <div class="box-tools" style="top:9px;">                         
+                        <?= $this->Html->link('<i class="fa fa-plus"></i> Add New', ['action' => 'add'],['class' => 'btn btn-box-tool', 'escape' => false]) ?>
+                        <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>                        
+                    </div> 
+                    
+                    <div class="box-tools" style="top:9px;">                                                 
+                        <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>                        
+                    </div>         
+                </div>             
+                <div class="box-body">                    
+                    <table id="dt-users-list" class="table table-hover table-striped">
+                        <thead class="thead-inverse">
                             <tr>
-                                <th class="actions"><?= __('Actions') ?></th>
-                                                <th><?= $this->Paginator->sort('id') ?></th>
-                                                <th><?= $this->Paginator->sort('name') ?></th>
-                                                <th><?= $this->Paginator->sort('created') ?></th>
-                                                <th><?= $this->Paginator->sort('modified') ?></th>
-                                                
+                                <th class="actions"></th>
+                                <th><?= $this->Paginator->sort('id', __("Id") . "<i class='fa fa-sort pull-right'> </i>", array('escape' => false)) ?></th>
+                                <th style="width:60%;"><?= $this->Paginator->sort('name', __("Name") . "<i class='fa fa-sort pull-right'> </i>", array('escape' => false)) ?></th>
+                                <th><?= $this->Paginator->sort('created', __("Created") . "<i class='fa fa-sort pull-right'> </i>", array('escape' => false)) ?></th>
+                                <th><?= $this->Paginator->sort('modified', __("Modified") . "<i class='fa fa-sort pull-right'> </i>", array('escape' => false)) ?></th>                                   
                             </tr>
                         </thead>
                         <tbody>
-                            <?php foreach ($interestTypes as $interestType): ?>
-                                                        <tr>
+                            <?php foreach ($interestTypes as $interestType){ ?>
+                            <tr>
                                 <td class="table-actions">
                                     <div class="dropdown">
                                         <button class="btn btn-default dropdown-toggle" type="button" id="drpdwn" data-toggle="dropdown" aria-expanded="true">
@@ -43,7 +93,7 @@
                                             <li role="presentation"><?= $this->Html->link('<i class="fa fa-trash"></i> Delete', '#modal-'.$interestType->id,['data-toggle' => 'modal','escape' => false]) ?></li>
                                         </ul>
                                     </div>   
-                                    <div id="modal-<?=$interestType->id?>" class="modal fade">
+                                    <div id="modal-<?=$g->id?>" class="modal fade">
                                         <div class="modal-dialog">
                                           <div class="modal-content">
                                             <div class="modal-header">
@@ -66,16 +116,14 @@
                                         </div>                              
                                     </div>                       
                                 </td>
-                                                <td><?= $this->Number->format($interestType->id) ?></td>
-                                                <td><?= h($interestType->name) ?></td>
-                                                <td><?= h($interestType->created) ?></td>
-                                                <td><?= h($interestType->modified) ?></td>
-                  
+                                <td class="tbl-field-id"><?= $this->Number->format($interestType->id) ?></td>
+                                <td><?= $interestType->name; ?></td>
+                                <td><?= $interestType->created ?></td>
+                                <td><?= $interestType->modified ?></td>                          
                             </tr>
-                            <?php ;endforeach; ?>
+                            <?php } ?>
                         </tbody>
                     </table>
-                    </div>
                     <div class="paginator" style="text-align:center;">
                         <ul class="pagination">
                         <?= $this->Paginator->prev('«') ?>
@@ -83,9 +131,10 @@
                             <?= $this->Paginator->next('»') ?>
                         </ul>
                         <p class="hidden"><?= $this->Paginator->counter() ?></p>
-                    </div>
+                    </div>                     
                 </div>
-            </div>
+            </div>            
+
         </section>
     </div>
 </section>
