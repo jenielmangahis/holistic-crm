@@ -90,9 +90,9 @@
                                     </div>                       
                                 </td>
                                 <td class="tbl-field-id"><?= $this->Number->format($lead->id) ?></td>
-                                <td><?= $lead->status_id; ?></td>
-                                <td><?= $lead->source_id ?></td>
-                                <td><?= $lead->allocation_id ?></td>                          
+                                <td><?= $lead->status['name']; ?></td>
+                                <td><?= $lead->source['name'] ?></td>
+                                <td><?= $lead->allocation['name'] ?></td>                          
                                 <td><?= $lead->allocation_date ?></td>                          
                                 <td><?= $lead->firstname ?></td>                          
                                 <td><?= $lead->surname ?></td>                          

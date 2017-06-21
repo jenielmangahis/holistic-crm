@@ -58,8 +58,6 @@
         </table>
 
     <?php endif; ?>
-
-
     <br />
     <table class="table table-striped table-bordered table-hover">
         <tbody>
@@ -69,7 +67,4 @@
             </tr>                                      
         </tbody>
     </table>
-
-
-
 </section>

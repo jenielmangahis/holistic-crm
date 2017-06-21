@@ -33,10 +33,25 @@ class LeadsController extends AppController
      */
     public function index()
     {
-        $this->paginate = [
+        if( isset($this->request->query['query']) ){
+            $query = $this->request->query['query'];
+            $leads = $this->Leads->find('all')
+                ->contain(['Statuses', 'Sources', 'Allocations'])
+                ->where(['Leads.firstname LIKE' => '%' . $query . '%'])       
+                ->orWhere(['Leads.surname LIKE' => '%' . $query . '%'])       
+                ->orWhere(['Leads.email LIKE' => '%' . $query . '%'])       
+            ;
+        }else{
+            $leads = $this->Leads->find('all')
+                ->contain(['Statuses', 'Sources', 'Allocations'])
+            ;
+        }
+
+        /*$this->paginate = [
             'contain' => ['Statuses', 'Sources', 'Allocations']
-        ];
-        $this->set('leads', $this->paginate($this->Leads));
+        ];*/
+        
+        $this->set('leads', $this->paginate($leads));
         $this->set('_serialize', ['leads']);
     }
 

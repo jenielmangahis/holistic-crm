@@ -33,7 +33,15 @@ class AllocationsController extends AppController
      */
     public function index()
     {
-        $this->set('allocations', $this->paginate($this->Allocations));
+        if( isset( $this->request->query['query'] ) ) {
+            $query       = $this->request->query['query'];
+            $allocations = $this->Allocations->find('all')
+                ->where( ['Allocations.name LIKE' => '%' . $query . '%'] );
+        } else {
+            $allocations = $this->Allocations->find('all');
+        }          
+
+        $this->set('allocations', $this->paginate($allocations));
         $this->set('_serialize', ['allocations']);
     }
 
