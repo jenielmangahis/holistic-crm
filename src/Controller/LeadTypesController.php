@@ -32,7 +32,15 @@ class LeadTypesController extends AppController
      */
     public function index()
     {
-        $this->set('leadTypes', $this->paginate($this->LeadTypes));
+        if( isset( $this->request->query['query'] ) ) {
+            $query   = $this->request->query['query'];
+            $LeadTypes = $this->LeadTypes->find('all')
+                ->where( ['LeadTypes.name LIKE' => '%' . $query . '%'] );
+        } else {
+            $LeadTypes = $this->LeadTypes->find('all');
+        } 
+
+        $this->set('leadTypes', $this->paginate($LeadTypes));
         $this->set('_serialize', ['leadTypes']);
     }
 

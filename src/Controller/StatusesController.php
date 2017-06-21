@@ -32,7 +32,16 @@ class StatusesController extends AppController
      */
     public function index()
     {
-        $this->set('statuses', $this->paginate($this->Statuses));
+
+        if( isset( $this->request->query['query'] ) ) {
+            $query   = $this->request->query['query'];
+            $statuses = $this->Statuses->find('all')
+                ->where( ['Statuses.name LIKE' => '%' . $query . '%'] );
+        } else {
+            $statuses = $this->Statuses->find('all');
+        }   
+
+        $this->set('statuses', $this->paginate($statuses));
         $this->set('_serialize', ['statuses']);
     }
 

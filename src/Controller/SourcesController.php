@@ -32,9 +32,17 @@ class SourcesController extends AppController
      */
     public function index()
     {
-        $this->set('sources', $this->paginate($this->Sources));
+        if( isset( $this->request->query['query'] ) ) {
+            $query   = $this->request->query['query'];
+            $sources = $this->Sources->find('all')
+                ->where( ['Sources.name LIKE' => '%' . $query . '%'] );
+        } else {
+            $sources = $this->Sources->find('all');
+        }     
+
+        $this->set('sources', $this->paginate($sources));
         $this->set('_serialize', ['sources']);
-    }
+    }    
 
     /**
      * View method

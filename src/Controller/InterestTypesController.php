@@ -33,7 +33,15 @@ class InterestTypesController extends AppController
      */
     public function index()
     {
-        $this->set('interestTypes', $this->paginate($this->InterestTypes));
+        if( isset( $this->request->query['query'] ) ) {
+            $query   = $this->request->query['query'];
+            $InterestTypes = $this->InterestTypes->find('all')
+                ->where( ['InterestTypes.name LIKE' => '%' . $query . '%'] );
+        } else {
+            $InterestTypes = $this->InterestTypes->find('all');
+        }
+
+        $this->set('interestTypes', $this->paginate($InterestTypes));
         $this->set('_serialize', ['interestTypes']);
     }
 

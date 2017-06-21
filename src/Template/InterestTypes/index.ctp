@@ -93,7 +93,7 @@ div.box-body{
                                             <li role="presentation"><?= $this->Html->link('<i class="fa fa-trash"></i> Delete', '#modal-'.$interestType->id,['data-toggle' => 'modal','escape' => false]) ?></li>
                                         </ul>
                                     </div>   
-                                    <div id="modal-<?=$g->id?>" class="modal fade">
+                                    <div id="modal-<?=$interestType->id?>" class="modal fade">
                                         <div class="modal-dialog">
                                           <div class="modal-content">
                                             <div class="modal-header">
