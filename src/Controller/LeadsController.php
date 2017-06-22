@@ -94,9 +94,10 @@ class LeadsController extends AppController
             }
         }
         $statuses = $this->Leads->Statuses->find('list', ['limit' => 200]);
-        $sources = $this->Leads->Sources->find('list', ['limit' => 200]);
+        $sources  = $this->Leads->Sources->find('list', ['limit' => 200]);
         $allocations = $this->Leads->Allocations->find('list', ['limit' => 200]);
-        $this->set(compact('lead', 'statuses', 'sources', 'allocations'));
+        $interestTypes = $this->Leads->InterestTypes->find('list',['limit' => 200]);
+        $this->set(compact('lead', 'statuses', 'sources', 'allocations', 'interestTypes'));
         $this->set('_serialize', ['lead']);
     }
 
@@ -129,7 +130,8 @@ class LeadsController extends AppController
         $statuses = $this->Leads->Statuses->find('list', ['limit' => 200]);
         $sources = $this->Leads->Sources->find('list', ['limit' => 200]);
         $allocations = $this->Leads->Allocations->find('list', ['limit' => 200]);
-        $this->set(compact('lead', 'statuses', 'sources', 'allocations'));
+        $interestTypes = $this->Leads->InterestTypes->find('list',['limit' => 200]);
+        $this->set(compact('lead', 'statuses', 'sources', 'allocations', 'interestTypes'));
         $this->set('_serialize', ['lead']);
     }
 

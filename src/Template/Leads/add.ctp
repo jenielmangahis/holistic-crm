@@ -101,28 +101,28 @@
                             <div class='form-group'>
                                 <label for='allocation_date' class='col-sm-2 control-label'>" . __('Allocation Date') . "</label>
                                 <div class='col-sm-6'>";
-                                echo $this->Form->input('allocation_date', ['type' => 'text', 'class' => 'form-control default-datepicker', 'id' => 'allocation_date', 'label' => false]);                
+                                echo $this->Form->input('allocation_date', ['type' => 'text', 'value' => date("Y-m-d"), 'class' => 'form-control default-datepicker', 'id' => 'lead-allocation-date', 'label' => false]);                
                             echo " </div></div>";    
                             
                             echo "
                             <div class='form-group'>
                                 <label for='interest_type_id' class='col-sm-2 control-label'>" . __('Interest Type') . "</label>
                                 <div class='col-sm-6'>";
-                                echo $this->Form->input('interest_type_id', ['class' => 'form-control', 'id' => 'interest_type_id', 'label' => false]);                
+                                echo $this->Form->input('interest_type_id', ['class' => 'form-control', 'id' => 'interest_type_id', 'label' => false, 'options' => $interestTypes]);                
                             echo " </div></div>";    
                             
                             echo "
                             <div class='form-group'>
                                 <label for='followup_date' class='col-sm-2 control-label'>" . __('Followup Date') . "</label>
                                 <div class='col-sm-6'>";
-                                echo $this->Form->input('followup_date', ['type' => 'text', 'class' => 'form-control default-datepicker', 'id' => 'followup_date', 'label' => false]);                
+                                echo $this->Form->input('followup_date', ['type' => 'text', 'class' => 'form-control', 'id' => 'lead-followup-date', 'label' => false]);                
                             echo " </div></div>";    
                             
                             echo "
                             <div class='form-group'>
                                 <label for='followup_action_reminder_date' class='col-sm-2 control-label'>" . __('Followup Action Reminder Date') . "</label>
                                 <div class='col-sm-6'>";
-                                echo $this->Form->input('followup_action_reminder_date', ['type' => 'text', 'class' => 'form-control default-datepicker', 'id' => 'followup_action_reminder_date', 'label' => false]);                
+                                echo $this->Form->input('followup_action_reminder_date', ['type' => 'text', 'class' => 'form-control', 'id' => 'lead-followup-action-reminder-date', 'label' => false]);                
                             echo " </div></div>";    
                             
                             echo "
