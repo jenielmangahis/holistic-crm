@@ -23,7 +23,7 @@ class LeadsController extends AppController
         $this->set('nav_selected', $nav_selected);
 
         // Allow full access to this controller
-        $this->Auth->allow();
+        $this->Auth->allow(['register']);
     }
 
     /**
@@ -152,5 +152,37 @@ class LeadsController extends AppController
             $this->Flash->error(__('The lead could not be deleted. Please, try again.'));
         }
         return $this->redirect(['action' => 'index']);
+    }
+
+    /**
+     * Frontend : register method
+     *
+     * @return void Redirects on successful add, renders view otherwise.
+     */
+    public function register()
+    {
+        $this->viewBuilder()->layout("Front/register");  
+
+        $lead = $this->Leads->newEntity();
+        if ($this->request->is('post')) {
+            $lead = $this->Leads->patchEntity($lead, $this->request->data);
+            if ($this->Leads->save($lead)) {
+                $this->Flash->success(__('The lead has been saved.'));
+                $action = $this->request->data['save'];
+                if( $action == 'save' ){
+                    return $this->redirect(['action' => 'index']);
+                }else{
+                    return $this->redirect(['action' => 'add']);
+                }                    
+            } else {
+                $this->Flash->error(__('The lead could not be saved. Please, try again.'));
+            }
+        }
+        $statuses = $this->Leads->Statuses->find('list', ['limit' => 200]);
+        $sources  = $this->Leads->Sources->find('list', ['limit' => 200]);
+        $allocations = $this->Leads->Allocations->find('list', ['limit' => 200]);
+        $interestTypes = $this->Leads->InterestTypes->find('list',['limit' => 200]);
+        $this->set(compact('lead', 'statuses', 'sources', 'allocations', 'interestTypes'));
+        $this->set('_serialize', ['lead']);
     }
 }
