@@ -4,8 +4,9 @@
   </div>
 
   <div class="register-box-body">
-    <p class="login-box-msg">Register Leads</p>
+    <p class="login-box-msg">Register Leads</p>    
     <?= $this->Form->create($lead,['id' => 'frm-default-add', 'data-toggle' => 'validator', 'role' => 'form','class' => 'form-horizontal']) ?>
+      <?= $this->Flash->render() ?>                        
         <fieldset>                                
             <?php
                 echo "
@@ -44,10 +45,10 @@
                 echo " </div>";
             ?>
         </fieldset>
-      <div class="row">
+      <div class="row">        
         <div class="col-xs-8"></div>
         <div class="col-xs-4">
-          <div class="col-sm-offset-2 col-sm-10">                            
+          <div class="col-sm-offset-2 col-sm-10">                  
               <?= $this->Form->button(__('Register'),['name' => 'save', 'value' => 'save', 'class' => 'btn btn-success', 'escape' => false]) ?>
         </div>
       </div>

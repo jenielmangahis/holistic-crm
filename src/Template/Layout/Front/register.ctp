@@ -32,8 +32,7 @@
     var BASE_URL = "<?= $base_url; ?>";
 </script>
 <body class="hold-transition register-page" style="background-color:#000000;">
-   <div class="row">
-          <?= $this->Flash->render() ?>
+   <div class="row">          
         <?= $this->fetch('content') ?>
     </div>
 </body>

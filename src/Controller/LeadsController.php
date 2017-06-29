@@ -2,6 +2,7 @@
 namespace App\Controller;
 
 use App\Controller\AppController;
+use Cake\Network\Email\Email;
 
 /**
  * Leads Controller
@@ -165,18 +166,28 @@ class LeadsController extends AppController
 
         $lead = $this->Leads->newEntity();
         if ($this->request->is('post')) {
-            $lead = $this->Leads->patchEntity($lead, $this->request->data);
-            if ($this->Leads->save($lead)) {
-                $this->Flash->success(__('The lead has been saved.'));
-                $action = $this->request->data['save'];
-                if( $action == 'save' ){
-                    return $this->redirect(['action' => 'index']);
-                }else{
-                    return $this->redirect(['action' => 'add']);
-                }                    
+            $this->request->data['allocation_date'] = date("Y-m-d");
+            $this->request->data['followup_date']   = date("Y-m-d");
+            $this->request->data['followup_action_reminder_date'] = date("Y-m-d");
+            $lead = $this->Leads->patchEntity($lead, $this->request->data);                
+            if ($new_lead = $this->Leads->save($lead)) {
+
+                //Send email notification to admin
+                $admin_email = 'bryan.yobi@gmail.com';
+                $email_customer = new Email('cake_smtp');
+                $email_customer->from(['websystem@holisticwebpresencecrm.com' => 'Holistic'])
+                  ->template('leads_registration')
+                  ->emailFormat('html')
+                  ->to($admin_email)                                                                                                     
+                  ->subject('New Leads')
+                  ->viewVars(['new_lead' => $new_lead])
+                  ->send();
+
+                $this->Flash->success(__('The lead has been saved.'));                
             } else {
                 $this->Flash->error(__('The lead could not be saved. Please, try again.'));
             }
+            return $this->redirect(['action' => 'register']);
         }
         $statuses = $this->Leads->Statuses->find('list', ['limit' => 200]);
         $sources  = $this->Leads->Sources->find('list', ['limit' => 200]);
