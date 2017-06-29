@@ -95,6 +95,29 @@ $(function(){
     autoclose: true
   });
 
+  $('#lead-followup-date').datepicker({
+    format: 'yyyy-mm-dd',
+    autoclose: true,
+    startDate: $("#lead-allocation-date").val()
+  });
+
+  $('#lead-followup-action-reminder-date').datepicker({
+    format: 'yyyy-mm-dd',
+    autoclose: true,
+    startDate: $("#lead-allocation-date").val()
+  });
+
+  //Leads
+  $("#lead-allocation-date").on("changeDate", function (ev) {
+      var oldDate = new Date(ev.date);
+      var newDate = new Date(oldDate.getFullYear(),oldDate.getMonth(),oldDate.getDate()+1);      
+      $("#lead-followup-date").datepicker("setStartDate",new Date(oldDate.getFullYear(),oldDate.getMonth(),oldDate.getDate()+1));    
+      //$("#lead-followup-date").datepicker("setDate",new Date(oldDate.getFullYear(),oldDate.getMonth(),oldDate.getDate()+1));       
+      $("#lead-followup-action-reminder-date").datepicker("setStartDate",new Date(oldDate.getFullYear(),oldDate.getMonth(),oldDate.getDate()+1));       
+      //$("#lead-followup-action-reminder-date").datepicker("setDate",new Date(oldDate.getFullYear(),oldDate.getMonth(),oldDate.getDate()+1));          
+      //$("#lead-followup-date").focus();
+  });
+
   $('.has-ck-finder').click(function(){
     openKCFinder_textbox($(this));
   });

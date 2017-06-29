@@ -7,7 +7,7 @@
     <table class="table table-striped table-bordered table-hover">
     <tbody>
         <tr>
-            <th><?= __('Status') ?></th>
+            <th style="width:20%;"><?= __('Status') ?></th>
             <td><?= $lead->has('status') ? $this->Html->link($lead->status->name, ['controller' => 'Statuses', 'action' => 'view', $lead->status->id]) : '' ?></td>
         </tr>
         <tr>
@@ -56,7 +56,7 @@
     </tr>
     <tr>
         <th><?= __('Notes') ?></th>
-        <td><?= $this->Text->autoParagraph(h($lead->notes)); ?></td>        
+        <td><?= $lead->notes ?></td>        
     </tr>
         <tr>
             <th><?= __('Allocation Date') ?></th>
@@ -78,14 +78,9 @@
             <th><?= __('Modified') ?></th>
             <td><?= h($lead->modified) ?></td>
         </tr>
+        <tr>
+            <td colspan="2"><?= $this->Html->link('<i class="fa fa-angle-left"> </i> Back To list', ['action' => 'index'],['class' => 'btn btn-warning', 'escape' => false]) ?></td>
+        </tr>
     </tbody>
-    </table>
-
-    <div class="form-group" style="margin-top: 80px;">
-    <div class="col-sm-offset-2 col-sm-10">
-        <div class="action-fixed-bottom">        
-        <?= $this->Html->link('<i class="fa fa-angle-left"> </i> Back To list', ['action' => 'index'],['class' => 'btn btn-warning', 'escape' => false]) ?>
-        </div>
-    </div>
-    </div>
+    </table>   
 </section>
