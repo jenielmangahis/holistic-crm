@@ -73,9 +73,20 @@ class UsersController extends AppController
      */
     public function dashboard()
     {   
+
+        $leads = TableRegistry::get('Leads')->find();        
+        $users = TableRegistry::get('Users')->find();        
+
+        $total_leads = $leads->count();
+        $total_users = $users->count();
+
         $this->set([        
             'page_title' => 'Dashboard'
         ]);
+        $this->set('total_users', $total_users);
+        $this->set('total_leads', $total_leads);
+        $this->set('_serialize', ['total_users','total_leads']);
+
     }   
 
     /**
