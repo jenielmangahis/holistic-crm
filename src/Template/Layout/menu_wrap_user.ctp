@@ -44,7 +44,24 @@
         </li>                     
         <li id="groups_nav" title="Groups" class="<?= $nav_selected["leads"] ?>">
             <?= $this->Html->link('<i class="fa fa-users"></i><span>' . __("Leads") . "</span>",["controller" => "leads", "action" => "index"],["escape" => false]) ?>
-        </li>                     
+        </li> 
+
+        <li id="groups_nav" title="Groups" class="<?= $nav_selected["trainings"] ?>">
+            <?= $this->Html->link('<i class="fa fa-user-times"></i><span>' . __("Training") . "</span>",["controller" => "trainings", "action" => "index"],["escape" => false]) ?>
+        </li> 
+
+        <li id="groups_nav" title="Groups" class="treeview <?= $nav_selected["reports"] ?>">
+          <a href="#">
+            <i class="fa fa-sticky-note-o"></i> <span>Reports</span>
+            <span class="pull-right-container">
+              <i class="fa fa-angle-left pull-right"></i>
+            </span>
+          </a>
+          <ul class="treeview-menu">            
+            <li><?= $this->Html->link('<i class="fa fa-users"></i><span>' . __("Report 1") . "</span>",["controller" => "sample", "action" => "index"],["escape" => false]) ?></li>
+          </ul>
+        </li>
+
         <li id="groups_nav" title="Groups" class="treeview <?= $nav_selected["system_settings"] ?>">
           <a href="#">
             <i class="fa fa-gear"></i> <span>System Settings</span>

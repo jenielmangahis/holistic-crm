@@ -17,7 +17,7 @@
   <div class="portlet light " style="width:100%; float:left;">
     <div class="portlet-title">
       <div class="portlet-body form">
-        <div class="col-md-2">
+        <div class="col-md-3">
             <!-- Profile Image -->
           <div class="box box-primary">
             <div class="box-body box-profile">
@@ -38,7 +38,7 @@
           </div>
           <!-- /.box -->
         </div>
-        <div class="col-md-10">
+        <div class="col-md-9">
 
           <!-- Personal Info Box -->
           <div class="box box-primary">
