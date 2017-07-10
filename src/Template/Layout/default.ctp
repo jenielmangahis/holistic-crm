@@ -25,21 +25,21 @@
           <li class="dropdown notifications-menu">
             <a href="#" class="dropdown-toggle" data-toggle="dropdown">
               <i class="fa fa-bell-o"></i>
-              <span class="label label-warning">5</span>
+              <span class="label label-warning"><?php echo $total_notification > 0 ? $total_notification : 0; ?></span>
             </a>
             <ul class="dropdown-menu">
-              <li class="header">You have 5 notifications</li>
+              <li class="header">You have <?php echo $total_notification > 0 ? $total_notification : 0; ?> notifications</li>
               <li>
                 <!-- inner menu: contains the actual data -->
                 <ul class="menu menu-notification">                  
                   <li>
                     <a href="#">
-                      <i class="fa fa-users text-aqua"></i> 3 new leads were created
+                      <i class="fa fa-users text-aqua"></i> <?php echo $total_new_leads; ?> new leads were created
                     </a>
                   </li>
                   <li>
                     <a href="#">
-                      <i class="fa fa-warning text-yellow"></i> 2 leads need to followup today
+                      <i class="fa fa-warning text-yellow"></i> <?php echo $total_leads_followup; ?> leads need to followup today
                     </a>
                   </li>                                    
                 </ul>

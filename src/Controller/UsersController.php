@@ -73,7 +73,6 @@ class UsersController extends AppController
      */
     public function dashboard()
     {   
-
         $this->Leads = TableRegistry::get('Leads');        
         $leads = $this->Leads->find('all');
         $users = $this->Users->find('all');   
@@ -90,6 +89,11 @@ class UsersController extends AppController
             ->limit(5)
         ;
 
+        $followup_leads_today = $this->Leads->find('all')
+            ->where(['Leads.followup_date' => date("Y-m-d")])
+            ->order(['Leads.id' => 'DESC'])
+        ;
+
         $this->set([        
             'page_title' => 'Dashboard'
         ]);
@@ -97,6 +101,7 @@ class UsersController extends AppController
         $this->set('total_leads', $total_leads);
         $this->set('total_leads_followup', $total_leads_followup);
         $this->set('new_leads', $new_leads);
+        $this->set('followup_leads_today', $followup_leads_today);
         $this->set('_serialize', ['total_users','total_leads']);
 
     }   

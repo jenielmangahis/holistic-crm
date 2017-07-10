@@ -112,6 +112,20 @@ class AppController extends Controller
     public function beforeFilter(Event $event)
     {
         $this->Auth->allow('login');
+
+        $this->Leads = TableRegistry::get('Leads');   
+        $total_leads_followup = $this->Leads->find('all')
+            ->where(['Leads.followup_date' => date("Y-m-d")])
+            ->count();
+        $total_new_leads = $this->Leads->find('all')
+            ->order(['Leads.id' => 'DESC'])
+            ->limit(5)
+            ->count()
+        ;            
+
+        $this->set('total_new_leads', $total_new_leads);
+        $this->set('total_leads_followup', $total_leads_followup);
+        $this->set('total_notification', $total_new_leads + $total_leads_followup);
     }
 
     /**
