@@ -1,4 +1,3 @@
-<?php use Cake\Utility\Inflector; ?>
 <style>
 .user-block h2{
   font-size: 14px;
@@ -23,6 +22,19 @@ var BASE_URL = "<?php echo $base_url; ?>";
       </div>
       <!-- /.info-box -->
     </div>
+    <div class="col-md-3 col-sm-6 col-xs-12">
+      <div class="info-box">
+        <span class="info-box-icon bg-red"><i class="fa fa-calendar"></i></span>
+
+        <div class="info-box-content">
+          <span class="info-box-text">Total Leads for followup today</span>
+          <span class="info-box-number"><?php echo number_format($total_leads_followup,2); ?></span>
+        </div>
+        <!-- /.info-box-content -->
+      </div>
+      <!-- /.info-box -->
+    </div>
+    <!-- /.col -->
     <!-- /.col -->
     <div class="col-md-3 col-sm-6 col-xs-12">
       <div class="info-box">
@@ -67,12 +79,48 @@ var BASE_URL = "<?php echo $base_url; ?>";
 
   </div>
 
-  <!-- Pages -->
-  <div class="row">    
-    <div class="col-md-8">
+  <!-- Leads -->
+  <div class="row">       
+    <div class="col-md-12">
+      <div class="box box-primary box-solid">   
+          <div class="box-header with-border">  
+              <div class="user-block"><h2><?= __('New Leads') ?></h2></div>            
+              <div class="box-tools" style="top:9px;">                                         
+                  <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>                        
+              </div>         
+          </div>             
+          <div class="box-body">                    
+              <table id="dt-users-list" class="table table-hover table-striped">
+                  <thead class="thead-inverse">
+                      <tr>
+                          <th class="actions"><?= __('Actions') ?></th>
+                          <th><?= $this->Paginator->sort('id', __("Id") . "<i class='fa fa-sort pull-right'> </i>", array('escape' => false)) ?></th>
+                          <th style="width:90%;"><?= $this->Paginator->sort('name', __("Name") . "<i class='fa fa-sort pull-right'> </i>", array('escape' => false)) ?></th>                                                             
+                      </tr>
+                  </thead>
+                  <tbody>
+                      <?php foreach ($new_leads as $lead): ?>
+                      <tr>
+                          <td class="table-actions">
+                              <div class="dropdown">
+                                  <button class="btn btn-default dropdown-toggle" type="button" id="drpdwn" data-toggle="dropdown" aria-expanded="true">
+                                      Action <span class="caret"></span>
+                                  </button>
+                                  <ul class="dropdown-menu" role="menu" aria-labelledby="drpdwn">                                                                                                               
+                                      <li role="presentation"><?= $this->Html->link('<i class="fa fa-pencil"></i> Edit', ['controller' => 'pages', 'action' => 'edit', $lead->id],['escape' => false]) ?></li>                                    
+                                  </ul>
+                              </div>                                               
+                          </td>
+                          <td><?= $this->Number->format($lead->id) ?></td>
+                          <td><?= h($lead->firstname . ' ' . $lead->surname) ?></td>                                                                        
+                      </tr>
+                      <?php ;endforeach; ?>
+                  </tbody>
+              </table>                               
+          </div>
+      </div>
     </div>
-  </div>
-  <!-- End Services -->
+  <!-- End Leads -->
 
 </section>
 <!-- /.content -->

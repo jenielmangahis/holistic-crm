@@ -74,17 +74,29 @@ class UsersController extends AppController
     public function dashboard()
     {   
 
-        $leads = TableRegistry::get('Leads')->find();        
-        $users = TableRegistry::get('Users')->find();        
+        $this->Leads = TableRegistry::get('Leads');        
+        $leads = $this->Leads->find('all');
+        $users = $this->Users->find('all');   
 
         $total_leads = $leads->count();
-        $total_users = $users->count();
+        $total_users = $users->count();        
+        $total_leads_followup = $this->Leads->find('all')
+            ->where(['Leads.followup_date' => date("Y-m-d")])
+            ->count()
+        ;
+
+        $new_leads = $this->Leads->find('all')
+            ->order(['Leads.id' => 'DESC'])
+            ->limit(5)
+        ;
 
         $this->set([        
             'page_title' => 'Dashboard'
         ]);
         $this->set('total_users', $total_users);
         $this->set('total_leads', $total_leads);
+        $this->set('total_leads_followup', $total_leads_followup);
+        $this->set('new_leads', $new_leads);
         $this->set('_serialize', ['total_users','total_leads']);
 
     }   
