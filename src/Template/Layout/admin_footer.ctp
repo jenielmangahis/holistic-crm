@@ -53,6 +53,7 @@
 		    $('#default-datepicker').datepicker({
 		      autoclose: true
 		    });
+		    
 
 	    	$('.btn-cover-image-update').click(function(){
 	    		$(".btn-cover-image").children().removeClass('fa-check');

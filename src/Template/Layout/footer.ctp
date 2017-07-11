@@ -95,14 +95,19 @@ $(function(){
     autoclose: true
   });
 
+  $('.allocation-datepicker').datepicker({
+    format: 'd MM, yyyy',
+    autoclose: true
+  });
+
   $('#lead-followup-date').datepicker({
-    format: 'yyyy-mm-dd',
+    format: 'd MM, yyyy',
     autoclose: true,
     startDate: $("#lead-allocation-date").val()
   });
 
   $('#lead-followup-action-reminder-date').datepicker({
-    format: 'yyyy-mm-dd',
+    format: 'd MM, yyyy',
     autoclose: true,
     startDate: $("#lead-allocation-date").val()
   });

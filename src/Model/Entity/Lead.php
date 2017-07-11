@@ -16,6 +16,7 @@ use Cake\ORM\Entity;
  * @property string $email
  * @property string $phone
  * @property string $address
+ * @property string $lead_action
  * @property string $city
  * @property string $state
  * @property int $interest_type_id

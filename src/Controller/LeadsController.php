@@ -79,6 +79,12 @@ class LeadsController extends AppController
      */
     public function add()
     {
+        if(isset($this->request->data['allocation_date']) || isset($this->request->data['followup_date']) || isset($this->request->data['followup_action_reminder_date'])) {
+          $this->request->data['allocation_date']               = date("Y-m-d", strtotime($this->request->data['allocation_date']));
+          $this->request->data['followup_date']                 = date("Y-m-d", strtotime($this->request->data['followup_date']));
+          $this->request->data['followup_action_reminder_date'] = date("Y-m-d", strtotime($this->request->data['followup_action_reminder_date']));
+        }
+
         $lead = $this->Leads->newEntity();
         if ($this->request->is('post')) {
             $lead = $this->Leads->patchEntity($lead, $this->request->data);
@@ -111,9 +117,16 @@ class LeadsController extends AppController
      */
     public function edit($id = null)
     {
+        if(isset($this->request->data['allocation_date']) || isset($this->request->data['followup_date']) || isset($this->request->data['followup_action_reminder_date'])) {
+          $this->request->data['allocation_date']               = date("Y-m-d", strtotime($this->request->data['allocation_date']));
+          $this->request->data['followup_date']                 = date("Y-m-d", strtotime($this->request->data['followup_date']));
+          $this->request->data['followup_action_reminder_date'] = date("Y-m-d", strtotime($this->request->data['followup_action_reminder_date']));
+        }
+              
         $lead = $this->Leads->get($id, [
             'contain' => []
         ]);
+
         if ($this->request->is(['patch', 'post', 'put'])) {
             $lead = $this->Leads->patchEntity($lead, $this->request->data);
             if ($this->Leads->save($lead)) {

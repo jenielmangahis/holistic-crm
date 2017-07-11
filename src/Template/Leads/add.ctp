@@ -84,7 +84,15 @@
                                 <label for='status_id' class='col-sm-2 control-label'>" . __('Status') . "</label>
                                 <div class='col-sm-6'>";
                                  echo $this->Form->input('status_id', ['class' => 'form-control', 'id' => 'status_id', 'label' => false, 'options' => $statuses]);                 
-                            echo " </div></div>";    
+                            echo " </div></div>";
+
+                            echo "
+                            <div class='form-group'>
+                                <label for='lead_action' class='col-sm-2 control-label'>" . __('Action') . "</label>
+                                <div class='col-sm-6'>";
+                                echo $this->Form->input('lead_action', ['class' => 'form-control', 'id' => 'lead_action', 'type' => 'textarea', 'label' => false]);
+                            echo " </div></div>"; 
+
                             echo "
                             <div class='form-group'>
                                 <label for='source_id' class='col-sm-2 control-label'>" . __('Source') . "</label>
@@ -101,7 +109,7 @@
                             <div class='form-group'>
                                 <label for='allocation_date' class='col-sm-2 control-label'>" . __('Allocation Date') . "</label>
                                 <div class='col-sm-6'>";
-                                echo $this->Form->input('allocation_date', ['type' => 'text', 'value' => date("Y-m-d"), 'class' => 'form-control default-datepicker', 'id' => 'lead-allocation-date', 'label' => false]);                
+                                echo $this->Form->input('allocation_date', ['type' => 'text', 'value' => date("d F, Y"), 'class' => 'form-control allocation-datepicker', 'id' => 'lead-allocation-date', 'label' => false]);                
                             echo " </div></div>";    
                             
                             echo "

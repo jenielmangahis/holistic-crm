@@ -91,21 +91,21 @@ class LeadsTable extends Table
             ->requirePresence('email', 'create')
             ->notEmpty('email');
 
-        $validator
+        /*$validator
             ->requirePresence('phone', 'create')
-            ->notEmpty('phone');
+            ->notEmpty('phone');*/
 
-        $validator
+        /*$validator
             ->requirePresence('address', 'create')
-            ->notEmpty('address');
+            ->notEmpty('address');*/
 
-        $validator
+        /*$validator
             ->requirePresence('city', 'create')
-            ->notEmpty('city');
+            ->notEmpty('city');*/
 
-        $validator
+        /*$validator
             ->requirePresence('state', 'create')
-            ->notEmpty('state');
+            ->notEmpty('state');*/
 
         $validator
             ->date('followup_date')

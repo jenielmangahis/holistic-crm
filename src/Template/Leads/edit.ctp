@@ -85,6 +85,15 @@
                                 <div class='col-sm-6'>";
                                  echo $this->Form->input('status_id', ['class' => 'form-control', 'id' => 'status_id', 'label' => false, 'options' => $statuses]);                 
                             echo " </div></div>";    
+
+                            echo "
+                            <div class='form-group'>
+                                <label for='lead_action' class='col-sm-2 control-label'>" . __('Action') . "</label>
+                                <div class='col-sm-6'>";
+                                echo $this->Form->input('lead_action', ['class' => 'form-control', 'id' => 'lead_action', 'type' => 'textarea', 'label' => 
+                                false]);
+                            echo " </div></div>"; 
+
                             echo "
                             <div class='form-group'>
                                 <label for='source_id' class='col-sm-2 control-label'>" . __('Source') . "</label>
@@ -101,7 +110,7 @@
                             <div class='form-group'>
                                 <label for='allocation_date' class='col-sm-2 control-label'>" . __('Allocation Date') . "</label>
                                 <div class='col-sm-6'>";
-                                echo $this->Form->input('allocation_date', ['type' => 'text', 'class' => 'form-control default-datepicker', 'value' => $lead->allocation_date->format("Y-m-d"), 'id' => 'lead-allocation-date', 'label' => false]);                
+                                echo $this->Form->input('allocation_date', ['type' => 'text', 'class' => 'form-control allocation-datepicker', 'value' => $lead->allocation_date->format("d F, Y"), 'id' => 'lead-allocation-date', 'label' => false]);                
                             echo " </div></div>";    
                             
                             echo "
@@ -115,14 +124,14 @@
                             <div class='form-group'>
                                 <label for='followup_date' class='col-sm-2 control-label'>" . __('Followup Date') . "</label>
                                 <div class='col-sm-6'>";
-                                echo $this->Form->input('followup_date', ['type' => 'text','value' => $lead->followup_date->format("Y-m-d"),  'class' => 'form-control', 'id' => 'lead-followup-date', 'label' => false]);                
+                                echo $this->Form->input('followup_date', ['type' => 'text','value' => $lead->followup_date->format("d F, Y"),  'class' => 'form-control', 'id' => 'lead-followup-date', 'label' => false]);                
                             echo " </div></div>";    
                             
                             echo "
                             <div class='form-group'>
                                 <label for='followup_action_reminder_date' class='col-sm-2 control-label'>" . __('Followup Action Reminder Date') . "</label>
                                 <div class='col-sm-6'>";
-                                echo $this->Form->input('followup_action_reminder_date', ['type' => 'text', 'class' => 'form-control', 'value' => $lead->followup_action_reminder_date->format("Y-m-d"), 'id' => 'lead-followup-action-reminder-date', 'label' => false]);                
+                                echo $this->Form->input('followup_action_reminder_date', ['type' => 'text', 'class' => 'form-control', 'value' => $lead->followup_action_reminder_date->format("d F, Y"), 'id' => 'lead-followup-action-reminder-date', 'label' => false]);                
                             echo " </div></div>";    
                             
                             echo "
