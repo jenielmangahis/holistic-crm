@@ -10,6 +10,7 @@ use App\Controller\AppController;
  */
 class AllocationsController extends AppController
 {
+    public $paginate = ['maxLimit' => 10, 'order' => ['Allocations.sort' => 'ASC']];
 
     /**
      * initialize method

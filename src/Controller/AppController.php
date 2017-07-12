@@ -66,11 +66,11 @@ class AppController extends Controller
                 
             ],
             'unauthorizedRedirect' => [
-                'controller' => 'Main',
-                'action' => 'index',
+                'controller' => 'Users',
+                'action' => 'dashboard',
                 'prefix' => false
             ],
-            'authError' => 'You must be logged in to view this page.',
+            'authError' => 'You are not allowed to access this page',
             'flash' => [
                 'element' => 'error'
             ]

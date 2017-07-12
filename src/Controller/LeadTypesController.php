@@ -22,7 +22,7 @@ class LeadTypesController extends AppController
         $this->set('nav_selected', $nav_selected);
 
         // Allow full access to this controller
-        $this->Auth->allow();
+        //$this->Auth->allow();
     }     
 
     /**

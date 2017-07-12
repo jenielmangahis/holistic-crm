@@ -1,11 +1,4 @@
-<div class="modal fade" id="addGroupModal" tabindex="-1" role="dialog" aria-labelledby="addGroupModalLabel">
-    <div class="modal-dialog " role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                <h4 class="modal-title" id="addGroupModalLabel">Add Group</h4>
-            </div>
-            <?= $this->Form->create(null,['url' => '/groups/add', 'id' => 'frm-user-add', 'data-toggle' => 'validator', 'role' => 'form']) ?>
+<?= $this->Form->create(null,['url' => '/groups/add', 'id' => 'frm-user-add', 'data-toggle' => 'validator', 'role' => 'form']) ?>
                 <div class="modal-body">
                     <fieldset>        
                         <?php                                        
@@ -26,6 +19,3 @@
                     <button type="submit" class="btn btn-primary">Add</button>
                 </div>
             <?= $this->Form->end() ?>
-        </div>
-    </div>
-</div>

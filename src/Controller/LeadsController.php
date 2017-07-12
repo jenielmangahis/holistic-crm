@@ -23,6 +23,16 @@ class LeadsController extends AppController
         $nav_selected = ["leads"];
         $this->set('nav_selected', $nav_selected);
 
+        $session = $this->request->session();    
+        $user_data = $session->read('User.data');         
+        if( isset($user_data) ){
+            if( $user_data->group_id == 1 ){ //Admin
+              $this->Auth->allow();
+            }else{
+              $this->Auth->allow();
+            } 
+        }
+
         // Allow full access to this controller
         $this->Auth->allow(['register']);
     }
@@ -100,10 +110,10 @@ class LeadsController extends AppController
                 $this->Flash->error(__('The lead could not be saved. Please, try again.'));
             }
         }
-        $statuses = $this->Leads->Statuses->find('list', ['limit' => 200]);
-        $sources  = $this->Leads->Sources->find('list', ['limit' => 200]);
-        $allocations = $this->Leads->Allocations->find('list', ['limit' => 200]);
-        $interestTypes = $this->Leads->InterestTypes->find('list',['limit' => 200]);
+        $statuses = $this->Leads->Statuses->find('list');
+        $sources  = $this->Leads->Sources->find('list');
+        $allocations = $this->Leads->Allocations->find('list', ['order' => ['Allocations.sort' => 'ASC']]);
+        $interestTypes = $this->Leads->InterestTypes->find('list');
         $this->set(compact('lead', 'statuses', 'sources', 'allocations', 'interestTypes'));
         $this->set('_serialize', ['lead']);
     }

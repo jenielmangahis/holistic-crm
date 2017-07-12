@@ -35,14 +35,13 @@ div.box-body{
         <li class="active"><?= __('Groups') ?></li>
     </ol>
 </section>
-
 <section class="content">
     <!-- Main Row -->
-    <div class="row">
+    <div class="row">    
         <section class="col-lg-12 ">
             <div class="box box-primary box-solid">   
                 <div class="box-header with-border">  
-                    <div class="user-block">   
+                    <div class="user-block">                       
                         <?= $this->Form->create(null,[                
                           'url' => ['action' => 'index'],
                           'class' => 'form-inline',

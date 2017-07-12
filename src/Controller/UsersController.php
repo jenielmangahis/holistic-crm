@@ -26,6 +26,16 @@ class UsersController extends AppController
         $nav_selected = ["system_settings"];
         $this->set('nav_selected', $nav_selected);        
 
+        $session = $this->request->session();    
+        $user_data = $session->read('User.data');         
+        if( isset($user_data) ){
+            if( $user_data->group_id == 1 ){ //Admin
+              $this->Auth->allow();
+            }else{        
+              $this->Auth->allow(['dashboard']);
+            } 
+        }
+
         $this->Auth->allow(['request_forgot_password']);
     }
 
