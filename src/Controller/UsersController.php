@@ -94,9 +94,9 @@ class UsersController extends AppController
             ->count()
         ;
 
-        $new_leads = $this->Leads->find('all')
-            ->order(['Leads.id' => 'DESC'])
-            ->limit(5)
+        $new_leads = $this->Leads->find('all')                
+            ->where(['DATE_FORMAT(Leads.created,"%Y-%m-%d")' => date("Y-m-d")])
+            ->order(['Leads.id' => 'DESC'])            
         ;
 
         $followup_leads_today = $this->Leads->find('all')

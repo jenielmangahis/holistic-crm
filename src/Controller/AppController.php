@@ -118,6 +118,7 @@ class AppController extends Controller
             ->where(['Leads.followup_date' => date("Y-m-d")])
             ->count();
         $total_new_leads = $this->Leads->find('all')
+            ->where(['DATE_FORMAT(Leads.created,"%Y-%m-%d")' => date("Y-m-d")])
             ->order(['Leads.id' => 'DESC'])
             ->limit(5)
             ->count()
