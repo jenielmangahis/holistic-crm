@@ -34,7 +34,7 @@
                 <ul class="menu menu-notification">                  
                   <li>
                     <a href="#">
-                      <i class="fa fa-users text-aqua"></i> <?php echo $total_new_leads; ?> new leads were created
+                      <i class="fa fa-users text-aqua"></i> <?php echo $total_new_leads; ?> new leads were created today
                     </a>
                   </li>
                   <li>

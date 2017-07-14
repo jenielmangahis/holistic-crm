@@ -84,7 +84,7 @@ var BASE_URL = "<?php echo $base_url; ?>";
     <div class="col-md-12">
       <div class="box box-primary box-solid">   
           <div class="box-header with-border">  
-              <div class="user-block"><h2><?= __('New Leads') ?></h2></div>            
+              <div class="user-block"><h2><i class="fa fa-user"></i> <?= __('Newly created leads (today)') ?></h2></div>            
               <div class="box-tools" style="top:9px;">                                         
                   <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>                        
               </div>         
@@ -93,7 +93,7 @@ var BASE_URL = "<?php echo $base_url; ?>";
               <table id="dt-users-list" class="table table-hover table-striped">
                   <thead class="thead-inverse">
                       <tr>
-                          <th class="actions"><?= __('Actions') ?></th>
+                          <th class="actions"></th>
                           <th><?= $this->Paginator->sort('id', __("Id") . "<i class='fa fa-sort pull-right'> </i>", array('escape' => false)) ?></th>
                           <th style="width:90%;"><?= $this->Paginator->sort('name', __("Name") . "<i class='fa fa-sort pull-right'> </i>", array('escape' => false)) ?></th>                                                             
                       </tr>
@@ -124,7 +124,7 @@ var BASE_URL = "<?php echo $base_url; ?>";
     <div class="col-md-12">
       <div class="box box-primary box-solid">   
           <div class="box-header with-border">  
-              <div class="user-block"><h2><?= __('For Follow-up Leads Today') ?></h2></div>            
+              <div class="user-block"><h2><i class="fa fa-calendar"></i> <?= __('For Follow-up Leads Today') ?></h2></div>            
               <div class="box-tools" style="top:9px;">                                         
                   <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>                        
               </div>         
@@ -133,7 +133,7 @@ var BASE_URL = "<?php echo $base_url; ?>";
               <table id="dt-users-list" class="table table-hover table-striped">
                   <thead class="thead-inverse">
                       <tr>
-                          <th class="actions"><?= __('Actions') ?></th>
+                          <th class="actions"></th>
                           <th><?= $this->Paginator->sort('id', __("Id") . "<i class='fa fa-sort pull-right'> </i>", array('escape' => false)) ?></th>
                           <th style="width:90%;"><?= $this->Paginator->sort('name', __("Name") . "<i class='fa fa-sort pull-right'> </i>", array('escape' => false)) ?></th>                                                             
                       </tr>
