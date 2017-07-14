@@ -51,6 +51,12 @@ class LeadsTable extends Table
             'foreignKey' => 'source_id',
             'joinType' => 'INNER'
         ]);
+
+        $this->belongsTo('LeadTypes', [
+            'foreignKey' => 'lead_type_id',
+            'joinType' => 'INNER'
+        ]);
+
         $this->belongsTo('Allocations', [
             'foreignKey' => 'allocation_id',
             'joinType' => 'INNER'
@@ -136,6 +142,7 @@ class LeadsTable extends Table
         $rules->add($rules->existsIn(['status_id'], 'Statuses'));
         $rules->add($rules->existsIn(['source_id'], 'Sources'));
         $rules->add($rules->existsIn(['allocation_id'], 'Allocations'));
+        $rules->add($rules->existsIn(['lead_type_id'], 'LeadTypes'));
         $rules->add($rules->existsIn(['interest_type_id'], 'InterestTypes'));
 
         return $rules;

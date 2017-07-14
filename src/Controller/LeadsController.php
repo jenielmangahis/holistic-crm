@@ -76,7 +76,7 @@ class LeadsController extends AppController
     public function view($id = null)
     {
         $lead = $this->Leads->get($id, [
-            'contain' => ['Statuses', 'Sources', 'Allocations']
+            'contain' => ['Statuses', 'Sources', 'Allocations', 'LeadTypes', 'InterestTypes']
         ]);
         $this->set('lead', $lead);
         $this->set('_serialize', ['lead']);
@@ -114,7 +114,8 @@ class LeadsController extends AppController
         $sources  = $this->Leads->Sources->find('list');
         $allocations = $this->Leads->Allocations->find('list', ['order' => ['Allocations.sort' => 'ASC']]);
         $interestTypes = $this->Leads->InterestTypes->find('list');
-        $this->set(compact('lead', 'statuses', 'sources', 'allocations', 'interestTypes'));
+        $leadTypes = $this->Leads->LeadTypes->find('list');
+        $this->set(compact('lead', 'statuses', 'sources', 'allocations', 'interestTypes', 'leadTypes'));
         $this->set('_serialize', ['lead']);
     }
 
@@ -155,7 +156,8 @@ class LeadsController extends AppController
         $sources = $this->Leads->Sources->find('list', ['limit' => 200]);
         $allocations = $this->Leads->Allocations->find('list', ['limit' => 200]);
         $interestTypes = $this->Leads->InterestTypes->find('list',['limit' => 200]);
-        $this->set(compact('lead', 'statuses', 'sources', 'allocations', 'interestTypes'));
+        $leadTypes = $this->Leads->LeadTypes->find('list',['limit' => 200]);
+        $this->set(compact('lead', 'statuses', 'sources', 'allocations', 'interestTypes', 'leadTypes'));
         $this->set('_serialize', ['lead']);
     }
 

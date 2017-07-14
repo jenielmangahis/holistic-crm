@@ -8,15 +8,21 @@
     <tbody>
         <tr>
             <th style="width:20%;"><?= __('Status') ?></th>
-            <td><?= $lead->has('status') ? $this->Html->link($lead->status->name, ['controller' => 'Statuses', 'action' => 'view', $lead->status->id]) : '' ?></td>
+            <td><?= $lead->has('status') ? $lead->status->name : '' ?></td>
         </tr>
         <tr>
             <th><?= __('Source') ?></th>
-            <td><?= $lead->has('source') ? $this->Html->link($lead->source->name, ['controller' => 'Sources', 'action' => 'view', $lead->source->id]) : '' ?></td>
+            <td><?= $lead->has('source') ? $lead->source->name : '' ?></td>
         </tr>
+
         <tr>
-            <th><?= __('Allocation') ?></th>
-            <td><?= $lead->has('allocation') ? $this->Html->link($lead->allocation->name, ['controller' => 'Allocations', 'action' => 'view', $lead->allocation->id]) : '' ?></td>
+            <th><?= __('Lead Type') ?></th>
+            <td><?= $lead->has('lead_type') ? $lead->lead_type->name : '' ?></td>
+        </tr>
+
+        <tr>
+            <th><?= __('Allocated to') ?></th>
+            <td><?= $lead->has('allocation') ? $lead->allocation->name : '' ?></td>
         </tr>
         <tr>
             <th><?= __('Firstname') ?></th>
@@ -48,7 +54,9 @@
         </tr>
         <tr>
             <th><?= __('Interest Type Id') ?></th>
-            <td><?= $this->Number->format($lead->interest_type_id) ?></td>
+            <td>
+                <?= $lead->has('interest_type') ? $lead->interest_type->name : ''; ?>
+            </td>
         </tr>
     <tr>
         <th><?= __('Address') ?></th>
@@ -60,23 +68,31 @@
     </tr>
         <tr>
             <th><?= __('Allocation Date') ?></th>
-            <td><?= h($lead->allocation_date) ?></td>
+            <td><?= date("d F, Y", strtotime($lead->allocation_date)); ?></td>
         </tr>
         <tr>
             <th><?= __('Followup Date') ?></th>
-            <td><?= h($lead->followup_date) ?></td>
+            <td><?= date("d F, Y", strtotime($lead->followup_date)); ?></td>
+        </tr>
+        <tr>
+            <th><?= __('Followup Note') ?></th>
+            <td><?= $lead->followup_notes ?></td>
         </tr>
         <tr>
             <th><?= __('Followup Action Reminder Date') ?></th>
-            <td><?= h($lead->followup_action_reminder_date) ?></td>
+            <td><?= date("d F, Y", strtotime($lead->followup_action_reminder_date)); ?></td>
         </tr>
         <tr>
+            <th><?= __('Followup Action Note') ?></th>
+            <td><?= $lead->followup_action_notes ?></td>
+        </tr>        
+        <tr>
             <th><?= __('Created') ?></th>
-            <td><?= h($lead->created) ?></td>
+            <td><?= date("d F, Y H:i A", strtotime($lead->created)); ?></td>
         </tr>
         <tr>
             <th><?= __('Modified') ?></th>
-            <td><?= h($lead->modified) ?></td>
+            <td><?= date("d F, Y H:i A", strtotime($lead->modified)); ?></td>
         </tr>
         <tr>
             <td colspan="2"><?= $this->Html->link('<i class="fa fa-angle-left"> </i> Back To list', ['action' => 'index'],['class' => 'btn btn-warning', 'escape' => false]) ?></td>

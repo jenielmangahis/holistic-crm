@@ -99,9 +99,17 @@
                                 <div class='col-sm-6'>";
                                  echo $this->Form->input('source_id', ['class' => 'form-control', 'id' => 'source_id', 'label' => false, 'options' => $sources]);                 
                             echo " </div></div>";    
+
                             echo "
                             <div class='form-group'>
-                                <label for='allocation_id' class='col-sm-2 control-label'>" . __('Allocation') . "</label>
+                                <label for='lead_type_id' class='col-sm-2 control-label'>" . __('Lead Type') . "</label>
+                                <div class='col-sm-6'>";
+                                 echo $this->Form->input('lead_type_id', ['class' => 'form-control', 'id' => 'lead_type_id', 'label' => false, 'options' => $leadTypes]);                 
+                            echo " </div></div>";    
+
+                            echo "
+                            <div class='form-group'>
+                                <label for='allocation_id' class='col-sm-2 control-label'>" . __('Allocated to') . "</label>
                                 <div class='col-sm-6'>";
                                  echo $this->Form->input('allocation_id', ['class' => 'form-control', 'id' => 'allocation_id', 'label' => false, 'options' => $allocations]);                 
                             echo " </div></div>";    
@@ -125,13 +133,27 @@
                                 <div class='col-sm-6'>";
                                 echo $this->Form->input('followup_date', ['type' => 'text', 'class' => 'form-control', 'id' => 'lead-followup-date', 'label' => false]);                
                             echo " </div></div>";    
+
+                            echo "
+                            <div class='form-group'>
+                                <label for='followup_notes' class='col-sm-2 control-label'>" . __('Followup Notes') . "</label>
+                                <div class='col-sm-6'>";
+                                echo $this->Form->input('followup_notes', ['class' => 'form-control ckeditor', 'id' => 'followup_notes', 'label' => false]);                
+                            echo " </div></div>";                            
                             
                             echo "
                             <div class='form-group'>
                                 <label for='followup_action_reminder_date' class='col-sm-2 control-label'>" . __('Followup Action Reminder Date') . "</label>
                                 <div class='col-sm-6'>";
                                 echo $this->Form->input('followup_action_reminder_date', ['type' => 'text', 'class' => 'form-control', 'id' => 'lead-followup-action-reminder-date', 'label' => false]);                
-                            echo " </div></div>";    
+                            echo " </div></div>";  
+
+                            echo "
+                            <div class='form-group'>
+                                <label for='followup_action_notes' class='col-sm-2 control-label'>" . __('Followup Action Notes') . "</label>
+                                <div class='col-sm-6'>";
+                                echo $this->Form->input('followup_action_notes', ['class' => 'form-control ckeditor', 'id' => 'followup_action_notes', 'label' => false]);                
+                            echo " </div></div>";                                
                             
                             echo "
                             <div class='form-group'>
