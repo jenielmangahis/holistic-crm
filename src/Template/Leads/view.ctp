@@ -1,102 +1,183 @@
-
+<style>
+.form-hdr{
+    background-color: #222D32;
+    color:#ffff;
+    padding: 10px;
+}
+</style>
 <section class="content-header">
     <h1><?= __('View Lead') ?></h1>
+    <ol class="breadcrumb">
+        <li><?= $this->Html->link("<i class='fa fa-dashboard'></i>" . __("Home"), ['controller' => 'users', 'action' => 'dashboard'],['escape' => false]) ?></li>
+        <li><?= $this->Html->link("<i class='fa fa-gear'></i>" . __('Leads'), ['action' => 'index'],['escape' => false]) ?></li>
+        <li class="active"><?= __('View') ?></li>
+    </ol>
 </section>
 
-<section class="content">   
-    <table class="table table-striped table-bordered table-hover">
-    <tbody>
-        <tr>
-            <th style="width:20%;"><?= __('Status') ?></th>
-            <td><?= $lead->has('status') ? $lead->status->name : '' ?></td>
-        </tr>
-        <tr>
-            <th><?= __('Source') ?></th>
-            <td><?= $lead->has('source') ? $lead->source->name : '' ?></td>
-        </tr>
+<section class="content">
+    <!-- Main Row -->
+    <div class="row">
+        <section class="col-lg-12 ">
+            <div class="box " >
+                <div class="box-header">
 
-        <tr>
-            <th><?= __('Lead Type') ?></th>
-            <td><?= $lead->has('lead_type') ? $lead->lead_type->name : '' ?></td>
-        </tr>
+                </div>
+                <div class="box-body">
+                    <?= $this->Form->create($lead,['id' => 'frm-default-add', 'data-toggle' => 'validator', 'role' => 'form','class' => 'form-horizontal']) ?>
+                    <fieldset>        
+                        <h3 class="form-hdr">Lead Personal Information</h3>
+                        <?php
+                            echo "
+                            <div class='form-group'>
+                                <label for='firstname' class='col-sm-2 control-label'>" . __('Firstname') . "</label>
+                                <div class='col-sm-6'>";
+                                echo $this->Form->input('firstname', ['class' => 'form-control', 'id' => 'firstname', 'label' => false, 'readonly' => 'readonly']);                
+                            echo " </div></div>";    
+                            
+                            echo "
+                            <div class='form-group'>
+                                <label for='surname' class='col-sm-2 control-label'>" . __('Surname') . "</label>
+                                <div class='col-sm-6'>";
+                                echo $this->Form->input('surname', ['class' => 'form-control', 'id' => 'surname', 'label' => false, 'readonly' => 'readonly']);                
+                            echo " </div></div>";    
+                            
+                            echo "
+                            <div class='form-group'>
+                                <label for='email' class='col-sm-2 control-label'>" . __('Email') . "</label>
+                                <div class='col-sm-6'>";
+                                echo $this->Form->input('email', ['class' => 'form-control', 'id' => 'email', 'label' => false, 'readonly' => 'readonly']);                
+                            echo " </div></div>";    
+                            
+                            echo "
+                            <div class='form-group'>
+                                <label for='phone' class='col-sm-2 control-label'>" . __('Phone') . "</label>
+                                <div class='col-sm-6'>";
+                                echo $this->Form->input('phone', ['class' => 'form-control', 'id' => 'phone', 'label' => false, 'readonly' => 'readonly']);                
+                            echo " </div></div>";    
+                            
+                            echo "
+                            <div class='form-group'>
+                                <label for='address' class='col-sm-2 control-label'>" . __('Address') . "</label>
+                                <div class='col-sm-6'>";
+                                echo $this->Form->input('address', ['class' => 'form-control', 'id' => 'address', 'label' => false, 'readonly' => 'readonly']);                
+                            echo " </div></div>";    
+                            
+                            echo "
+                            <div class='form-group'>
+                                <label for='city' class='col-sm-2 control-label'>" . __('City') . "</label>
+                                <div class='col-sm-6'>";
+                                echo $this->Form->input('city', ['class' => 'form-control', 'id' => 'city', 'label' => false, 'readonly' => 'readonly']);                
+                            echo " </div></div>";    
+                            
+                            echo "
+                            <div class='form-group'>
+                                <label for='state' class='col-sm-2 control-label'>" . __('State') . "</label>
+                                <div class='col-sm-6'>";
+                                echo $this->Form->input('state', ['class' => 'form-control', 'id' => 'state', 'label' => false, 'readonly' => 'readonly']);                
+                            echo " </div></div>";
+                            ?>
 
-        <tr>
-            <th><?= __('Allocated to') ?></th>
-            <td><?= $lead->has('allocation') ? $lead->allocation->name : '' ?></td>
-        </tr>
-        <tr>
-            <th><?= __('Firstname') ?></th>
-            <td><?= h($lead->firstname) ?></td>
-        </tr>
-        <tr>
-            <th><?= __('Surname') ?></th>
-            <td><?= h($lead->surname) ?></td>
-        </tr>
-        <tr>
-            <th><?= __('Email') ?></th>
-            <td><?= h($lead->email) ?></td>
-        </tr>
-        <tr>
-            <th><?= __('Phone') ?></th>
-            <td><?= h($lead->phone) ?></td>
-        </tr>
-        <tr>
-            <th><?= __('City') ?></th>
-            <td><?= h($lead->city) ?></td>
-        </tr>
-        <tr>
-            <th><?= __('State') ?></th>
-            <td><?= h($lead->state) ?></td>
-        </tr>
-        <tr>
-            <th><?= __('Id') ?></th>
-            <td><?= $this->Number->format($lead->id) ?></td>
-        </tr>
-        <tr>
-            <th><?= __('Interest Type Id') ?></th>
-            <td>
-                <?= $lead->has('interest_type') ? $lead->interest_type->name : ''; ?>
-            </td>
-        </tr>
-    <tr>
-        <th><?= __('Address') ?></th>
-        <td><?= $this->Text->autoParagraph(h($lead->address)); ?></td>        
-    </tr>
-    <tr>
-        <th><?= __('Notes') ?></th>
-        <td><?= $lead->notes ?></td>        
-    </tr>
-        <tr>
-            <th><?= __('Allocation Date') ?></th>
-            <td><?= date("d F, Y", strtotime($lead->allocation_date)); ?></td>
-        </tr>
-        <tr>
-            <th><?= __('Followup Date') ?></th>
-            <td><?= date("d F, Y", strtotime($lead->followup_date)); ?></td>
-        </tr>
-        <tr>
-            <th><?= __('Followup Note') ?></th>
-            <td><?= $lead->followup_notes ?></td>
-        </tr>
-        <tr>
-            <th><?= __('Followup Action Reminder Date') ?></th>
-            <td><?= date("d F, Y", strtotime($lead->followup_action_reminder_date)); ?></td>
-        </tr>
-        <tr>
-            <th><?= __('Followup Action Note') ?></th>
-            <td><?= $lead->followup_action_notes ?></td>
-        </tr>        
-        <tr>
-            <th><?= __('Created') ?></th>
-            <td><?= date("d F, Y H:i A", strtotime($lead->created)); ?></td>
-        </tr>
-        <tr>
-            <th><?= __('Modified') ?></th>
-            <td><?= date("d F, Y H:i A", strtotime($lead->modified)); ?></td>
-        </tr>
-        <tr>
-            <td colspan="2"><?= $this->Html->link('<i class="fa fa-angle-left"> </i> Back To list', ['action' => 'index'],['class' => 'btn btn-warning', 'escape' => false]) ?></td>
-        </tr>
-    </tbody>
-    </table>   
+                            <h3 class="form-hdr">Other Information</h3>
+                            <?php
+                            echo "
+                            <div class='form-group'>
+                                <label for='status_id' class='col-sm-2 control-label'>" . __('Status') . "</label>
+                                <div class='col-sm-6'>";
+                                echo '<input type="text" id="status_id" class="form-control" name="status_id" value="' . $lead->status->name . '" readonly="readonly" />';
+                            echo " </div></div>";
+
+                            echo "
+                            <div class='form-group'>
+                                <label for='lead_action' class='col-sm-2 control-label'>" . __('Action') . "</label>
+                                <div class='col-sm-6'>";
+                                echo $this->Form->input('lead_action', ['class' => 'form-control', 'id' => 'lead_action', 'readonly' => 'readonly',  'type' => 'textarea', 'label' => false]);
+                            echo " </div></div>"; 
+
+                            echo "
+                            <div class='form-group'>
+                                <label for='source_id' class='col-sm-2 control-label'>" . __('Source') . "</label>
+                                <div class='col-sm-6'>";
+                                echo '<input type="text" id="source_id" class="form-control" name="source_id" value="' . $lead->status->name . '" readonly="readonly" />';
+                            echo " </div></div>";    
+
+                            echo "
+                            <div class='form-group'>
+                                <label for='lead_type_id' class='col-sm-2 control-label'>" . __('Lead Type') . "</label>
+                                <div class='col-sm-6'>";
+                                echo '<input type="text" id="lead_type_id" class="form-control" name="lead_type_id" value="' . $lead->lead_type->name . '" readonly="readonly" />';
+                            echo " </div></div>";    
+
+                            echo "
+                            <div class='form-group'>
+                                <label for='allocation_id' class='col-sm-2 control-label'>" . __('Allocated to') . "</label>
+                                <div class='col-sm-6'>";
+                                echo '<input type="text" id="allocation_id" class="form-control" name="allocation_id" value="' . $lead->allocation->name . '" readonly="readonly" />';
+                            echo " </div></div>";    
+                            echo "
+                            <div class='form-group'>
+                                <label for='allocation_date' class='col-sm-2 control-label'>" . __('Allocation Date') . "</label>
+                                <div class='col-sm-6'>";
+                                echo $this->Form->input('allocation_date', ['type' => 'text', 'value' => date("d F, Y"), 'class' => 'form-control', 'id' => 'lead-allocation-date', 'readonly' => 'readonly', 'label' => false]);                
+                            echo " </div></div>";    
+                            
+                            echo "
+                            <div class='form-group'>
+                                <label for='interest_type_id' class='col-sm-2 control-label'>" . __('Interest Type') . "</label>
+                                <div class='col-sm-6'>";
+                                echo '<input type="text" id="interest_type" class="form-control" name="interest_type" value="' . $lead->interest_type->name . '" readonly="readonly" />';
+                            echo " </div></div>";    
+                            
+                            echo "
+                            <div class='form-group'>
+                                <label for='followup_date' class='col-sm-2 control-label'>" . __('Followup Date') . "</label>
+                                <div class='col-sm-6'>";
+                                echo $this->Form->input('lead-followup-date', ['type' => 'text', 'value' => date("d F, Y"), 'class' => 'form-control', 'id' => '', 'readonly' => 'readonly', 'label' => false]);                
+                            echo " </div></div>";    
+
+                            echo "
+                            <div class='form-group'>
+                                <label for='followup_notes' class='col-sm-2 control-label'>" . __('Followup Notes') . "</label>
+                                <div class='col-sm-6'>";
+                                echo "<textarea rows='4' cols='79' class='form-control' readonly='readonly'>";
+                                echo strip_tags($lead->followup_notes);
+                                echo "</textarea>";                                
+                            echo " </div></div>";                            
+                            
+                            echo "
+                            <div class='form-group'>
+                                <label for='followup_action_reminder_date' class='col-sm-2 control-label'>" . __('Followup Action Reminder Date') . "</label>
+                                <div class='col-sm-6'>";
+                                echo $this->Form->input('followup_action_reminder_date', ['type' => 'text', 'value' => date("d F, Y"), 'class' => 'form-control', 'id' => '', 'readonly' => 'readonly', 'label' => false]);                
+                            echo " </div></div>";  
+
+                            echo "
+                            <div class='form-group'>
+                                <label for='followup_action_notes' class='col-sm-2 control-label'>" . __('Followup Action Notes') . "</label>
+                                <div class='col-sm-6'>";
+                                echo "<textarea rows='4' cols='79' class='form-control' readonly='readonly'>";
+                                echo strip_tags($lead->followup_action_notes);
+                                echo "</textarea>";                                   
+                            echo " </div></div>";                                
+                            
+                            echo "
+                            <div class='form-group'>
+                                <label for='notes' class='col-sm-2 control-label'>" . __('Notes') . "</label>
+                                <div class='col-sm-6'>";
+                                echo "<textarea rows='4' cols='79' class='form-control' readonly='readonly'>";
+                                echo strip_tags($lead->notes);
+                                echo "</textarea>";  
+                            echo " </div></div>";    
+                                    
+                                                ?>
+                    </fieldset>
+                    <div class="form-group" style="margin-top: 80px;">
+                        <div class="col-sm-offset-2 col-sm-10">                            
+                            <?= $this->Html->link('<i class="fa fa-angle-left"> </i> ' . __('Back To list'), ['action' => 'index'],['class' => 'btn btn-warning', 'escape' => false]) ?>                            
+                        </div>
+                    </div>
+                    <?= $this->Form->end() ?>
+                </div>
+            </div>
+        </section>
+    </div>
 </section>
