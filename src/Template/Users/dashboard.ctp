@@ -1,3 +1,4 @@
+
 <style>
 .user-block h2{
   font-size: 14px;
@@ -94,8 +95,9 @@ var BASE_URL = "<?php echo $base_url; ?>";
                   <thead class="thead-inverse">
                       <tr>
                           <th class="actions"></th>
-                          <th><?= $this->Paginator->sort('id', __("Id") . "<i class='fa fa-sort pull-right'> </i>", array('escape' => false)) ?></th>
-                          <th style="width:90%;"><?= $this->Paginator->sort('name', __("Name") . "<i class='fa fa-sort pull-right'> </i>", array('escape' => false)) ?></th>                                                             
+                          <th style="width:10%;"><?= $this->Paginator->sort('id', __("Id") . "<i class='fa fa-sort pull-right'> </i>", array('escape' => false)) ?></th>
+                          <th style="width:75%;"><?= $this->Paginator->sort('name', __("Name") . "<i class='fa fa-sort pull-right'> </i>", array('escape' => false)) ?></th>                                                             
+                          <th style="width:15%;"><?= $this->Paginator->sort('is_lock', __("Is Lock") . "<i class='fa fa-sort pull-right'> </i>", array('escape' => false)) ?></th>                                                                                     
                       </tr>
                   </thead>
                   <tbody>
@@ -107,12 +109,18 @@ var BASE_URL = "<?php echo $base_url; ?>";
                                       Action <span class="caret"></span>
                                   </button>
                                   <ul class="dropdown-menu" role="menu" aria-labelledby="drpdwn">                                                                                                               
-                                      <li role="presentation"><?= $this->Html->link('<i class="fa fa-pencil"></i> Edit', ['controller' => 'leads', 'action' => 'edit', $lead->id],['escape' => false]) ?></li>                                    
+                                      <li role="presentation"><?= $this->Html->link('<i class="fa fa-pencil"></i> Edit', ['controller' => 'leads', 'action' => 'edit', $lead->id, 'dashboard'],['escape' => false]) ?></li>                                    
                                   </ul>
                               </div>                                               
                           </td>
                           <td><?= $this->Number->format($lead->id) ?></td>
-                          <td><?= h($lead->firstname . ' ' . $lead->surname) ?></td>                                                                        
+                          <td><?= h($lead->firstname . ' ' . $lead->surname) ?></td>
+                          <td>
+                              <?php if($lead->is_lock == 1){ ?>
+                                      <div class="btn btn-warning">Lock by: <strong><?php echo $lead->last_modified_by->username; ?></strong> </div>
+                              <?php }?>
+                          </td>
+
                       </tr>
                       <?php endforeach; ?>
                   </tbody>
@@ -134,8 +142,9 @@ var BASE_URL = "<?php echo $base_url; ?>";
                   <thead class="thead-inverse">
                       <tr>
                           <th class="actions"></th>
-                          <th><?= $this->Paginator->sort('id', __("Id") . "<i class='fa fa-sort pull-right'> </i>", array('escape' => false)) ?></th>
-                          <th style="width:90%;"><?= $this->Paginator->sort('name', __("Name") . "<i class='fa fa-sort pull-right'> </i>", array('escape' => false)) ?></th>                                                             
+                          <th style="width:10%;"><?= $this->Paginator->sort('id', __("Id") . "<i class='fa fa-sort pull-right'> </i>", array('escape' => false)) ?></th>
+                          <th style="width:90%;"><?= $this->Paginator->sort('name', __("Name") . "<i class='fa fa-sort pull-right'> </i>", array('escape' => false)) ?></th>
+                          <th style="width:15%;"><?= $this->Paginator->sort('is_lock', __("Is Lock") . "<i class='fa fa-sort pull-right'> </i>", array('escape' => false)) ?></th>
                       </tr>
                   </thead>
                   <tbody>
@@ -147,12 +156,17 @@ var BASE_URL = "<?php echo $base_url; ?>";
                                       Action <span class="caret"></span>
                                   </button>
                                   <ul class="dropdown-menu" role="menu" aria-labelledby="drpdwn">                                                                                                               
-                                      <li role="presentation"><?= $this->Html->link('<i class="fa fa-pencil"></i> Edit', ['controller' => 'leads', 'action' => 'edit', $flead->id],['escape' => false]) ?></li>                                    
+                                      <li role="presentation"><?= $this->Html->link('<i class="fa fa-pencil"></i> Edit', ['controller' => 'leads', 'action' => 'edit', $flead->id, 'dashboard'],['escape' => false]) ?></li>                                    
                                   </ul>
                               </div>                                               
                           </td>
                           <td><?= $this->Number->format($flead->id) ?></td>
                           <td><?= h($flead->firstname . ' ' . $flead->surname) ?></td>                                                                        
+                          <td>
+                              <?php if($flead->is_lock == 1){ ?>
+                                      <div class="btn btn-warning">Lock by: <strong><?php echo $flead->last_modified_by->username; ?></strong> </div>
+                              <?php }?>
+                          </td>
                       </tr>
                       <?php endforeach; ?>
                   </tbody>

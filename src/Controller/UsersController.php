@@ -35,7 +35,7 @@ class UsersController extends AppController
               $this->Auth->allow(['dashboard']);
             } 
         }
-
+        $this->user = $user_data;
         $this->Auth->allow(['request_forgot_password']);
     }
 
@@ -94,12 +94,14 @@ class UsersController extends AppController
             ->count()
         ;
 
-        $new_leads = $this->Leads->find('all')                
+        $new_leads = $this->Leads->find('all')        
+            ->contain(['LastModifiedBy'])        
             ->where(['DATE_FORMAT(Leads.created,"%Y-%m-%d")' => date("Y-m-d")])
             ->order(['Leads.id' => 'DESC'])            
         ;
 
         $followup_leads_today = $this->Leads->find('all')
+            ->contain(['LastModifiedBy'])
             ->where(['Leads.followup_date' => date("Y-m-d")])
             ->order(['Leads.id' => 'DESC'])
         ;

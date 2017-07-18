@@ -23,7 +23,7 @@ class LeadsController extends AppController
         $nav_selected = ["leads"];
         $this->set('nav_selected', $nav_selected);
 
-        $session = $this->request->session();    
+        $session   = $this->request->session();    
         $user_data = $session->read('User.data');         
         if( isset($user_data) ){
             if( $user_data->group_id == 1 ){ //Admin
@@ -32,6 +32,7 @@ class LeadsController extends AppController
               $this->Auth->allow();
             } 
         }
+        $this->user = $user_data;
 
         // Allow full access to this controller
         $this->Auth->allow(['register']);
@@ -54,7 +55,7 @@ class LeadsController extends AppController
             ;
         }else{
             $leads = $this->Leads->find('all')
-                ->contain(['Statuses', 'Sources', 'Allocations'])
+                ->contain(['Statuses', 'Sources', 'Allocations', 'LastModifiedBy'])
             ;
         }
 
@@ -76,7 +77,7 @@ class LeadsController extends AppController
     public function view($id = null)
     {
         $lead = $this->Leads->get($id, [
-            'contain' => ['Statuses', 'Sources', 'Allocations', 'LeadTypes', 'InterestTypes']
+            'contain' => ['Statuses', 'Sources', 'Allocations', 'LeadTypes', 'InterestTypes', 'LastModifiedBy']
         ]);
         $this->set('lead', $lead);
         $this->set('_serialize', ['lead']);
@@ -126,17 +127,37 @@ class LeadsController extends AppController
      * @return void Redirects on successful edit, renders view otherwise.
      * @throws \Cake\Network\Exception\NotFoundException When record not found.
      */
-    public function edit($id = null)
+    public function edit($id = null, $redir = null)
     {
+        $login_user_id = $this->user->id;
         if(isset($this->request->data['allocation_date']) || isset($this->request->data['followup_date']) || isset($this->request->data['followup_action_reminder_date'])) {
           $this->request->data['allocation_date']               = date("Y-m-d", strtotime($this->request->data['allocation_date']));
           $this->request->data['followup_date']                 = date("Y-m-d", strtotime($this->request->data['followup_date']));
           $this->request->data['followup_action_reminder_date'] = date("Y-m-d", strtotime($this->request->data['followup_action_reminder_date']));
         }
-              
+
+        $lead_lock = $this->Leads->get($id, [ 'contain' => ['LastModifiedBy'] ]);         
+
+        if($lead_lock->is_lock && $lead_lock->last_modified_by->id != $this->user->id) {
+
+          $this->Flash->error(__('This lead is being accessed by another user, please try again later.'));
+          if($redir == 'dashboard') {
+            return $this->redirect(array('controller' => 'users', 'action' => 'dashboard'));
+          } else {
+            return $this->redirect(['action' => 'index']);
+          }
+
+        }elseif($lead_lock->is_lock == 0) {
+          $data['is_lock']              = 1;
+          $data['last_modified_by_id'] = $login_user_id;
+          $lead_lock = $this->Leads->patchEntity($lead_lock, $data);
+          if ( !$this->Leads->save($lead_lock) ) { echo "error updating lock lead"; exit; }
+
+        } 
+
         $lead = $this->Leads->get($id, [
-            'contain' => []
-        ]);
+            'contain' => ['LastModifiedBy']
+        ]);        
 
         if ($this->request->is(['patch', 'post', 'put'])) {
             $lead = $this->Leads->patchEntity($lead, $this->request->data);
@@ -144,7 +165,18 @@ class LeadsController extends AppController
                 $this->Flash->success(__('The lead has been saved.'));
                 $action = $this->request->data['save'];
                 if( $action == 'save' ){
-                    return $this->redirect(['action' => 'index']);
+
+                    $data['is_lock']              = 0;
+                    $data['last_modified_by_id '] = $login_user_id;
+                    $lead_lock = $this->Leads->patchEntity($lead_lock, $data);
+                    if ( !$this->Leads->save($lead_lock) ) { echo "error updating lock lead"; exit; }
+
+                    if($redir == 'dashboard') {
+                      return $this->redirect(array('controller' => 'users', 'action' => 'dashboard'));
+                    } else {
+                      return $this->redirect(['action' => 'index']);
+                    }
+                    
                 }else{
                     return $this->redirect(['action' => 'edit', $id]);
                 }         
@@ -170,6 +202,14 @@ class LeadsController extends AppController
      */
     public function delete($id = null)
     {
+        $login_user_id = $this->user->id;
+        $lead_lock = $this->Leads->get($id, [ 'contain' => ['LastModifiedBy'] ]);         
+
+        if($lead_lock->is_lock && $lead_lock->last_modified_by->id != $this->user->id) {
+          $this->Flash->error(__('This lead is being accessed by another user, please try again later.'));
+          return $this->redirect(['action' => 'index']);
+        }       
+
         $this->request->allowMethod(['post', 'delete']);
         $lead = $this->Leads->get($id);
         if ($this->Leads->delete($lead)) {
@@ -220,5 +260,13 @@ class LeadsController extends AppController
         $interestTypes = $this->Leads->InterestTypes->find('list',['limit' => 200]);
         $this->set(compact('lead', 'statuses', 'sources', 'allocations', 'interestTypes'));
         $this->set('_serialize', ['lead']);
+    }
+
+    public function is_lock()
+    {
+        $lead = 2;
+
+        $this->set('lead', $lead);
+        $this->set('_serialize', ['lead']);      
     }
 }

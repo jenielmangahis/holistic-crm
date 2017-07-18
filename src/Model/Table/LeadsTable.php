@@ -61,9 +61,15 @@ class LeadsTable extends Table
             'foreignKey' => 'allocation_id',
             'joinType' => 'INNER'
         ]);
+
         $this->belongsTo('InterestTypes', [
             'foreignKey' => 'interest_type_id',
             'joinType' => 'INNER'
+        ]);
+
+        $this->belongsTo('LastModifiedBy', [
+            'foreignKey' => 'last_modified_by_id',
+            'joinType' => 'LEFT'
         ]);
     }
 

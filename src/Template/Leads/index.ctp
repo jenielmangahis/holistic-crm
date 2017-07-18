@@ -50,6 +50,7 @@
                                 <th><?= $this->Paginator->sort('allocation_date', __("Allocation Date") . "<i class='fa fa-sort pull-right'> </i>", array('escape' => false)) ?></th>
                                 <th><?= $this->Paginator->sort('firstname', __("Firstname") . "<i class='fa fa-sort pull-right'> </i>", array('escape' => false)) ?></th>
                                 <th><?= $this->Paginator->sort('surname', __("Surname") . "<i class='fa fa-sort pull-right'> </i>", array('escape' => false)) ?></th>
+                                <th><?= $this->Paginator->sort('is_lock', __("Is Lock") . "<i class='fa fa-sort pull-right'> </i>", array('escape' => false)) ?></th>
                             </tr>
                         </thead>
                         <tbody>
@@ -95,7 +96,12 @@
                                 <td><?= $lead->allocation['name'] ?></td>                          
                                 <td><?= date("d F, Y", strtotime($lead->allocation_date)); ?></td>                          
                                 <td><?= $lead->firstname ?></td>                          
-                                <td><?= $lead->surname ?></td>                          
+                                <td><?= $lead->surname ?></td>
+                                <td>
+                                    <?php if($lead->is_lock == 1){ ?>
+                                            <div class="btn btn-warning">Lock by: <strong><?php echo $lead->last_modified_by->username; ?></strong> </div>
+                                    <?php }?>
+                                </td>
                             </tr>
                             <?php } ?>
                         </tbody>
