@@ -1,11 +1,5 @@
 <?php use Cake\Utility\Inflector; ?>
 <style>
-.label{
-    padding:10px;    
-    display: block;
-    
-    font-size: 12px;
-}
 .thead-inverse th {
     background-color: #2A80B9;
     color: #fff;
@@ -29,11 +23,12 @@ div.box-body{
 </style>
 
 <section class="content-header">
-    <h1><?= __('Allocations') ?></h1>
+    <h1><?= __('Allocation Users') . " : " . $allocation->name ?></h1>
     <ol class="breadcrumb">
         <li><a href="<?php echo $base_url; ?>"><i class="fa fa-dashboard"></i> Home</a></li>
         <li><a href="<?php echo $base_url; ?>"><i class="fa fa-gear"></i> System Settings</a></li>
-        <li class="active"><?= __('Allocations') ?></li>
+        <li><a href="<?php echo $base_url; ?>"><i class="fa fa-gear"></i> Allocations</a></li>
+        <li class="active"><?= __('Users') ?></li>
     </ol>
 </section>
 
@@ -61,7 +56,7 @@ div.box-body{
                     </div>
 
                     <div class="box-tools" style="top:9px;">                         
-                        <?= $this->Html->link('<i class="fa fa-plus"></i> Add New', ['action' => 'add'],['class' => 'btn btn-box-tool', 'escape' => false]) ?>
+                        <?= $this->Html->link('<i class="fa fa-plus"></i> Add User', ['action' => 'add_user', $allocation->id],['class' => 'btn btn-box-tool', 'escape' => false]) ?>
                         <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>                        
                     </div>                    
                     
@@ -70,18 +65,19 @@ div.box-body{
                     </div>         
                 </div>             
                 <div class="box-body">                    
-                    <table id="dt-users-list" class="table table-hover table-striped">
-                        <thead class="thead-inverse">
+                    <table id="dt-users-list" class="table table-bordered table-hover">
+                        <thead>
                             <tr>
-                                <th class="actions"></th>
-                                <th><?= $this->Paginator->sort('id', __("Id") . "<i class='fa fa-sort pull-right'> </i>", array('escape' => false)) ?></th>
-                                <th style="width:60%;"><?= $this->Paginator->sort('name', __("Name") . "<i class='fa fa-sort pull-right'> </i>", array('escape' => false)) ?></th>
-                                <th><?= $this->Paginator->sort('created', __("Created") . "<i class='fa fa-sort pull-right'> </i>", array('escape' => false)) ?></th>
-                                <th><?= $this->Paginator->sort('modified', __("Modified") . "<i class='fa fa-sort pull-right'> </i>", array('escape' => false)) ?></th>                                   
+                                <th class="actions"><?= __('Actions') ?></th>
+                                <th><?= $this->Paginator->sort('id') ?></th>
+                                <th><?= $this->Paginator->sort('allocation_id') ?></th>
+                                <th><?= $this->Paginator->sort('user_id') ?></th>
+                                <th><?= $this->Paginator->sort('created') ?></th>
+                                                
                             </tr>
                         </thead>
                         <tbody>
-                            <?php foreach ($allocations as $allocation) { ?>
+                            <?php foreach ($allocationUsers as $allocationUser): ?>
                             <tr>
                                 <td class="table-actions">
                                     <div class="dropdown">
@@ -89,13 +85,12 @@ div.box-body{
                                             Action <span class="caret"></span>
                                         </button>
                                         <ul class="dropdown-menu" role="menu" aria-labelledby="drpdwn">
-                                            <li role="presentation"><?= $this->Html->link('<i class="fa fa-eye"></i> View', ['action' => 'view', $allocation->id],['escape' => false]) ?></li>
-                                            <li role="presentation"><?= $this->Html->link('<i class="fa fa-pencil"></i> Edit', ['action' => 'edit', $allocation->id],['escape' => false]) ?></li>
-                                            <li role="presentation"><?= $this->Html->link('<i class="fa fa-users"></i> Users', ['controller' => 'allocation_users', 'action' => 'user_list', $allocation->id],['escape' => false]) ?></li>
-                                            <li role="presentation"><?= $this->Html->link('<i class="fa fa-trash"></i> Delete', '#modal-'.$allocation->id,['data-toggle' => 'modal','escape' => false]) ?></li>
+                                            <li role="presentation"><?= $this->Html->link('<i class="fa fa-eye"></i> View', ['action' => 'view', $allocationUser->id],['escape' => false]) ?></li>
+                                            <li role="presentation"><?= $this->Html->link('<i class="fa fa-pencil"></i> Edit', ['action' => 'edit', $allocationUser->id],['escape' => false]) ?></li>
+                                            <li role="presentation"><?= $this->Html->link('<i class="fa fa-trash"></i> Delete', '#modal-'.$allocationUser->id,['data-toggle' => 'modal','escape' => false]) ?></li>
                                         </ul>
                                     </div>   
-                                    <div id="modal-<?=$allocation->id?>" class="modal fade">
+                                    <div id="modal-<?=$allocationUser->id?>" class="modal fade">
                                         <div class="modal-dialog">
                                           <div class="modal-content">
                                             <div class="modal-header">
@@ -109,7 +104,7 @@ div.box-body{
                                                 <button type="button" data-dismiss="modal" class="btn btn-default">No</button>
                                                 <?= $this->Form->postLink(
                                                         'Yes',
-                                                        ['action' => 'delete', $allocation->id],
+                                                        ['action' => 'delete', $allocationUser->id],
                                                         ['class' => 'btn btn-danger', 'escape' => false]
                                                     )
                                                 ?>
@@ -118,12 +113,13 @@ div.box-body{
                                         </div>                              
                                     </div>                       
                                 </td>
-                                <td class="tbl-field-id"><?= $this->Number->format($allocation->id) ?></td>
-                                <td><?= $allocation->name; ?></td>
-                                <td><?= $allocation->created ?></td>
-                                <td><?= $allocation->modified ?></td>                          
+                                                <td><?= $this->Number->format($allocationUser->id) ?></td>
+                                                <td <?php if( $isKey == 1 ? 'class="tbl-field-id"' : '' ) ?>><?= $allocationUser->has('allocation') ? $this->Html->link($allocationUser->allocation->name, ['controller' => 'Allocations', 'action' => 'view', $allocationUser->allocation->id]) : '' ?></td>
+                                                <td <?php if( $isKey == 1 ? 'class="tbl-field-id"' : '' ) ?>><?= $allocationUser->has('user') ? $this->Html->link($allocationUser->user->id, ['controller' => 'Users', 'action' => 'view', $allocationUser->user->id]) : '' ?></td>
+                                                <td><?= h($allocationUser->created) ?></td>
+                  
                             </tr>
-                            <?php } ?>
+                            <?php ;endforeach; ?>
                         </tbody>
                     </table>
                     <div class="paginator" style="text-align:center;">
