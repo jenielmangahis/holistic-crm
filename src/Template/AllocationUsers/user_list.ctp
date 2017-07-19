@@ -1,5 +1,11 @@
 <?php use Cake\Utility\Inflector; ?>
 <style>
+.label{
+    padding:10px;    
+    display: block;
+    
+    font-size: 12px;
+}
 .thead-inverse th {
     background-color: #2A80B9;
     color: #fff;
@@ -65,15 +71,13 @@ div.box-body{
                     </div>         
                 </div>             
                 <div class="box-body">                    
-                    <table id="dt-users-list" class="table table-bordered table-hover">
-                        <thead>
+                    <table id="dt-users-list" class="table table-hover table-striped">
+                        <thead class="thead-inverse">
                             <tr>
-                                <th class="actions"><?= __('Actions') ?></th>
-                                <th><?= $this->Paginator->sort('id') ?></th>
-                                <th><?= $this->Paginator->sort('allocation_id') ?></th>
-                                <th><?= $this->Paginator->sort('user_id') ?></th>
-                                <th><?= $this->Paginator->sort('created') ?></th>
-                                                
+                                <th class="actions"></th>
+                                <th><?= $this->Paginator->sort('id', __("Id") . "<i class='fa fa-sort pull-right'> </i>", array('escape' => false)) ?></th>
+                                <th style="width:80%;"><?= $this->Paginator->sort('user_id', __("Name") . "<i class='fa fa-sort pull-right'> </i>", array('escape' => false)) ?></th>
+                                <th><?= $this->Paginator->sort('created', __("Created") . "<i class='fa fa-sort pull-right'> </i>", array('escape' => false)) ?></th>
                             </tr>
                         </thead>
                         <tbody>
@@ -84,9 +88,8 @@ div.box-body{
                                         <button class="btn btn-default dropdown-toggle" type="button" id="drpdwn" data-toggle="dropdown" aria-expanded="true">
                                             Action <span class="caret"></span>
                                         </button>
-                                        <ul class="dropdown-menu" role="menu" aria-labelledby="drpdwn">
-                                            <li role="presentation"><?= $this->Html->link('<i class="fa fa-eye"></i> View', ['action' => 'view', $allocationUser->id],['escape' => false]) ?></li>
-                                            <li role="presentation"><?= $this->Html->link('<i class="fa fa-pencil"></i> Edit', ['action' => 'edit', $allocationUser->id],['escape' => false]) ?></li>
+                                        <ul class="dropdown-menu" role="menu" aria-labelledby="drpdwn">                                            
+                                            <li role="presentation"><?= $this->Html->link('<i class="fa fa-pencil"></i> Edit', ['action' => 'edit_user', $allocationUser->id],['escape' => false]) ?></li>
                                             <li role="presentation"><?= $this->Html->link('<i class="fa fa-trash"></i> Delete', '#modal-'.$allocationUser->id,['data-toggle' => 'modal','escape' => false]) ?></li>
                                         </ul>
                                     </div>   
@@ -113,10 +116,9 @@ div.box-body{
                                         </div>                              
                                     </div>                       
                                 </td>
-                                                <td><?= $this->Number->format($allocationUser->id) ?></td>
-                                                <td <?php if( $isKey == 1 ? 'class="tbl-field-id"' : '' ) ?>><?= $allocationUser->has('allocation') ? $this->Html->link($allocationUser->allocation->name, ['controller' => 'Allocations', 'action' => 'view', $allocationUser->allocation->id]) : '' ?></td>
-                                                <td <?php if( $isKey == 1 ? 'class="tbl-field-id"' : '' ) ?>><?= $allocationUser->has('user') ? $this->Html->link($allocationUser->user->id, ['controller' => 'Users', 'action' => 'view', $allocationUser->user->id]) : '' ?></td>
-                                                <td><?= h($allocationUser->created) ?></td>
+                                <td><?= $this->Number->format($allocationUser->id) ?></td>
+                                <td><?= $allocationUser->user->firstname . ' ' . $allocationUser->user->lastname ?></td>                                
+                                <td><?= h($allocationUser->created) ?></td>
                   
                             </tr>
                             <?php ;endforeach; ?>
@@ -132,7 +134,6 @@ div.box-body{
                     </div>                     
                 </div>
             </div>    
-
         </section>
     </div>
 </section>
