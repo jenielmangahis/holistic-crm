@@ -45,6 +45,23 @@ class LeadsController extends AppController
      */
     public function index()
     {
+
+      if(isset($this->request->query['unlock']) && isset($this->request->query['lead_id']) ) {
+        $lead_id = $this->request->query['lead_id'];
+        if($this->request->query['unlock'] == 1) {
+          $lead_unlock = $this->Leads->get($lead_id, [ 'contain' => ['LastModifiedBy'] ]);       
+
+          $login_user_id                = $this->user->id;
+          $data_unlck['is_lock']              = 0;
+          $data_unlck['last_modified_by_id '] = $login_user_id;
+          $lead_unlock = $this->Leads->patchEntity($lead_unlock, $data_unlck);
+          if ( !$this->Leads->save($lead_unlock) ) { echo "error unlocking lead"; exit; }
+          return $this->redirect(['action' => 'index']);
+        }
+        
+      }
+
+
         if( isset($this->request->query['query']) ){
             $query = $this->request->query['query'];
             $leads = $this->Leads->find('all')
@@ -79,6 +96,7 @@ class LeadsController extends AppController
         $lead = $this->Leads->get($id, [
             'contain' => ['Statuses', 'Sources', 'Allocations', 'LeadTypes', 'InterestTypes', 'LastModifiedBy']
         ]);
+
         $this->set('lead', $lead);
         $this->set('_serialize', ['lead']);
     }
@@ -152,7 +170,6 @@ class LeadsController extends AppController
           $data['last_modified_by_id'] = $login_user_id;
           $lead_lock = $this->Leads->patchEntity($lead_lock, $data);
           if ( !$this->Leads->save($lead_lock) ) { echo "error updating lock lead"; exit; }
-
         } 
 
         $lead = $this->Leads->get($id, [

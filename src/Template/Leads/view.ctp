@@ -104,7 +104,8 @@
                             <div class='form-group'>
                                 <label for='lead_type_id' class='col-sm-2 control-label'>" . __('Lead Type') . "</label>
                                 <div class='col-sm-6'>";
-                                echo '<input type="text" id="lead_type_id" class="form-control" name="lead_type_id" value="' . $lead->lead_type->name . '" readonly="readonly" />';
+                                if(isset($lead->lead_type->name)) { $lead_type_value = $lead->lead_type->name; } else { $lead_type_value = 'NA'; }
+                                echo '<input type="text" id="lead_type_id" class="form-control" name="lead_type_id" value="' . $lead_type_value . '" readonly="readonly" />';
                             echo " </div></div>";    
 
                             echo "
