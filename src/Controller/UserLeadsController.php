@@ -2,6 +2,7 @@
 namespace App\Controller;
 
 use App\Controller\AppController;
+use Cake\ORM\TableRegistry;
 use Cake\Network\Email\Email;
 
 /**
@@ -9,7 +10,7 @@ use Cake\Network\Email\Email;
  *
  * @property \App\Model\Table\LeadsTable $Leads
  */
-class LeadsController extends AppController
+class UserLeadsController extends AppController
 {
 
     /**
@@ -28,9 +29,9 @@ class LeadsController extends AppController
         if( isset($user_data) ){
             if( $user_data->group_id == 1 ){ //Admin
               $this->Auth->allow();
-            }/*else{
+            }else{
               $this->Auth->allow();
-            } */
+            } 
         }
         $this->user = $user_data;
 
@@ -45,6 +46,11 @@ class LeadsController extends AppController
      */
     public function index()
     {
+      $this->Leads = TableRegistry::get('Leads');
+      $this->AllocationUsers = TableRegistry::get('AllocationUsers');
+
+      $session   = $this->request->session();    
+      $user_data = $session->read('User.data');         
 
       if(isset($this->request->query['unlock']) && isset($this->request->query['lead_id']) ) {
         $lead_id = $this->request->query['lead_id'];
@@ -61,27 +67,27 @@ class LeadsController extends AppController
         
       }
 
+      if( isset($this->request->query['query']) ){
+          /*$query = $this->request->query['query'];
+          $leads = $this->Leads->find('all')
+              ->contain(['Statuses', 'Sources', 'Allocations'])
+              ->where(['Leads.firstname LIKE' => '%' . $query . '%'])       
+              ->orWhere(['Leads.surname LIKE' => '%' . $query . '%'])       
+              ->orWhere(['Leads.email LIKE' => '%' . $query . '%'])       
+          ;*/
+      }else{
+          $allocationUsers = $this->AllocationUsers->find('all')
+            ->contain(['Allocations' => ['Leads' => ['LastModifiedBy', 'Statuses', 'Sources', 'Allocations']]])
+            ->where(['AllocationUsers.user_id' => $user_data->id])            
+          ;
+      }
 
-        if( isset($this->request->query['query']) ){
-            $query = $this->request->query['query'];
-            $leads = $this->Leads->find('all')
-                ->contain(['Statuses', 'Sources', 'Allocations'])
-                ->where(['Leads.firstname LIKE' => '%' . $query . '%'])       
-                ->orWhere(['Leads.surname LIKE' => '%' . $query . '%'])       
-                ->orWhere(['Leads.email LIKE' => '%' . $query . '%'])       
-            ;
-        }else{
-            $leads = $this->Leads->find('all')
-                ->contain(['Statuses', 'Sources', 'Allocations', 'LastModifiedBy'])
-            ;
-        }
-
-        /*$this->paginate = [
-            'contain' => ['Statuses', 'Sources', 'Allocations']
-        ];*/
-        
-        $this->set('leads', $this->paginate($leads));
-        $this->set('_serialize', ['leads']);
+      /*$this->paginate = [
+          'contain' => ['Statuses', 'Sources', 'Allocations']
+      ];*/
+      
+      $this->set('allocationUsers', $this->paginate($allocationUsers));
+      $this->set('_serialize', ['allocationUser']);
     }
 
     /**
