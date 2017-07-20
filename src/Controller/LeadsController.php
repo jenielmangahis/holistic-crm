@@ -61,27 +61,27 @@ class LeadsController extends AppController
         
       }
 
-
-        if( isset($this->request->query['query']) ){
-            $query = $this->request->query['query'];
-            $leads = $this->Leads->find('all')
-                ->contain(['Statuses', 'Sources', 'Allocations'])
-                ->where(['Leads.firstname LIKE' => '%' . $query . '%'])       
-                ->orWhere(['Leads.surname LIKE' => '%' . $query . '%'])       
-                ->orWhere(['Leads.email LIKE' => '%' . $query . '%'])       
-            ;
-        }else{
-            $leads = $this->Leads->find('all')
-                ->contain(['Statuses', 'Sources', 'Allocations', 'LastModifiedBy'])
-            ;
-        }
+      if( isset($this->request->query['query']) ){
+          $query = $this->request->query['query'];
+          $leads = $this->Leads->find('all')
+              ->contain(['Statuses', 'Sources', 'Allocations'])
+              ->where(['Leads.firstname LIKE' => '%' . $query . '%'])       
+              ->orWhere(['Leads.surname LIKE' => '%' . $query . '%'])       
+              ->orWhere(['Leads.email LIKE' => '%' . $query . '%'])       
+          ;
+      }else{
+          $leads = $this->Leads->find('all')
+              ->contain(['Statuses', 'Sources', 'Allocations', 'LastModifiedBy'])
+          ;
+      }
 
         /*$this->paginate = [
             'contain' => ['Statuses', 'Sources', 'Allocations']
         ];*/
         
-        $this->set('leads', $this->paginate($leads));
-        $this->set('_serialize', ['leads']);
+      $this->set('is_admin_user', $this->user->group_id);
+      $this->set('leads', $this->paginate($leads));
+      $this->set('_serialize', ['leads', 'is_admin_user']);
     }
 
     /**
@@ -277,6 +277,24 @@ class LeadsController extends AppController
         $interestTypes = $this->Leads->InterestTypes->find('list',['limit' => 200]);
         $this->set(compact('lead', 'statuses', 'sources', 'allocations', 'interestTypes'));
         $this->set('_serialize', ['lead']);
+    }
+
+    public function unlock($id = null)
+    {
+      $lead_unlock = $this->Leads->get($id, [ 'contain' => ['LastModifiedBy'] ]);       
+
+      $login_user_id                      = $this->user->id;
+      $data_unlck['is_lock']              = 0;
+      $data_unlck['last_modified_by_id '] = $login_user_id;
+      $lead_unlock = $this->Leads->patchEntity($lead_unlock, $data_unlck);
+
+      if( !$this->Leads->save($lead_unlock) ) {
+        echo "error unlocking lead"; exit;
+      } else {
+        $this->Flash->success(__('The lead has been unlock.'));
+        return $this->redirect(['action' => 'index']);  
+      }
+
     }
 
     public function is_lock()
