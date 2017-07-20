@@ -55,7 +55,7 @@ class AllocationUsersController extends AppController
         $allocation = $this->AllocationUsers->Allocations->get($id);
         $this->paginate = [
             'contain' => ['Allocations', 'Users'],
-            'condition' => ['AllocationUsers.allocation_id' => $id]
+            'conditions' => ['AllocationUsers.allocation_id' => $id]
         ];
         $this->set('allocation', $allocation);
         $this->set('allocationUsers', $this->paginate($this->AllocationUsers));
@@ -225,5 +225,59 @@ class AllocationUsersController extends AppController
             $this->Flash->error(__('The allocation user could not be deleted. Please, try again.'));
         }
         return $this->redirect(['action' => 'user_list', $allocation_id]);
+    }
+
+    /**
+     * Assign User method
+     *
+     * @param string|null $id Allocation id.
+     * @return void Redirects on successful add, renders view otherwise.
+     */
+    public function assign_user( $id = null )
+    {
+        $allocation     = $this->AllocationUsers->Allocations->get($id);        
+        $allocationUser = $this->AllocationUsers->newEntity();
+        if ($this->request->is('post')) {
+            $data = $this->request->data;
+            $total_added = 0;
+            
+            foreach( $data['allocation_users'] as $key => $value ){
+                $data_allocation_users = [
+                    'allocation_id' => $allocation->id,
+                    'user_id' => $key
+                ];
+
+                $allocationUser = $this->AllocationUsers->newEntity();
+                $allocationUser = $this->AllocationUsers->patchEntity($allocationUser, $data_allocation_users);
+                if ($this->AllocationUsers->save($allocationUser)) {
+                    $total_added++;
+                }
+            }
+            $this->Flash->success($total_added . ' Users was successfully assigned to this allocation.');       
+            return $this->redirect(['action' => 'user_list', $allocation->id]);
+        }
+
+        $a_allocation_users = array();
+        $allocation_user = $this->AllocationUsers->find('all')
+            ->select(['AllocationUsers.user_id'])            
+        ;
+        foreach( $allocation_user as $au ){
+            $a_allocation_users[$au->user_id] = $au->user_id;
+        }
+
+        if( !empty($a_allocation_users) ){
+            $users = $this->AllocationUsers->Users->find('all')
+                ->where(['Users.group_id' => 2, 'Users.id NOT IN' => $a_allocation_users])
+                ->toArray()
+            ;    
+        }else{
+            $users = $this->AllocationUsers->Users->find('all')
+                ->where(['Users.group_id' => 2])
+                ->toArray()
+            ;    
+        }
+        
+        $this->set(compact('allocationUser', 'allocation', 'users'));
+        $this->set('_serialize', ['allocationUser']);
     }
 }

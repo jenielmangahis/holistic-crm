@@ -62,7 +62,8 @@ div.box-body{
                     </div>
 
                     <div class="box-tools" style="top:9px;">                         
-                        <?= $this->Html->link('<i class="fa fa-plus"></i> Add User', ['action' => 'add_user', $allocation->id],['class' => 'btn btn-box-tool', 'escape' => false]) ?>
+                        <?= $this->Html->link('<i class="fa fa-user"></i> Assign User', ['action' => 'assign_user', $allocation->id],['class' => 'btn btn-box-tool', 'escape' => false]) ?>
+                        <?= $this->Html->link('<i class="fa fa-plus"></i> Create New User', ['action' => 'add_user', $allocation->id],['class' => 'btn btn-box-tool', 'escape' => false]) ?>
                         <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>                        
                     </div>                    
                     
