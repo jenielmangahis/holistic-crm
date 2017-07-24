@@ -32,7 +32,7 @@ class UsersController extends AppController
             if( $user_data->group_id == 1 ){ //Admin
               $this->Auth->allow();
             }else{        
-              $this->Auth->allow(['dashboard']);
+              $this->Auth->allow(['user_dashboard','login','logout']);
             } 
         }
         $this->user = $user_data;
@@ -102,14 +102,61 @@ class UsersController extends AppController
 
         $followup_leads_today = $this->Leads->find('all')
             ->contain(['LastModifiedBy'])
-            ->where(['Leads.followup_date' => date("Y-m-d")])
+            ->where(['DATE_FORMAT(Leads.followup_date,"%Y-%m-%d")' => date("Y-m-d")])
             ->order(['Leads.id' => 'DESC'])
         ;
 
-        $this->set([        
-            'page_title' => 'Dashboard'
-        ]);
+        $nav_selected = ["dashboard"];
+
+        $this->set('nav_selected', $nav_selected);        
+        $this->set('page_title','Dashboard');
         $this->set('total_users', $total_users);
+        $this->set('total_leads', $total_leads);
+        $this->set('total_leads_followup', $total_leads_followup);
+        $this->set('new_leads', $new_leads);
+        $this->set('followup_leads_today', $followup_leads_today);
+        $this->set('_serialize', ['total_users','total_leads']);
+
+    }   
+
+    /**
+     * Dashboard method     
+     * @return void
+     */
+    public function user_dashboard()
+    {   
+        $this->Leads = TableRegistry::get('Leads');   
+        $this->AllocationUsers = TableRegistry::get('AllocationUsers'); 
+
+        $session = $this->request->session();    
+        $user_data = $session->read('User.data');
+
+        $allocationLeads = $this->AllocationUsers->find('all')
+            ->contain(['Allocations' => ['Leads' => ['LastModifiedBy', 'Statuses', 'Sources', 'Allocations']]])
+            ->where(['AllocationUsers.user_id' => $user_data->id])
+        ;
+
+        $total_leads = $allocationLeads->count();        
+        $new_leads   = array();
+        $followup_leads_today = array();
+        $total_leads_followup = 0;
+        foreach( $allocationLeads as $al ){
+            foreach( $al->allocation->leads as $l  ){                
+                if( date("Y-m-d",strtotime($l->followup_date)) == date("Y-m-d") ){
+                    $total_leads_followup++;
+                    $followup_leads_today[] = $l;
+                }
+
+                if( date("Y-m-d",strtotime($l->created)) == date("Y-m-d") ){
+                    $new_leads[] = $l;
+                }
+            }               
+        }
+
+        $nav_selected = ["dashboard"];
+
+        $this->set('nav_selected', $nav_selected);        
+        $this->set('page_title','Dashboard');        
         $this->set('total_leads', $total_leads);
         $this->set('total_leads_followup', $total_leads_followup);
         $this->set('new_leads', $new_leads);
@@ -234,7 +281,11 @@ class UsersController extends AppController
                 $session->write('User.data', $u);                                               
                 $_SESSION['KCEDITOR']['disabled'] = false;
                 $_SESSION['KCEDITOR']['uploadURL'] = Router::url('/')."webroot/upload";
-                return $this->redirect($this->Auth->redirectUrl());
+                if( $u->group_id == 1 ){
+                    return $this->redirect(['action' => 'dashboard']);
+                }else{
+                    return $this->redirect(['action' => 'user_dashboard']);
+                }                
             }
             $this->Flash->error(__('Invalid username or password, try again'));
         }

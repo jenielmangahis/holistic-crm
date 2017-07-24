@@ -83,10 +83,10 @@
             </li>
         <?php }else{ ?>
             <li id="groups_nav" title="Groups" class="<?= $nav_selected["dashboard"] ?>">
-                <?= $this->Html->link('<i class="fa fa-dashboard"></i><span>' . __("Dashboard") . "</span>",["controller" => "users", "action" => "dashboard"],["escape" => false]) ?>
+                <?= $this->Html->link('<i class="fa fa-dashboard"></i><span>' . __("Dashboard") . "</span>",["controller" => "users", "action" => "user_dashboard"],["escape" => false]) ?>
             </li>                     
             <li id="groups_nav" title="Groups" class="<?= $nav_selected["leads"] ?>">
-                <?= $this->Html->link('<i class="fa fa-users"></i><span>' . __("Leads") . "</span>",["controller" => "leads", "action" => "index"],["escape" => false]) ?>
+                <?= $this->Html->link('<i class="fa fa-users"></i><span>' . __("Leads") . "</span>",["controller" => "user_leads", "action" => "index"],["escape" => false]) ?>
             </li> 
 
             <li id="groups_nav" title="Groups" class="<?= $nav_selected["trainings"] ?>">

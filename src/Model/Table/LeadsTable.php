@@ -54,7 +54,7 @@ class LeadsTable extends Table
 
         $this->belongsTo('LeadTypes', [
             'foreignKey' => 'lead_type_id',
-            'joinType' => 'INNER'
+            'joinType' => 'LEFT'
         ]);
 
         $this->belongsTo('Allocations', [

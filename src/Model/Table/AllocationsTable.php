@@ -37,6 +37,10 @@ class AllocationsTable extends Table
         $this->primaryKey('id');
 
         $this->addBehavior('Timestamp');
+
+        $this->hasMany('Leads', [
+            'foreignKey' => 'allocation_id'
+        ]);
     }
 
     /**

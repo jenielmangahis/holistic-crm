@@ -1,4 +1,4 @@
-<?php ?>
+
 <section class="content-header">
     <h1><?= __('Leads') ?></h1>
     <ol class="breadcrumb">
@@ -29,8 +29,7 @@
                         <?= $this->Form->end() ?>
                     </div>
 
-                    <div class="box-tools" style="top:9px;">                         
-                        <?= $this->Html->link('<i class="fa fa-plus"></i> Add New', ['action' => 'add'],['class' => 'btn btn-box-tool', 'escape' => false]) ?>
+                    <div class="box-tools" style="top:9px;">                                                 
                         <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>                        
                     </div>                    
                     
@@ -54,7 +53,8 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <?php foreach ($leads as $lead) { ?>
+                            <?php foreach ($allocationUsers as $allocationUser) { ?>
+                                <?php foreach( $allocationUser->allocation->leads as $lead ){ ?>
                             <tr>
                                 <td class="table-actions">
                                     <div class="dropdown">
@@ -63,15 +63,9 @@
                                         </button>
                                         <ul class="dropdown-menu" role="menu" aria-labelledby="drpdwn">
                                             <li role="presentation"><?= $this->Html->link('<i class="fa fa-eye"></i> View', ['action' => 'view', $lead->id],['escape' => false]) ?></li>
-                                            <li role="presentation"><?= $this->Html->link('<i class="fa fa-pencil"></i> Edit', ['action' => 'edit', $lead->id],['escape' => false]) ?></li>
-                                            <li role="presentation"><?= $this->Html->link('<i class="fa fa-trash"></i> Delete', '#modal-'.$lead->id,['data-toggle' => 'modal','escape' => false]) ?></li>
-                                            <?php if($is_admin_user == 1 && $lead->is_lock == 1){ ?>
-                                                    <li role="presentation"><?= $this->Html->link('<i class="fa fa-unlock"></i> Unlock', '#unlock-modal-'.$lead->id,['data-toggle' => 'modal','escape' => false]) ?></li>
-                                            <?php } ?>
+                                            <li role="presentation"><?= $this->Html->link('<i class="fa fa-pencil"></i> Edit', ['action' => 'edit', $lead->id],['escape' => false]) ?></li>                                            
                                         </ul>
                                     </div>   
-
-                                    <!-- Delete Modal -->
                                     <div id="modal-<?=$lead->id?>" class="modal fade">
                                         <div class="modal-dialog">
                                           <div class="modal-content">
@@ -93,34 +87,7 @@
                                             </div>
                                           </div>
                                         </div>                              
-                                    </div>
-                                    <!-- Delete Modal End -->
-
-                                    <!-- Unlock Lead Modal -->
-                                    <div id="unlock-modal-<?=$lead->id?>" class="modal fade">
-                                        <div class="modal-dialog">
-                                          <div class="modal-content">
-                                            <div class="modal-header">
-                                                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-                                                <h4 class="modal-title">Confirmation</h4>
-                                            </div>
-                                            <div class="modal-body">
-                                                <p><?= __('Are you sure you want to unlock this lead?') ?></p>
-                                            </div>
-                                            <div class="modal-footer">
-                                                <button type="button" data-dismiss="modal" class="btn btn-default">No</button>
-                                                <?= $this->Form->postLink(
-                                                        'Yes',
-                                                        ['action' => 'unlock', $lead->id],
-                                                        ['class' => 'btn btn-danger', 'escape' => false]
-                                                    )
-                                                ?>
-                                            </div>
-                                          </div>
-                                        </div>                              
-                                    </div> 
-                                    <!-- Unlock Lead Modal End -->
-                                                        
+                                    </div>                       
                                 </td>
                                 <td class="tbl-field-id"><?= $this->Number->format($lead->id) ?></td>
                                 <td><?= $lead->status['name']; ?></td>
@@ -135,6 +102,7 @@
                                     <?php }?>
                                 </td>
                             </tr>
+                            <?php } ?>
                             <?php } ?>
                         </tbody>
                     </table>
