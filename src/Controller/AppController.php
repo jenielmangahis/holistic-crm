@@ -46,6 +46,15 @@ class AppController extends Controller
     public function initialize()
     {
         parent::initialize();
+        $session = $this->request->session();    
+        $user_data = $session->read('User.data');
+
+        if( $user_data->group_id == 1 ){
+            $loginRedirect = 'dashboard';
+        }else{
+            $loginRedirect = 'user_dashboard';
+        }
+
         $this->loadComponent('Flash');
         $this->loadComponent('Auth', [
             'authorize' => [
@@ -58,7 +67,7 @@ class AppController extends Controller
             ],
             'loginRedirect' => [
                 'controller' => 'users',
-                'action' => 'dashboard'
+                'action' => $loginRedirect
             ],
             'logoutRedirect' => [
                 'controller' => 'users',
@@ -67,7 +76,7 @@ class AppController extends Controller
             ],
             'unauthorizedRedirect' => [
                 'controller' => 'Users',
-                'action' => 'dashboard',
+                'action' => $loginRedirect,
                 'prefix' => false
             ],
             'authError' => 'You are not allowed to access this page',
