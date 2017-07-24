@@ -1,4 +1,4 @@
-
+<?php ?>
 <section class="content-header">
     <h1><?= __('Leads') ?></h1>
     <ol class="breadcrumb">
@@ -53,8 +53,9 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <?php foreach ($allocationUsers as $allocationUser) { ?>
-                                <?php foreach( $allocationUser->allocation->leads as $lead ){ ?>
+                            <?php //foreach ($allocationUsers as $allocationUser) { ?>
+                                <?php //foreach( $allocationUser->allocation->leads as $lead ){ ?>
+                            <?php foreach ($leads as $lead) { ?>    
                             <tr>
                                 <td class="table-actions">
                                     <div class="dropdown">
@@ -102,7 +103,6 @@
                                     <?php }?>
                                 </td>
                             </tr>
-                            <?php } ?>
                             <?php } ?>
                         </tbody>
                     </table>
