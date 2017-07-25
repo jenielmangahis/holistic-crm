@@ -136,7 +136,16 @@ class UsersController extends AppController
             ->where(['AllocationUsers.user_id' => $user_data->id])
         ;
 
-        $total_leads = $allocationLeads->count();        
+        $count_leads = 0;
+        foreach ($allocationLeads as $allocationUser) {
+            foreach( $allocationUser->allocation->leads as $lead ){
+                if(isset($lead->id) && $lead->id > 0 ) {
+                    $count_leads++;
+                }
+            }
+        }
+
+        $total_leads = $count_leads; //$allocationLeads->count();
         $new_leads   = array();
         $followup_leads_today = array();
         $total_leads_followup = 0;

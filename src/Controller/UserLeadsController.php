@@ -67,27 +67,57 @@ class UserLeadsController extends AppController
         
       }
 
+      $allocations  = $this->AllocationUsers->find('all')
+        ->where(['AllocationUsers.user_id' => $user_data->id])     
+        ;      
+
       if( isset($this->request->query['query']) ){
-          /*$query = $this->request->query['query'];
-          $leads = $this->Leads->find('all')
-              ->contain(['Statuses', 'Sources', 'Allocations'])
-              ->where(['Leads.firstname LIKE' => '%' . $query . '%'])       
-              ->orWhere(['Leads.surname LIKE' => '%' . $query . '%'])       
-              ->orWhere(['Leads.email LIKE' => '%' . $query . '%'])       
-          ;*/
-      }else{
-          $allocationUsers = $this->AllocationUsers->find('all')
-            ->contain(['Allocations' => ['Leads' => ['LastModifiedBy', 'Statuses', 'Sources', 'Allocations']]])
+
+          $allocationUsers = $this->AllocationUsers->find('all')            
             ->where(['AllocationUsers.user_id' => $user_data->id])            
           ;
-      }
 
-      /*$this->paginate = [
-          'contain' => ['Statuses', 'Sources', 'Allocations']
-      ];*/
+          $query = $this->request->query['query'];
+          $allocation_ids = array();
+          foreach($allocationUsers as $au){
+            $allocation_ids[] = $au->allocation_id;
+          }
+          
+          $leads = $this->Leads->find('all')
+            ->contain(['Statuses', 'Sources', 'Allocations', 'LastModifiedBy'])
+            ->where(['Leads.allocation_id IN' => $allocation_ids])
+            ->andwhere([
+                          'Leads.firstname LIKE' => '%' . $query . '%',
+                          'OR' => [['Leads.surname LIKE' => '%' . $query . '%']],
+                          'OR' => [['Leads.email LIKE' => '%' . $query . '%']],
+                      ]) 
+          ;      
+
+      }else{
+
+          /*$allocationUsers = $this->AllocationUsers->find('all')
+            ->contain(['Allocations' => ['Leads' => ['LastModifiedBy', 'Statuses', 'Sources', 'Allocations']]])
+            ->where(['AllocationUsers.user_id' => $user_data->id])            
+          ;*/
+
+          $allocationUsers = $this->AllocationUsers->find('all')            
+            ->where(['AllocationUsers.user_id' => $user_data->id])            
+          ;
+
+          $query = $this->request->query['query'];
+          $allocation_ids = array();
+          foreach($allocationUsers as $au){
+            $allocation_ids[] = $au->allocation_id;
+          }          
+
+          $leads = $this->Leads->find('all')
+              ->contain(['LastModifiedBy', 'Statuses', 'Sources', 'Allocations'])
+              ->where(['Leads.allocation_id IN' => $allocation_ids])
+          ;
+      }
       
-      $this->set('allocationUsers', $this->paginate($allocationUsers));
-      $this->set('_serialize', ['allocationUser']);
+      $this->set('leads', $this->paginate($leads));
+      $this->set('_serialize', ['allocations']);
     }
 
     /**
