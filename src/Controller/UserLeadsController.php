@@ -67,9 +67,11 @@ class UserLeadsController extends AppController
         
       }
 
+      /*
       $allocations  = $this->AllocationUsers->find('all')
         ->where(['AllocationUsers.user_id' => $user_data->id])     
-        ;      
+        ; 
+      */   
 
       if( isset($this->request->query['query']) ){
 
@@ -77,21 +79,29 @@ class UserLeadsController extends AppController
             ->where(['AllocationUsers.user_id' => $user_data->id])            
           ;
 
-          $query = $this->request->query['query'];
-          $allocation_ids = array();
-          foreach($allocationUsers as $au){
-            $allocation_ids[] = $au->allocation_id;
+          if( $allocationUsers->count() > 0 ) {
+
+            $query = $this->request->query['query'];
+            $allocation_ids = array();
+            foreach($allocationUsers as $au){
+              $allocation_ids[] = $au->allocation_id;
+            }
+            
+            $leads = $this->Leads->find('all')
+              ->contain(['Statuses', 'Sources', 'Allocations', 'LastModifiedBy'])
+              ->where(['Leads.allocation_id IN' => $allocation_ids])
+              ->andwhere([
+                            'Leads.firstname LIKE' => '%' . $query . '%',
+                            'OR' => [['Leads.surname LIKE' => '%' . $query . '%']],
+                            'OR' => [['Leads.email LIKE' => '%' . $query . '%']],
+                        ]) 
+            ; 
+            $this->set('leads', $this->paginate($leads));
+
+          } else {
+            $leads = null;
+            $this->set('leads', $leads);
           }
-          
-          $leads = $this->Leads->find('all')
-            ->contain(['Statuses', 'Sources', 'Allocations', 'LastModifiedBy'])
-            ->where(['Leads.allocation_id IN' => $allocation_ids])
-            ->andwhere([
-                          'Leads.firstname LIKE' => '%' . $query . '%',
-                          'OR' => [['Leads.surname LIKE' => '%' . $query . '%']],
-                          'OR' => [['Leads.email LIKE' => '%' . $query . '%']],
-                      ]) 
-          ;      
 
       }else{
 
@@ -104,20 +114,28 @@ class UserLeadsController extends AppController
             ->where(['AllocationUsers.user_id' => $user_data->id])            
           ;
 
-          $query = $this->request->query['query'];
-          $allocation_ids = array();
-          foreach($allocationUsers as $au){
-            $allocation_ids[] = $au->allocation_id;
-          }          
+          if( $allocationUsers->count() > 0 ) {
 
-          $leads = $this->Leads->find('all')
-              ->contain(['LastModifiedBy', 'Statuses', 'Sources', 'Allocations'])
-              ->where(['Leads.allocation_id IN' => $allocation_ids])
-          ;
+            $query = $this->request->query['query'];
+            $allocation_ids = array();
+            foreach($allocationUsers as $au){
+              $allocation_ids[] = $au->allocation_id;
+            }          
+
+            $leads = $this->Leads->find('all')
+                ->contain(['LastModifiedBy', 'Statuses', 'Sources', 'Allocations'])
+                ->where(['Leads.allocation_id IN' => $allocation_ids])
+            ;
+            $this->set('leads', $this->paginate($leads));
+
+          } else {
+            $leads = null;
+            $this->set('leads', $leads);
+          }
+
       }
       
-      $this->set('leads', $this->paginate($leads));
-      $this->set('_serialize', ['allocations']);
+      $this->set('_serialize', ['']);
     }
 
     /**
