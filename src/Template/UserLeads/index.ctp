@@ -53,8 +53,7 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <?php //foreach ($allocationUsers as $allocationUser) { ?>
-                                <?php //foreach( $allocationUser->allocation->leads as $lead ){ ?>
+                        <?php if( !empty($leads) ) { ?>
                             <?php foreach ($leads as $lead) { ?>    
                             <tr>
                                 <td class="table-actions">
@@ -104,16 +103,23 @@
                                 </td>
                             </tr>
                             <?php } ?>
+                        <?php }else{ ?>
+                            <tr>
+                                <td colspan="8" align="center">NO RECORDS FOUND</td>
+                            </tr>
+                        <?php } ?>
                         </tbody>
                     </table>
-                    <div class="paginator" style="text-align:center;">
-                        <ul class="pagination">
-                        <?= $this->Paginator->prev('«') ?>
-                            <?= $this->Paginator->numbers() ?>
-                            <?= $this->Paginator->next('»') ?>
-                        </ul>
-                        <p class="hidden"><?= $this->Paginator->counter() ?></p>
-                    </div>                     
+                    <?php if( !empty($leads) ) { ?>
+                            <div class="paginator" style="text-align:center;">
+                                <ul class="pagination">
+                                <?= $this->Paginator->prev('«') ?>
+                                    <?= $this->Paginator->numbers() ?>
+                                    <?= $this->Paginator->next('»') ?>
+                                </ul>
+                                <p class="hidden"><?= $this->Paginator->counter() ?></p>
+                            </div>
+                    <?php } ?>
                 </div>
             </div>                
         </section>
