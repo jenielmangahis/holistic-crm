@@ -46,6 +46,19 @@ class LeadsController extends AppController
     public function index()
     {
 
+      $session   = $this->request->session(); 
+      $ulock_leads = $session->read('LeadsLock.data');
+      $u = $session->read('User.data');
+
+      /*
+      echo $ulock_leads[2];
+      unset($ulock_leads[2]);
+      echo '<pre>';
+      print_r($ulock_leads);
+      print_r($u);
+      echo '</pre>';
+      */
+
       if(isset($this->request->query['unlock']) && isset($this->request->query['lead_id']) ) {
         $lead_id = $this->request->query['lead_id'];
         if($this->request->query['unlock'] == 1) {
@@ -75,9 +88,9 @@ class LeadsController extends AppController
           ;
       }
 
-        /*$this->paginate = [
-            'contain' => ['Statuses', 'Sources', 'Allocations']
-        ];*/
+      /*$this->paginate = [
+          'contain' => ['Statuses', 'Sources', 'Allocations']
+      ];*/
         
       $this->set('is_admin_user', $this->user->group_id);
       $this->set('leads', $this->paginate($leads));
@@ -169,7 +182,13 @@ class LeadsController extends AppController
           $data['is_lock']              = 1;
           $data['last_modified_by_id'] = $login_user_id;
           $lead_lock = $this->Leads->patchEntity($lead_lock, $data);
-          if ( !$this->Leads->save($lead_lock) ) { echo "error updating lock lead"; exit; }
+          if ( !$this->Leads->save($lead_lock) ) { 
+            echo "error updating lock lead"; exit; 
+          } else {
+            $session  = $this->request->session();  
+            $lck_leads[$login_user_id] = $id;
+            $session->write('LeadsLock.data', $lck_leads);            
+          }
         } 
 
         $lead = $this->Leads->get($id, [
