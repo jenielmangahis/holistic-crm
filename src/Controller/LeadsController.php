@@ -33,7 +33,6 @@ class LeadsController extends AppController
             } */
         }
         $this->user = $user_data;
-
         // Allow full access to this controller
         $this->Auth->allow(['register']);
     }
@@ -45,19 +44,6 @@ class LeadsController extends AppController
      */
     public function index()
     {
-
-      $session   = $this->request->session(); 
-      $ulock_leads = $session->read('LeadsLock.data');
-      $u = $session->read('User.data');
-
-      /*
-      echo $ulock_leads[2];
-      unset($ulock_leads[2]);
-      echo '<pre>';
-      print_r($ulock_leads);
-      print_r($u);
-      echo '</pre>';
-      */
 
       if(isset($this->request->query['unlock']) && isset($this->request->query['lead_id']) ) {
         $lead_id = $this->request->query['lead_id'];
@@ -72,6 +58,9 @@ class LeadsController extends AppController
           return $this->redirect(['action' => 'index']);
         }
         
+      } else {
+        /* Unlock if have session */
+        $this->leads_unlock();        
       }
 
       if( isset($this->request->query['query']) ){
@@ -316,6 +305,7 @@ class LeadsController extends AppController
 
     }
 
+    
     public function is_lock()
     {
         $lead = 2;
@@ -323,4 +313,35 @@ class LeadsController extends AppController
         $this->set('lead', $lead);
         $this->set('_serialize', ['lead']);      
     }
+    
+
+    public function leads_unlock() {
+      $session     = $this->request->session(); 
+      $ulock_leads = $session->read('LeadsLock.data');
+      $u           = $session->read('User.data');
+  
+      if(isset($ulock_leads)) {
+        foreach($ulock_leads as $ul_key => $ul_data) {
+          $user_id = $ul_key;
+          $lead_id = $ul_data;
+
+          if($user_id == $u->id) {
+
+            $lead_unlock = $this->Leads->get($lead_id, [ 'contain' => ['LastModifiedBy'] ]);       
+
+            $login_user_id                      = $u->id;
+            $data_unlck['is_lock']              = 0;
+            $data_unlck['last_modified_by_id '] = $login_user_id;
+            $lead_unlock = $this->Leads->patchEntity($lead_unlock, $data_unlck);
+            if ( $this->Leads->save($lead_unlock) ) { 
+              unset($ulock_leads[$login_user_id]);
+            }
+
+          }
+
+        }
+
+      }
+      
+    }    
 }

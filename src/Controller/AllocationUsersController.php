@@ -37,6 +37,7 @@ class AllocationUsersController extends AppController
      */
     public function index()
     {
+        $this->unlock_lead_check();
         $this->paginate = [
             'contain' => ['Allocations', 'Users'],
         ];

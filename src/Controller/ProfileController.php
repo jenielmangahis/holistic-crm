@@ -39,8 +39,9 @@ class ProfileController extends AppController
      */
     public function index()
     {
-        $this->Users = TableRegistry::get("Users");
+        $this->unlock_lead_check();
 
+        $this->Users = TableRegistry::get("Users");
         $session   = $this->request->session();    
         $user_data = $session->read('User.data');
         $user      = $this->Users->find()          

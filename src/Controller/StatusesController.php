@@ -32,7 +32,7 @@ class StatusesController extends AppController
      */
     public function index()
     {
-
+        $this->unlock_lead_check();
         if( isset( $this->request->query['query'] ) ) {
             $query   = $this->request->query['query'];
             $statuses = $this->Statuses->find('all')

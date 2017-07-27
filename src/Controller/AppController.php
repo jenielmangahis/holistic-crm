@@ -148,4 +148,36 @@ class AppController extends Controller
          
         return true;
     }
+
+    public function unlock_lead_check() {
+
+        $session     = $this->request->session(); 
+        $ulock_leads = $session->read('LeadsLock.data');
+        $u           = $session->read('User.data');
+
+        if(isset($ulock_leads)) {
+            
+            foreach($ulock_leads as $ul_key => $ul_data) {
+                $user_id = $ul_key;
+                $lead_id = $ul_data;
+
+                if($user_id == $u->id) {
+
+                    $lead_unlock = $this->Leads->get($lead_id, [ 'contain' => ['LastModifiedBy'] ]);       
+
+                    $login_user_id                      = $u->id;
+                    $data_unlck['is_lock']              = 0;
+                    $data_unlck['last_modified_by_id '] = $login_user_id;
+                    $lead_unlock = $this->Leads->patchEntity($lead_unlock, $data_unlck);
+                    if ( $this->Leads->save($lead_unlock) ) { 
+                        unset($ulock_leads[$login_user_id]);
+                    }
+
+                }
+
+            }
+
+        }
+      
+    }       
 }

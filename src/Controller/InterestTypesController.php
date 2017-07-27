@@ -33,6 +33,7 @@ class InterestTypesController extends AppController
      */
     public function index()
     {
+        $this->unlock_lead_check();
         if( isset( $this->request->query['query'] ) ) {
             $query   = $this->request->query['query'];
             $InterestTypes = $this->InterestTypes->find('all')
