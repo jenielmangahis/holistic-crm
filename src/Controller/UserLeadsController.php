@@ -67,7 +67,8 @@ class UserLeadsController extends AppController
         
       } else {
         /* Unlock if have session */
-        $this->leads_unlock();         
+        //$this->leads_unlock();
+        $this->unlock_lead_check();   
       }
 
       /*
@@ -345,32 +346,58 @@ class UserLeadsController extends AppController
     }
 
     public function leads_unlock() {
-      $session     = $this->request->session(); 
-      $ulock_leads = $session->read('LeadsLock.data');
-      $u           = $session->read('User.data');
-  
-      if(isset($ulock_leads)) {
-        foreach($ulock_leads as $ul_key => $ul_data) {
-          $user_id = $ul_key;
-          $lead_id = $ul_data;
 
-          if($user_id == $u->id) {
+        $session     = $this->request->session(); 
+        $ulock_leads = $session->read('LeadsLock.data');
+        $u           = $session->read('User.data');
 
-            $lead_unlock = $this->Leads->get($lead_id, [ 'contain' => ['LastModifiedBy'] ]);       
+        if(isset($ulock_leads)) {
+            foreach($ulock_leads as $ul_key => $ul_data) {
+                $user_id = $ul_key;
+                $lead_id = $ul_data;
 
-            $login_user_id                      = $u->id;
-            $data_unlck['is_lock']              = 0;
-            $data_unlck['last_modified_by_id '] = $login_user_id;
-            $lead_unlock = $this->Leads->patchEntity($lead_unlock, $data_unlck);
-            if ( $this->Leads->save($lead_unlock) ) { 
-              unset($ulock_leads[$login_user_id]);
+                if($user_id == $u->id) {
+
+                    $lead_unlock = $this->Leads->get($lead_id, [ 'contain' => ['LastModifiedBy'] ]);       
+
+                    $login_user_id                      = $u->id;
+                    $data_unlck['is_lock']              = 0;
+                    $data_unlck['last_modified_by_id '] = $login_user_id;
+                    $lead_unlock = $this->Leads->patchEntity($lead_unlock, $data_unlck);
+                    if ( $this->Leads->save($lead_unlock) ) { 
+                        session_start();
+                        unset($ulock_leads[$login_user_id]);
+                    }
+
+                }
+
             }
 
-          }
+        } else {
 
+            $lock_leads = $this->Leads->find('all')
+                ->contain(['Statuses', 'Sources', 'Allocations'])
+                ->where(['Leads.is_lock ' => 1])
+                ->andWhere(['Leads.last_modified_by_id' => $u->id])
+              ;       
+
+            foreach($lock_leads as $ll_key => $ll_data) {
+                $lock_status           = $ll_data->is_lock;
+                $last_modified_user_id = $ll_data->last_modified_by_id;
+                $lead_id               = $ll_data->id;
+
+                if($last_modified_user_id == $u->id) {
+
+                    $lead_unlock = $this->Leads->get($lead_id, [ 'contain' => ['LastModifiedBy'] ]);      
+                    $data['is_lock']              = 0;
+                    $data['last_modified_by_id '] = $login_user_id;
+                    $lead_unlock = $this->Leads->patchEntity($lead_unlock, $data);
+                    if ( !$this->Leads->save($lead_unlock) ) { echo "error updating lock lead"; exit; }                
+
+                }
+
+            } 
         }
-
-      }
       
     }     
 }

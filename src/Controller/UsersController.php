@@ -84,6 +84,7 @@ class UsersController extends AppController
      */
     public function dashboard()
     {   
+        $this->unlock_lead_check();
         $this->Leads = TableRegistry::get('Leads');        
         $leads = $this->Leads->find('all');
         $users = $this->Users->find('all');   
@@ -125,7 +126,8 @@ class UsersController extends AppController
      * @return void
      */
     public function user_dashboard()
-    {   
+    {  
+        $this->unlock_lead_check(); 
         $this->Leads = TableRegistry::get('Leads');   
         $this->AllocationUsers = TableRegistry::get('AllocationUsers'); 
 

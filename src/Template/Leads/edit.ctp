@@ -6,6 +6,7 @@
     padding: 10px;
 }
 </style>
+
 <section class="content-header">
     <h1><?= __('Edit Lead') ?></h1>
     <ol class="breadcrumb">
@@ -179,7 +180,3 @@
         </section>
     </div>
 </section>
-
-<script>
-
-</script>
