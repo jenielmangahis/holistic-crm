@@ -34,6 +34,9 @@ class UsersTable extends Table
         $this->hasMany('UserEntities', [
             'foreignKey' => 'user_id'
         ]);
+        $this->hasMany('AllocationUsers', [
+            'foreignKey' => 'user_id'
+        ]);
     }
 
     /**

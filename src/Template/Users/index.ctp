@@ -26,6 +26,9 @@ div.box-body{
 .fa-sort{
     line-height: 19px;
 }
+.user-allocations{
+    padding: 0px;
+}
 </style>
 <section class="content-header">
     <h1><?= __('Users') ?></h1>
@@ -67,15 +70,12 @@ div.box-body{
                     <table id="dt-users-list" class="table table-hover table-striped">
                         <thead class="thead-inverse">
                             <tr>
-                                <th class="actions"></th>
-                                <th><?= $this->Paginator->sort('id', __("Id") . "<i class='fa fa-sort pull-right'> </i>", array('escape' => false)) ?></th>
-                                <th><?= $this->Paginator->sort('firstname', __("Firstname") . "<i class='fa fa-sort pull-right'> </i>", array('escape' => false)) ?></th>
-                                <th><?= $this->Paginator->sort('lastname', __("Lastname") . "<i class='fa fa-sort pull-right'> </i>", array('escape' => false)) ?></th>
-                                <th><?= $this->Paginator->sort('email', __("Email") . "<i class='fa fa-sort pull-right'> </i>", array('escape' => false)) ?></th>                                
+                                <th class="actions"></th>                                
+                                <th style="width:45%;"><?= $this->Paginator->sort('firstname', __("Name") . "<i class='fa fa-sort pull-right'> </i>", array('escape' => false)) ?></th>                                
                                 <th><?= $this->Paginator->sort('username', __("Username") . "<i class='fa fa-sort pull-right'> </i>", array('escape' => false)) ?></th>                                
                                 <th><?= $this->Paginator->sort('group_id', __("Group Name") . "<i class='fa fa-sort pull-right'> </i>", array('escape' => false)) ?></th>                            
+                                <th><?= __('Allocations') ?></th>                            
                                 <th><?= $this->Paginator->sort('created', __("Created") . "<i class='fa fa-sort pull-right'> </i>", array('escape' => false)) ?></th>
-                                <th><?= $this->Paginator->sort('modified', __("Modified") . "<i class='fa fa-sort pull-right'> </i>", array('escape' => false)) ?></th>                                                               
                             </tr>
                         </thead>
                         <tbody>
@@ -114,15 +114,28 @@ div.box-body{
                                           </div>
                                         </div>                              
                                     </div>              
-                                </td>
-                                <td><?= $this->Number->format($user->id) ?></td>                               
-                                <td><?= h($user->firstname) ?></td>
-                                <td><?= h($user->lastname) ?></td>                                                           
-                                <td><?= h($user->email) ?></td>                                                           
+                                </td>                                
+                                <td><?= h($user->firstname . ' ' . $user->lastname) ?></td>                                                                                                           
                                 <td><?= h($user->username) ?></td>                                                           
-                                <td><?= h($user->group->name) ?></td>                                                           
-                                <td><?= h($user->created) ?></td>
-                                <td><?= h($user->modified) ?></td>                                
+                                <td><?= h($user->group->name) ?></td>
+                                <td>
+                                    <?php 
+                                        if($user->group_id == 1){
+                                            echo "-";
+                                        }else{                                            
+                                            if(count($user->allocation_users) > 0){
+                                                echo "<ul class='user-allocations'>";
+                                                foreach($user->allocation_users as $au){
+                                                    echo "<li>" . $au->allocation->name . "</li>";
+                                                }
+                                                echo "</ul>";
+                                            }else{
+                                                echo "-";
+                                            }
+                                        }
+                                    ?>
+                                </td>                                                           
+                                <td><?= h($user->created) ?></td>                                
                             </tr>
                             <?php endforeach; ?>
                         </tbody>

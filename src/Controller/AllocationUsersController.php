@@ -260,7 +260,8 @@ class AllocationUsersController extends AppController
 
         $a_allocation_users = array();
         $allocation_user = $this->AllocationUsers->find('all')
-            ->select(['AllocationUsers.user_id'])            
+            ->select(['AllocationUsers.user_id'])
+            ->where(['AllocationUsers.allocation_id' => $id])            
         ;
         foreach( $allocation_user as $au ){
             $a_allocation_users[$au->user_id] = $au->user_id;

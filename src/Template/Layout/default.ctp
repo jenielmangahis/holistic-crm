@@ -22,6 +22,11 @@
       <div class="navbar-custom-menu">
         <ul class="nav navbar-nav">        
           <!-- User Account: style can be found in dropdown.less -->
+          <li class="hidden-xs" style=" width: 258px;">
+            <a href="javascript:void(0);" class="hover-white">
+              <i class="glyphicon glyphicon-time"></i> <span id="system-time" style="font-size: 14px;font-weight:bold;"></span>
+            </a>
+          </li>   
           <li class="dropdown notifications-menu">
             <a href="#" class="dropdown-toggle" data-toggle="dropdown">
               <i class="fa fa-bell-o"></i>

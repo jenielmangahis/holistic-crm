@@ -61,7 +61,7 @@ class UsersController extends AppController
         if( isset($this->request->query['query']) ){
             $query = $this->request->query['query'];
             $users = $this->Users->find('all')
-                ->contain(['Groups'])
+                ->contain(['Groups','AllocationUsers' => ['Allocations']])
                 ->where(['Users.firstname LIKE' => '%' . $query . '%'])       
                 ->orWhere(['Users.lastname LIKE' => '%' . $query . '%'])       
                 ->orWhere(['Users.email LIKE' => '%' . $query . '%'])       
@@ -69,7 +69,7 @@ class UsersController extends AppController
             ;
         }else{
             $users = $this->Users->find('all')
-                ->contain(['Groups'])
+                ->contain(['Groups','AllocationUsers' => ['Allocations']])
             ;
         }
 

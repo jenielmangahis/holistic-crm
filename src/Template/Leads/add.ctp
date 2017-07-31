@@ -26,57 +26,70 @@
                     <?= $this->Form->create($lead,['id' => 'frm-default-add', 'data-toggle' => 'validator', 'role' => 'form','class' => 'form-horizontal']) ?>
                     <fieldset>        
                         <h3 class="form-hdr">Lead Personal Information</h3>
+                        <div class="row">
+                        <div class="col-md-8">
                         <?php
                             echo "
                             <div class='form-group'>
-                                <label for='firstname' class='col-sm-2 control-label'>" . __('Firstname') . "</label>
-                                <div class='col-sm-6'>";
+                                <label for='firstname' class='col-sm-3 control-label'>" . __('Firstname') . "</label>
+                                <div class='col-sm-9'>";
                                 echo $this->Form->input('firstname', ['class' => 'form-control', 'id' => 'firstname', 'label' => false]);                
                             echo " </div></div>";    
                             
                             echo "
                             <div class='form-group'>
-                                <label for='surname' class='col-sm-2 control-label'>" . __('Surname') . "</label>
-                                <div class='col-sm-6'>";
+                                <label for='surname' class='col-sm-3 control-label'>" . __('Surname') . "</label>
+                                <div class='col-sm-9'>";
                                 echo $this->Form->input('surname', ['class' => 'form-control', 'id' => 'surname', 'label' => false]);                
                             echo " </div></div>";    
                             
                             echo "
                             <div class='form-group'>
-                                <label for='email' class='col-sm-2 control-label'>" . __('Email') . "</label>
-                                <div class='col-sm-6'>";
+                                <label for='email' class='col-sm-3 control-label'>" . __('Email') . "</label>
+                                <div class='col-sm-9'>";
                                 echo $this->Form->input('email', ['class' => 'form-control', 'id' => 'email', 'label' => false]);                
                             echo " </div></div>";    
                             
                             echo "
                             <div class='form-group'>
-                                <label for='phone' class='col-sm-2 control-label'>" . __('Phone') . "</label>
-                                <div class='col-sm-6'>";
+                                <label for='phone' class='col-sm-3 control-label'>" . __('Phone') . "</label>
+                                <div class='col-sm-9'>";
                                 echo $this->Form->input('phone', ['class' => 'form-control', 'id' => 'phone', 'label' => false]);                
                             echo " </div></div>";    
                             
                             echo "
                             <div class='form-group'>
-                                <label for='address' class='col-sm-2 control-label'>" . __('Address') . "</label>
-                                <div class='col-sm-6'>";
+                                <label for='address' class='col-sm-3 control-label'>" . __('Address') . "</label>
+                                <div class='col-sm-9'>";
                                 echo $this->Form->input('address', ['class' => 'form-control', 'id' => 'address', 'label' => false]);                
                             echo " </div></div>";    
                             
                             echo "
                             <div class='form-group'>
-                                <label for='city' class='col-sm-2 control-label'>" . __('City') . "</label>
-                                <div class='col-sm-6'>";
+                                <label for='city' class='col-sm-3 control-label'>" . __('City') . "</label>
+                                <div class='col-sm-9'>";
                                 echo $this->Form->input('city', ['class' => 'form-control', 'id' => 'city', 'label' => false]);                
                             echo " </div></div>";    
                             
                             echo "
                             <div class='form-group'>
-                                <label for='state' class='col-sm-2 control-label'>" . __('State') . "</label>
-                                <div class='col-sm-6'>";
+                                <label for='state' class='col-sm-3 control-label'>" . __('State') . "</label>
+                                <div class='col-sm-9'>";
                                 echo $this->Form->input('state', ['class' => 'form-control', 'id' => 'state', 'label' => false]);                
                             echo " </div></div>";
                             ?>
-
+                            </div>
+                            <div class="col-md-3">
+                                <div class="callout callout-info">
+                                    <b>Note:</b>
+                                    <ul>
+                                        <li>This is a sample message A</li>
+                                        <li>This is a sample message B</li>
+                                        <li>This is a sample message C</li>
+                                    </ul>                                    
+                                </div>
+                            </div>
+                            </div>
                             <h3 class="form-hdr">Other Information</h3>
                             <?php
                             echo "
@@ -163,6 +176,7 @@
                             echo " </div></div>";    
                                     
                                                 ?>
+                    </div>                    
                     </fieldset>
                     <div class="form-group" style="margin-top: 80px;">
                         <div class="col-sm-offset-2 col-sm-10">                            

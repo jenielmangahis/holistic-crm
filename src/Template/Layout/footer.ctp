@@ -64,6 +64,15 @@
 <script type="text/javascript">  
 var base_url = "<?= $base_url; ?>";
 $(function(){
+  var date = new Date(<?php echo time() * 1000 ?>);  
+    var d = new Date("<?php echo date("Y-m-d H:i:s"); ?>");        
+
+    setInterval(function(){ 
+        d.setSeconds(d.getSeconds() + 1);            
+        var n = d.toDateString();
+        var time = d.toLocaleTimeString();        
+        $("#system-time").html(n + ' ' + time);
+    },1000);
   //Sortable
   $( ".sortable-rows" ).sortable({
     tolerance: 'pointer',
