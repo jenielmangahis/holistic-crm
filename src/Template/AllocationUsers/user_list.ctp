@@ -91,6 +91,7 @@ div.box-body{
                                         </button>
                                         <ul class="dropdown-menu" role="menu" aria-labelledby="drpdwn">                                            
                                             <li role="presentation"><?= $this->Html->link('<i class="fa fa-pencil"></i> Edit', ['action' => 'edit_user', $allocationUser->id],['escape' => false]) ?></li>
+                                            <li role="presentation"><?= $this->Html->link('<i class="fa fa-lock"></i> Change Password', ['action' => 'change_password', $allocationUser->id, $allocation->id],['escape' => false]) ?></li>
                                             <li role="presentation"><?= $this->Html->link('<i class="fa fa-trash"></i> Delete', '#modal-'.$allocationUser->id,['data-toggle' => 'modal','escape' => false]) ?></li>
                                         </ul>
                                     </div>   

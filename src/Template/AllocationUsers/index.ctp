@@ -1,4 +1,4 @@
-
+<?php ?>
 <section class="content-header">
     <h1><?= __('Allocation Users') ?></h1>
     <ol class="breadcrumb">
