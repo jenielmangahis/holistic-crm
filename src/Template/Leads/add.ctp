@@ -83,9 +83,7 @@
                                 <div class="callout callout-info">
                                     <b>Note:</b>
                                     <ul>
-                                        <li>This is a sample message A</li>
-                                        <li>This is a sample message B</li>
-                                        <li>This is a sample message C</li>
+                                        <li>Any field that you have not received information for please enter ‘<b>Not Given</b>’</li>                                        
                                     </ul>                                    
                                 </div>
                             </div>
