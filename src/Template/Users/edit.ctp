@@ -1,3 +1,4 @@
+<?php ?>
 <section class="content-header">
     <h1><?= __('Edit User') ?></h1>
     <ol class="breadcrumb">

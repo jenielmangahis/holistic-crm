@@ -6,6 +6,7 @@ use Cake\ORM\TableRegistry;
 use Cake\Event\Event;
 use Cake\Network\Exception\NotFoundException;
 use Cake\Routing\Router;
+use Cake\Mailer\Email;
 /**
  * Users Controller
  *
@@ -349,11 +350,11 @@ class UsersController extends AppController
 
                 $recipient = $user->email;                     
                 $email_smtp = new Email('cake_smtp');
-                $email_smtp->from(['websystem@nixstage.com' => 'WebSystem'])
+                $email_smtp->from(['websystem@holistic.com' => 'WebSystem'])
                     ->template('request_forgot_password')
                     ->emailFormat('html')
                     ->to($recipient)                                                                                                     
-                    ->subject('Nixser : Forgot Password')
+                    ->subject('Holistic : Forgot Password')
                     ->viewVars(['edata' => $edata])
                     ->send();
 
@@ -371,4 +372,46 @@ class UsersController extends AppController
         echo json_encode($json);
         exit;
     }
+
+    public function change_password($id = null)
+    {      
+        $this->Users = TableRegistry::get('Users');
+
+        $user = $this->Users->get($id);  
+
+        if ($this->request->is(['patch', 'post', 'put'])) {
+            $data = $this->request->data;
+            if( $data['password'] == $data['repassword'] ){
+
+                $user->password = $data['password'];                
+                
+                if( $this->Users->save($user) ){
+
+                    //Send email
+                    /*$edata = [
+                        'user_name' => $user->firstname,
+                        'password' => $data['password']                        
+                    ];
+                    $recipient = $user->email;                     
+                    $email_smtp = new Email('cake_smtp');
+                    $email_smtp->from(['websystem@holistic.com' => 'WebSystem'])
+                        ->template('change_password')
+                        ->emailFormat('html')
+                        ->to($recipient)                                                                                                     
+                        ->subject('Holistic : Change Password')
+                        ->viewVars(['edata' => $edata])
+                        ->send();*/
+
+                    $this->Flash->success(__('Your password has been changed.'));
+                    return $this->redirect(['controller' => 'users', 'action' => 'index']);
+                }else{
+                    $this->Flash->error(__('Your password could not be change. Please, try again.'));                    
+                }
+            }else{
+                $this->Flash->error(__('Password does not match!'));                    
+            }
+        }
+
+        $this->set(['user' => $user]);
+    }    
 }
