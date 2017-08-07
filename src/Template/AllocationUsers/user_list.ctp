@@ -75,9 +75,8 @@ div.box-body{
                     <table id="dt-users-list" class="table table-hover table-striped">
                         <thead class="thead-inverse">
                             <tr>
-                                <th class="actions"></th>
-                                <th><?= $this->Paginator->sort('id', __("Id") . "<i class='fa fa-sort pull-right'> </i>", array('escape' => false)) ?></th>
-                                <th style="width:80%;"><?= $this->Paginator->sort('user_id', __("Name") . "<i class='fa fa-sort pull-right'> </i>", array('escape' => false)) ?></th>
+                                <th class="actions"></th>                                
+                                <th style="width:70%;"><?= $this->Paginator->sort('user_id', __("Name") . "<i class='fa fa-sort pull-right'> </i>", array('escape' => false)) ?></th>
                                 <th><?= $this->Paginator->sort('created', __("Created") . "<i class='fa fa-sort pull-right'> </i>", array('escape' => false)) ?></th>
                             </tr>
                         </thead>
@@ -117,8 +116,7 @@ div.box-body{
                                           </div>
                                         </div>                              
                                     </div>                       
-                                </td>
-                                <td><?= $this->Number->format($allocationUser->id) ?></td>
+                                </td>                                
                                 <td><?= $allocationUser->user->firstname . ' ' . $allocationUser->user->lastname ?></td>                                
                                 <td><?= h($allocationUser->created) ?></td>
                   
