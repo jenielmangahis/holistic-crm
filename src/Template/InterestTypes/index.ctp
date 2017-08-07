@@ -73,8 +73,7 @@ div.box-body{
                         <thead class="thead-inverse">
                             <tr>
                                 <th class="actions"></th>
-                                <th><?= $this->Paginator->sort('id', __("Id") . "<i class='fa fa-sort pull-right'> </i>", array('escape' => false)) ?></th>
-                                <th style="width:60%;"><?= $this->Paginator->sort('name', __("Name") . "<i class='fa fa-sort pull-right'> </i>", array('escape' => false)) ?></th>
+                                <th><?= $this->Paginator->sort('id', __("Id") . "<i class='fa fa-sort pull-right'> </i>", array('escape' => false)) ?></th>                                
                                 <th><?= $this->Paginator->sort('created', __("Created") . "<i class='fa fa-sort pull-right'> </i>", array('escape' => false)) ?></th>
                                 <th><?= $this->Paginator->sort('modified', __("Modified") . "<i class='fa fa-sort pull-right'> </i>", array('escape' => false)) ?></th>                                   
                             </tr>
@@ -115,8 +114,7 @@ div.box-body{
                                           </div>
                                         </div>                              
                                     </div>                       
-                                </td>
-                                <td class="tbl-field-id"><?= $this->Number->format($interestType->id) ?></td>
+                                </td>                                
                                 <td><?= $interestType->name; ?></td>
                                 <td><?= $interestType->created ?></td>
                                 <td><?= $interestType->modified ?></td>                          
