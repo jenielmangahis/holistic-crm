@@ -1,8 +1,13 @@
-
+<?php ?>
 <style>
 .user-block h2{
   font-size: 14px;
   margin: 3px;
+}
+.box-links {
+  width:100%;
+  overflow-y: auto;
+  height: 300px;  
 }
 </style>
 <script>
@@ -175,6 +180,38 @@ var BASE_URL = "<?php echo $base_url; ?>";
       </div>
     </div>    
   <!-- End Leads -->
+
+  <!-- Sources List -->
+    <div class="col-md-12">
+      <div class="box box-primary box-solid"> 
+        <div class="box-header with-border">  
+            <div class="user-block"><h2><i class="fa fa-list-alt"></i> <?= __('Sources') ?></h2></div>            
+            <div class="box-tools" style="top:9px;">                                         
+                <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>                        
+            </div>         
+        </div>     
+
+        <div class="box-body box-links">                    
+            <table id="dt-users-list" class="table table-hover table-striped">
+                <thead class="thead-inverse">
+                    <tr>
+                        <th style="width:100%;"><?= $this->Paginator->sort('name', __("Name") . "<i class='fa fa-sort pull-right'> </i>", array('escape' => false)) ?></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php foreach($sources as $s) { ?>
+                            <tr>
+                                <!-- <td><a target="_blank" href="lead_from_source"><?php echo $s->name; ?></a></td> -->
+                                <td><?= $this->Html->link($s->name, ['controller' => 'leads', 'action' => 'from_source', $s->id],['escape' => false, 'target' => '_blank']) ?></td>
+                            </tr>
+                    <?php } ?>
+                </tbody>
+            </table>                               
+        </div>
+
+      </div>
+    </div>
+  <!-- Sources List - End -->
 
  
 

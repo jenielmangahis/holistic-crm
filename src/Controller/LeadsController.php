@@ -2,6 +2,7 @@
 namespace App\Controller;
 
 use App\Controller\AppController;
+use Cake\ORM\TableRegistry;
 use Cake\Network\Email\Email;
 
 /**
@@ -85,6 +86,51 @@ class LeadsController extends AppController
       $this->set('is_admin_user', $this->user->group_id);
       $this->set('leads', $this->paginate($leads));
       $this->set('_serialize', ['leads', 'is_admin_user']);
+    }
+
+    public function from_source($source_id) {
+
+      $this->Sources = TableRegistry::get('Sources');     
+      $source        = $this->Sources->get($source_id, ['']);
+
+      if(isset($this->request->query['unlock']) && isset($this->request->query['lead_id']) ) {
+        $lead_id = $this->request->query['lead_id'];
+        if($this->request->query['unlock'] == 1) {
+          $lead_unlock = $this->Leads->get($lead_id, [ 'contain' => ['LastModifiedBy'] ]);       
+
+          $login_user_id                = $this->user->id;
+          $data_unlck['is_lock']              = 0;
+          $data_unlck['last_modified_by_id '] = $login_user_id;
+          $lead_unlock = $this->Leads->patchEntity($lead_unlock, $data_unlck);
+          if ( !$this->Leads->save($lead_unlock) ) { echo "error unlocking lead"; exit; }
+          return $this->redirect(['action' => 'index']);
+        }
+        
+      } else {
+        /* Unlock if have session */
+        $this->unlock_lead_check();
+      }
+
+      if( isset($this->request->query['query']) ){
+          $query = $this->request->query['query'];
+          $leads = $this->Leads->find('all')
+              ->contain(['Statuses', 'Sources', 'Allocations'])
+              ->where(['Leads.firstname LIKE' => '%' . $query . '%'])       
+              ->orWhere(['Leads.surname LIKE' => '%' . $query . '%'])       
+              ->orWhere(['Leads.email LIKE' => '%' . $query . '%'])       
+          ;
+      }else{
+          $leads = $this->Leads->find('all')
+              ->contain(['Statuses', 'Sources', 'Allocations', 'LastModifiedBy'])
+              ->where(['Leads.source_id ' => $source_id]) 
+          ;
+      }
+        
+      $this->set('is_admin_user', $this->user->group_id);
+      $this->set('source_name', $source->name);
+      $this->set('leads', $this->paginate($leads));
+      $this->set('_serialize', ['leads', 'is_admin_user']);
+
     }
 
     /**
