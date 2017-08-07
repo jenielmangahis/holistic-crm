@@ -300,7 +300,7 @@ class LeadsController extends AppController
       if( !$this->Leads->save($lead_unlock) ) {
         echo "error unlocking lead"; exit;
       } else {
-        $this->Flash->success(__('The lead has been unlock.'));
+        $this->Flash->success(__('The lead has been unlocked.'));
         return $this->redirect(['action' => 'index']);  
       }
 

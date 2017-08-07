@@ -57,7 +57,8 @@ div.box-body{
                         <?= $this->Form->end() ?>
                     </div>
                     
-                    <div class="box-tools" style="top:9px;">                                                 
+                    <div class="box-tools" style="top:9px;">    
+                        <?= $this->Html->link('<i class="fa fa-plus"></i> Add New', ['action' => 'add'],['class' => 'btn btn-box-tool', 'escape' => false]) ?>                                             
                         <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>                        
                     </div>         
                 </div>             
@@ -65,8 +66,7 @@ div.box-body{
                     <table id="dt-users-list" class="table table-hover table-striped">
                         <thead class="thead-inverse">
                             <tr>
-                                <th class="actions"></th>
-                                <th><?= $this->Paginator->sort('id', __("Id") . "<i class='fa fa-sort pull-right'> </i>", array('escape' => false)) ?></th>
+                                <th class="actions"></th>                                
                                 <th style="width:60%;"><?= $this->Paginator->sort('name', __("Name") . "<i class='fa fa-sort pull-right'> </i>", array('escape' => false)) ?></th>
                                 <th><?= $this->Paginator->sort('created', __("Created") . "<i class='fa fa-sort pull-right'> </i>", array('escape' => false)) ?></th>
                                 <th><?= $this->Paginator->sort('modified', __("Modified") . "<i class='fa fa-sort pull-right'> </i>", array('escape' => false)) ?></th>                                   
@@ -108,8 +108,7 @@ div.box-body{
                                           </div>
                                         </div>                              
                                     </div>                       
-                                </td>
-                                <td class="tbl-field-id"><?= $this->Number->format($g->id) ?></td>
+                                </td>                                
                                 <td><?= $g->name; ?></td>
                                 <td><?= $g->created ?></td>
                                 <td><?= $g->modified ?></td>                          

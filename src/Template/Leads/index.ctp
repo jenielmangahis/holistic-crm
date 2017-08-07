@@ -42,8 +42,7 @@
                     <table id="dt-users-list" class="table table-hover table-striped">
                         <thead class="thead-inverse">
                             <tr>
-                                <th class="actions"></th>
-                                <th><?= $this->Paginator->sort('id', __("Id") . "<i class='fa fa-sort pull-right'> </i>", array('escape' => false)) ?></th>
+                                <th class="actions"></th>                                
                                 <th><?= $this->Paginator->sort('status_id', __("Status") . "<i class='fa fa-sort pull-right'> </i>", array('escape' => false)) ?></th>
                                 <th><?= $this->Paginator->sort('source_id', __("Source") . "<i class='fa fa-sort pull-right'> </i>", array('escape' => false)) ?></th>
                                 <th><?= $this->Paginator->sort('allocation_id', __("Allocated to") . "<i class='fa fa-sort pull-right'> </i>", array('escape' => false)) ?></th>
@@ -121,8 +120,7 @@
                                     </div> 
                                     <!-- Unlock Lead Modal End -->
                                                         
-                                </td>
-                                <td class="tbl-field-id"><?= $this->Number->format($lead->id) ?></td>
+                                </td>                                
                                 <td><?= $lead->status['name']; ?></td>
                                 <td><?= $lead->source['name'] ?></td>
                                 <td><?= $lead->allocation['name'] ?></td>                          

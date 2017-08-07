@@ -77,7 +77,12 @@ class GroupsController extends AppController
             $group = $this->Groups->patchEntity($group, $this->request->data);
             if ($this->Groups->save($group)) {
                 $this->Flash->success(__('The group has been saved.'));
-                return $this->redirect(['action' => 'index']);
+                $action = $this->request->data['save'];
+                if( $action == 'save' ){
+                    return $this->redirect(['action' => 'index']);
+                }else{
+                    return $this->redirect(['action' => 'add']);
+                }
             } else {
                 $this->Flash->error(__('The group could not be saved. Please, try again.'));
             }
@@ -103,7 +108,12 @@ class GroupsController extends AppController
             $group = $this->Groups->patchEntity($group, $this->request->data);
             if ($this->Groups->save($group)) {
                 $this->Flash->success(__('The group has been saved.'));
-                return $this->redirect(['action' => 'index']);
+                $action = $this->request->data['save'];
+                if( $action == 'save' ){
+                    return $this->redirect(['action' => 'index']);
+                }else{
+                    return $this->redirect(['action' => 'edit', $id]);
+                }  
             } else {
                 $this->Flash->error(__('The group could not be saved. Please, try again.'));
             }
