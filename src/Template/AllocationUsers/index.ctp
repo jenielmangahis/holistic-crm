@@ -20,11 +20,10 @@
                     <table id="dt-users-list" class="table table-bordered table-hover">
                         <thead>
                             <tr>
-                                <th class="actions"><?= __('Actions') ?></th>
-                                                <th><?= $this->Paginator->sort('id') ?></th>
-                                                <th><?= $this->Paginator->sort('allocation_id') ?></th>
-                                                <th><?= $this->Paginator->sort('user_id') ?></th>
-                                                <th><?= $this->Paginator->sort('created') ?></th>
+                                <th class="actions"><?= __('Actions') ?></th>                                                
+                                <th><?= $this->Paginator->sort('allocation_id') ?></th>
+                                <th><?= $this->Paginator->sort('user_id') ?></th>
+                                <th><?= $this->Paginator->sort('created') ?></th>
                                                 
                             </tr>
                         </thead>
@@ -65,7 +64,6 @@
                                         </div>                              
                                     </div>                       
                                 </td>
-                                                <td><?= $this->Number->format($allocationUser->id) ?></td>
                                                 <td <?php if( $isKey == 1 ? 'class="tbl-field-id"' : '' ) ?>><?= $allocationUser->has('allocation') ? $this->Html->link($allocationUser->allocation->name, ['controller' => 'Allocations', 'action' => 'view', $allocationUser->allocation->id]) : '' ?></td>
                                                 <td <?php if( $isKey == 1 ? 'class="tbl-field-id"' : '' ) ?>><?= $allocationUser->has('user') ? $this->Html->link($allocationUser->user->id, ['controller' => 'Users', 'action' => 'view', $allocationUser->user->id]) : '' ?></td>
                                                 <td><?= h($allocationUser->created) ?></td>
