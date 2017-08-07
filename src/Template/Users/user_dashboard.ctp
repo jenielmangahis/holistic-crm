@@ -52,16 +52,14 @@ var BASE_URL = "<?php echo $base_url; ?>";
           <div class="box-body">                    
               <table id="dt-users-list" class="table table-hover table-striped">
                   <thead class="thead-inverse">
-                      <tr>                          
-                          <th style="width:10%;"><?= $this->Paginator->sort('id', __("Id") . "<i class='fa fa-sort pull-right'> </i>", array('escape' => false)) ?></th>
-                          <th style="width:75%;"><?= $this->Paginator->sort('name', __("Name") . "<i class='fa fa-sort pull-right'> </i>", array('escape' => false)) ?></th>                                                             
-                          <th style="width:15%;"><?= $this->Paginator->sort('is_lock', __("Is Lock") . "<i class='fa fa-sort pull-right'> </i>", array('escape' => false)) ?></th>                                                                                     
+                      <tr>                                                    
+                          <th style="width:65%;"><?= $this->Paginator->sort('name', __("Name") . "<i class='fa fa-sort pull-right'> </i>", array('escape' => false)) ?></th>
+                          <th style="width:15%;"><?= $this->Paginator->sort('is_lock', __("Is Lock") . "<i class='fa fa-sort pull-right'> </i>", array('escape' => false)) ?></th>
                       </tr>
                   </thead>
                   <tbody>
                       <?php foreach ($new_leads as $lead): ?>
-                      <tr>                          
-                          <td><?= $this->Number->format($lead->id) ?></td>
+                      <tr>
                           <td><?= h($lead->firstname . ' ' . $lead->surname) ?></td>
                           <td>
                               <?php if($lead->is_lock == 1){ ?>
@@ -88,16 +86,14 @@ var BASE_URL = "<?php echo $base_url; ?>";
           <div class="box-body">                    
               <table id="dt-users-list" class="table table-hover table-striped">
                   <thead class="thead-inverse">
-                      <tr>                          
-                          <th style="width:10%;"><?= $this->Paginator->sort('id', __("Id") . "<i class='fa fa-sort pull-right'> </i>", array('escape' => false)) ?></th>
-                          <th style="width:90%;"><?= $this->Paginator->sort('name', __("Name") . "<i class='fa fa-sort pull-right'> </i>", array('escape' => false)) ?></th>
+                      <tr>
+                          <th style="width:80%;"><?= $this->Paginator->sort('name', __("Name") . "<i class='fa fa-sort pull-right'> </i>", array('escape' => false)) ?></th>
                           <th style="width:15%;"><?= $this->Paginator->sort('is_lock', __("Is Lock") . "<i class='fa fa-sort pull-right'> </i>", array('escape' => false)) ?></th>
                       </tr>
                   </thead>
                   <tbody>
                       <?php foreach ($followup_leads_today as $flead): ?>
-                      <tr>                          
-                          <td><?= $this->Number->format($flead->id) ?></td>
+                      <tr>
                           <td><?= h($flead->firstname . ' ' . $flead->surname) ?></td>                                                                        
                           <td>
                               <?php if($flead->is_lock == 1){ ?>
