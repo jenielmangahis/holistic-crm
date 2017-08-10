@@ -142,9 +142,11 @@ class LeadsController extends AppController
      */
     public function view($id = null)
     {
-        $lead = $this->Leads->get($id, [
-            'contain' => ['Statuses', 'Sources', 'Allocations', 'LeadTypes', 'InterestTypes', 'LastModifiedBy']
-        ]);
+        $lead = $this->Leads->find()
+           ->contain(['Statuses', 'Sources', 'Allocations', 'LastModifiedBy'])
+           ->where(['Leads.id' => $id])
+           ->first()
+        ;       
 
         $this->set('lead', $lead);
         $this->set('_serialize', ['lead']);
