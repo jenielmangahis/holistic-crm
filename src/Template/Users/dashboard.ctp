@@ -1,14 +1,17 @@
 <?php ?>
 <style>
+
 .user-block h2{
   font-size: 14px;
   margin: 3px;
 }
+
 .box-links {
   width:100%;
   overflow-y: auto;
   height: 300px;  
 }
+
 </style>
 <script>
 var BASE_URL = "<?php echo $base_url; ?>";
@@ -186,19 +189,31 @@ var BASE_URL = "<?php echo $base_url; ?>";
                 <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>                        
             </div>         
         </div>     
-
-        <div class="box-body box-links">                    
-            <table id="dt-users-list" class="table table-hover table-striped">
+        <div class="box-body box-links">
+            <table id="dt-users-list" class="table table-hover table-striped table-scroll-body">
                 <thead class="thead-inverse">
                     <tr>
-                        <th style="width:100%;"><?= $this->Paginator->sort('name', __("Name") . "<i class='fa fa-sort pull-right'> </i>", array('escape' => false)) ?></th>
+                        <th style=""><?= $this->Paginator->sort('name', __("Name") . "<i class='fa fa-sort pull-right'> </i>", array('escape' => false)) ?></th>
+                        <?php foreach($statuses as $status) { ?>
+                                <th style=""><?= $this->Paginator->sort($status->name, $status->name . "<i class='fa fa-sort pull-right'> </i>", array('escape' => false)) ?></th>
+                        <?php } ?>
                     </tr>
                 </thead>
                 <tbody>
                     <?php foreach($sources as $s) { ?>
                             <tr>
-                                <!-- <td><a target="_blank" href="lead_from_source"><?php echo $s->name; ?></a></td> -->
                                 <td><?= $this->Html->link($s->name, ['controller' => 'leads', 'action' => 'from_source', $s->id],['escape' => false, 'target' => '_blank']) ?></td>
+                                <?php foreach($statuses as $status) { ?>
+                                        <?php 
+                                            $total_leads_per_source_status = $lead_registry->find('all')        
+                                                ->contain(['LastModifiedBy'])        
+                                                ->where(['Leads.source_id' => $s->id])
+                                                ->andWhere(['Leads.status_id' => $status->id])
+                                                ->count()
+                                            ;                                          
+                                        ?>
+                                        <td><?php echo $total_leads_per_source_status; ?></td>
+                                <?php } ?>                                
                             </tr>
                     <?php } ?>
                 </tbody>

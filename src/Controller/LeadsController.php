@@ -29,9 +29,9 @@ class LeadsController extends AppController
         if( isset($user_data) ){
             if( $user_data->group_id == 1 ){ //Admin
               $this->Auth->allow();
-            }/*else{
+            }elseif( $user_data->group_id == 3 ) { //Staff
               $this->Auth->allow();
-            } */
+            }
         }
         $this->user = $user_data;
         // Allow full access to this controller

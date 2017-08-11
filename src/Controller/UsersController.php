@@ -31,9 +31,11 @@ class UsersController extends AppController
         $user_data = $session->read('User.data');         
         if( isset($user_data) ){
             if( $user_data->group_id == 1 ){ //Admin
-              $this->Auth->allow();
+                $this->Auth->allow();
+            }elseif( $user_data->group_id == 3 ){ //Staff
+                $this->Auth->allow();
             }else{        
-              $this->Auth->allow(['user_dashboard','login','logout']);
+                $this->Auth->allow(['user_dashboard','login','logout']);
             } 
         }
         $this->user = $user_data;
@@ -86,11 +88,13 @@ class UsersController extends AppController
     public function dashboard()
     {   
         $this->unlock_lead_check();
-        $this->Leads   = TableRegistry::get('Leads');        
-        $this->Sources = TableRegistry::get('Sources');        
+        $this->Leads    = TableRegistry::get('Leads');        
+        $this->Sources  = TableRegistry::get('Sources');        
+        $this->Statuses = TableRegistry::get('Statuses');        
         $leads      = $this->Leads->find('all');
         $users      = $this->Users->find('all');
         $sources    = $this->Sources->find('all');   
+        $statuses   = $this->Statuses->find('all');   
 
         $total_leads = $leads->count();
         $total_users = $users->count();        
@@ -120,6 +124,8 @@ class UsersController extends AppController
         $this->set('total_leads_followup', $total_leads_followup);
         $this->set('new_leads', $new_leads);
         $this->set('sources', $sources);
+        $this->set('statuses', $statuses);
+        $this->set('lead_registry', $this->Leads);
         $this->set('followup_leads_today', $followup_leads_today);
         $this->set('_serialize', ['total_users','total_leads']);
 

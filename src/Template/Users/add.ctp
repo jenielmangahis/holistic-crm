@@ -1,3 +1,4 @@
+<?php ?>
 <style>
 .form-caption{
     background-color: #3C8DBC;
@@ -31,28 +32,28 @@
                                     <div class='form-group'>
                                         <label for='firstname' class='col-sm-2 control-label'>" . __('Firstname') . "</label>
                                         <div class='col-sm-6'>";
-                                        echo $this->Form->input('firstname', ['class' => 'form-control', 'id' => 'firstname', 'label' => false]);                
+                                        echo $this->Form->input('firstname', ['class' => 'form-control', 'id' => 'firstname', 'label' => false, 'default' => ' ']);                
                                     echo " </div></div>";    
 
                                     echo "
                                     <div class='form-group'>
                                         <label for='middlename' class='col-sm-2 control-label'>" . __('Middlename') . "</label>
                                         <div class='col-sm-6'>";
-                                        echo $this->Form->input('middlename', ['class' => 'form-control', 'id' => 'middlename', 'label' => false]);                
+                                        echo $this->Form->input('middlename', ['class' => 'form-control', 'id' => 'middlename', 'label' => false, 'default' => ' ']);                
                                     echo " </div></div>";    
 
                                     echo "
                                     <div class='form-group'>
                                         <label for='lastname' class='col-sm-2 control-label'>" . __('Lastname') . "</label>
                                         <div class='col-sm-6'>";
-                                        echo $this->Form->input('lastname', ['class' => 'form-control', 'id' => 'lastname', 'label' => false]);                
+                                        echo $this->Form->input('lastname', ['class' => 'form-control', 'id' => 'lastname', 'label' => false, 'default' => ' ']);                
                                     echo " </div></div>";
 
                                     echo "
                                     <div class='form-group'>
                                         <label for='email' class='col-sm-2 control-label'>" . __('Email') . "</label>
                                         <div class='col-sm-6'>";
-                                        echo $this->Form->input('email', ['class' => 'form-control', 'id' => 'email', 'label' => false]);                
+                                        echo $this->Form->input('email', ['class' => 'form-control', 'id' => 'email', 'label' => false, 'default' => ' ']);                
                                     echo " </div></div>";
                         ?>
                         <h3 class="form-caption">Login Details</h3>          
@@ -68,14 +69,14 @@
                                     <div class='form-group'>
                                         <label for='username' class='col-sm-2 control-label'>" . __('Username') . "</label>
                                         <div class='col-sm-6'>";
-                                        echo $this->Form->input('username', ['class' => 'form-control', 'id' => 'username', 'label' => false]);                
+                                        echo $this->Form->input('username', ['class' => 'form-control', 'id' => 'username', 'label' => false, 'default' => ' ']);                
                                     echo " </div></div>";    
 
                                     echo "
                                     <div class='form-group'>
                                         <label for='password' class='col-sm-2 control-label'>" . __('Password') . "</label>
                                         <div class='col-sm-6'>";
-                                        echo $this->Form->input('password', ['type' => 'password', 'class' => 'form-control', 'id' => 'password', 'label' => false]);                
+                                        echo $this->Form->input('password', ['type' => 'password', 'class' => 'form-control', 'id' => 'password', 'label' => false, 'default' => '']);                
                                     echo " </div></div>";    
                                     
                                                 ?>
