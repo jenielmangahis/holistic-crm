@@ -1,3 +1,4 @@
+<?php ?>
 <div class="cd-tabs" style="height:700px;">
   <style type="text/css">
     label
