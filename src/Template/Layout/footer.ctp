@@ -1,4 +1,5 @@
-    </div><!-- #wrapper -->
+    </div>
+    <!-- #wrapper -->
 
     <div class="modal fade" id="messageNotifierModal" tabindex="-1" role="dialog" aria-labelledby="messageModalLabel">
         <div class="modal-dialog " role="document">
@@ -29,7 +30,41 @@
 <?php   
   echo $this->Html->script('plugins/jQuery/jquery-2.2.3.min.js');
   echo $this->Html->script('app/jquery.min.js'); 
+  echo $this->Html->script('jquery-sortable.js'); 
 ?>
+
+<script>
+    var base_url = "<?= $base_url; ?>";
+
+    //$.noConflict();
+    var table = $('.sort_table_allocation').sortable({
+        containerSelector: 'table',
+        itemPath: '> tbody',
+        itemSelector: 'tr',
+        placeholder: '<tr class="placeholder"/>',
+        onDrop: function (item, container, _super) {
+            var ids = table.find('tr').map(function() {
+                return this.id;
+            }).get();
+        
+            console.log(ids);
+            _super(item, container);
+
+            _pass_post_data_allocation(ids);
+
+        }
+    });    
+
+    function _pass_post_data_allocation(ids) 
+    {
+      $(function() {
+        $.post( base_url + "allocations/_update_order_list", {ids:ids}, function( data ) {
+        });       
+      });           
+    }
+
+</script>
+
 <script>
   $.widget.bridge('uibutton', $.ui.button);
 </script>
@@ -56,7 +91,7 @@
   echo $this->Html->script('plugins/input-mask/jquery.inputmask.js');
   echo $this->Html->script('plugins/input-mask/jquery.inputmask.date.extensions.js');
   echo $this->Html->script('plugins/input-mask/jquery.inputmask.extensions.js');
-  echo $this->Html->script('plugins/iCheck/icheck.min.js');  */
+  echo $this->Html->script('plugins/iCheck/icheck.min.js');*/
   
   echo $this->Html->script('validator.min.js');   
 ?>
@@ -73,7 +108,9 @@ $(function(){
         var time = d.toLocaleTimeString();        
         $("#system-time").html(n + ' ' + time);
     },1000);
+
   //Sortable
+  /*
   $( ".sortable-rows" ).sortable({
     tolerance: 'pointer',
     helper: 'clone',
@@ -86,6 +123,9 @@ $(function(){
       });
     }
   });
+  */
+
+  /*
   $( ".sortable-div" ).sortable({
     tolerance: 'pointer',
     helper: 'clone',
@@ -98,6 +138,8 @@ $(function(){
       });
     }
   });
+  */
+
   //Date picker       
   $('.default-datepicker').datepicker({
     format: 'yyyy-mm-dd',
@@ -159,12 +201,14 @@ $(function(){
       });
   });
 
+  /*
   $(".todo-list").sortable({
     placeholder: "sort-highlight",
     handle: ".handle",
     forcePlaceholderSize: true,
     zIndex: 999999
   });
+  */
 
 });
 CKEDITOR.replace( 'ckeditor', {

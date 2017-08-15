@@ -26,6 +26,9 @@ div.box-body{
 .fa-sort{
     line-height: 19px;
 }
+.sort_table_allocation tr {
+    cursor: pointer;
+}
 </style>
 
 <section class="content-header">
@@ -70,7 +73,11 @@ div.box-body{
                     </div>         
                 </div>             
                 <div class="box-body">                    
-                    <table id="dt-users-list" class="table table-hover table-striped">
+                    <?php if($user_data->group_id == 1) { ?>
+                        <table id="dt-users-list" class="table table-hover sort_table_allocation">
+                    <?php } else { ?>
+                        <table id="dt-users-list" class="table table-hover">
+                    <?php } ?>
                         <thead class="thead-inverse">
                             <tr>
                                 <th class="actions"></th>                                
@@ -81,7 +88,7 @@ div.box-body{
                         </thead>
                         <tbody>
                             <?php foreach ($allocations as $allocation) { ?>
-                            <tr>
+                            <tr id="<?php echo $allocation->id; ?>">
                                 <td class="table-actions">
                                     <div class="dropdown">
                                         <button class="btn btn-default dropdown-toggle" type="button" id="drpdwn" data-toggle="dropdown" aria-expanded="true">
@@ -116,14 +123,21 @@ div.box-body{
                                           </div>
                                         </div>                              
                                     </div>                       
-                                </td>                                
-                                <td><?= $allocation->name; ?></td>
-                                <td><?= $allocation->created ?></td>
-                                <td><?= $allocation->modified ?></td>                          
+                                </td>         
+                                <?php if($user_data->group_id == 1) { ?>
+                                        <?php $drag_drop_message = 'Drag and drop to sort.'; ?>
+                                <?php } else { ?>
+                                        <?php $drag_drop_message = ''; ?>
+                                <?php } ?>
+                                <td title="<?php echo $drag_drop_message; ?>"><?= $allocation->name; ?></td>
+                                <td title="<?php echo $drag_drop_message; ?>"><?= $allocation->created ?></td>
+                                <td title="<?php echo $drag_drop_message; ?>"><?= $allocation->modified ?></td>                          
                             </tr>
                             <?php } ?>
                         </tbody>
                     </table>
+                    
+                    <!--
                     <div class="paginator" style="text-align:center;">
                         <ul class="pagination">
                         <?= $this->Paginator->prev('«') ?>
@@ -131,10 +145,13 @@ div.box-body{
                             <?= $this->Paginator->next('»') ?>
                         </ul>
                         <p class="hidden"><?= $this->Paginator->counter() ?></p>
-                    </div>                     
+                    </div>  
+                    -->
+                   
                 </div>
             </div>    
 
         </section>
     </div>
 </section>
+

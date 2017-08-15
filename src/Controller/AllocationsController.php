@@ -2,6 +2,7 @@
 namespace App\Controller;
 
 use App\Controller\AppController;
+use Cake\ORM\TableRegistry;
 
 /**
  * Allocations Controller
@@ -23,8 +24,17 @@ class AllocationsController extends AppController
         $nav_selected = ["system_settings"];
         $this->set('nav_selected', $nav_selected);
 
+        $session   = $this->request->session();    
+        $user_data = $session->read('User.data');         
+        if( isset($user_data) ){
+            if( $user_data->group_id == 1 ){ //Admin
+              $this->Auth->allow();
+            }elseif( $user_data->group_id == 3 ) { //Staff
+              $this->Auth->allow();
+            }
+        }        
+
         // Allow full access to this controller
-        $this->Auth->allow();
     }
 
     /**
@@ -35,15 +45,21 @@ class AllocationsController extends AppController
     public function index()
     {
         $this->unlock_lead_check();
+
+        $session   = $this->request->session();    
+        $user_data = $session->read('User.data'); 
+
         if( isset( $this->request->query['query'] ) ) {
             $query       = $this->request->query['query'];
             $allocations = $this->Allocations->find('all')
                 ->where( ['Allocations.name LIKE' => '%' . $query . '%'] );
         } else {
-            $allocations = $this->Allocations->find('all');
+            $allocations = $this->Allocations->find('all', ['order' => ['Allocations.sort' => 'ASC']]);
         }          
 
-        $this->set('allocations', $this->paginate($allocations));
+        //$this->set('allocations', $this->paginate($allocations));
+        $this->set('user_data', $user_data);
+        $this->set('allocations', $allocations);
         $this->set('_serialize', ['allocations']);
     }
 
@@ -136,5 +152,26 @@ class AllocationsController extends AppController
             $this->Flash->error(__('The allocation could not be deleted. Please, try again.'));
         }
         return $this->redirect(['action' => 'index']);
+    }
+
+    public function _update_order_list()
+    {
+        $this->Allocations = TableRegistry::get('Allocations');   
+        $ids = $_POST['ids'];
+
+        if(!empty($ids)) {
+            foreach($ids as $sort => $allocation_id) {
+
+                if($allocation_id != '') {
+                    $a_data = $this->Allocations->get($allocation_id, []);
+                    $data_sort['sort'] = $sort;
+                    $a_data = $this->Allocations->patchEntity($a_data, $data_sort);
+                    if ( !$this->Allocations->save($a_data) ) { echo "error unlocking lead"; }                    
+                }
+
+            }
+        }
+
+        exit;
     }
 }
