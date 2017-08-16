@@ -26,6 +26,9 @@ div.box-body{
 .fa-sort{
     line-height: 19px;
 }
+.sort_table_interest_types tr {
+    cursor: pointer;
+}
 </style>    
 <section class="content-header">
     <h1><?= __('Interest Types') ?></h1>
@@ -68,8 +71,12 @@ div.box-body{
                         <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>                        
                     </div>         
                 </div>             
-                <div class="box-body">                    
-                    <table id="dt-users-list" class="table table-hover table-striped">
+                <div class="box-body">
+                    <?php if($user_data->group_id == 1) { ?>
+                            <table id="dt-users-list" class="table table-hover sort_table_interest_types">
+                    <?php } else { ?>
+                            <table id="dt-users-list" class="table table-hover table-striped">
+                    <?php } ?>
                         <thead class="thead-inverse">
                             <tr>
                                 <th class="actions"></th>
@@ -80,7 +87,7 @@ div.box-body{
                         </thead>
                         <tbody>
                             <?php foreach ($interestTypes as $interestType){ ?>
-                            <tr>
+                            <tr id="<?php echo $interestType->id; ?>">
                                 <td class="table-actions">
                                     <div class="dropdown">
                                         <button class="btn btn-default dropdown-toggle" type="button" id="drpdwn" data-toggle="dropdown" aria-expanded="true">
@@ -114,22 +121,29 @@ div.box-body{
                                           </div>
                                         </div>                              
                                     </div>                       
-                                </td>                                
-                                <td><?= $interestType->name; ?></td>
-                                <td><?= $interestType->created ?></td>
-                                <td><?= $interestType->modified ?></td>                          
+                                </td>
+                                <?php if($user_data->group_id == 1) { ?>
+                                        <?php $drag_drop_message = 'Drag and drop to sort.'; ?>
+                                <?php } else { ?>
+                                        <?php $drag_drop_message = ''; ?>
+                                <?php } ?>                                                           
+                                <td title="<?php echo $drag_drop_message; ?>"><?= $interestType->name; ?></td>
+                                <td title="<?php echo $drag_drop_message; ?>"><?= $interestType->created ?></td>
+                                <td title="<?php echo $drag_drop_message; ?>"><?= $interestType->modified ?></td>                          
                             </tr>
                             <?php } ?>
                         </tbody>
                     </table>
-                    <div class="paginator" style="text-align:center;">
-                        <ul class="pagination">
-                        <?= $this->Paginator->prev('«') ?>
-                            <?= $this->Paginator->numbers() ?>
-                            <?= $this->Paginator->next('»') ?>
-                        </ul>
-                        <p class="hidden"><?= $this->Paginator->counter() ?></p>
-                    </div>                     
+                    <?php if($user_data->group_id != 1) { ?>
+                            <div class="paginator" style="text-align:center;">
+                                <ul class="pagination">
+                                <?= $this->Paginator->prev('«') ?>
+                                    <?= $this->Paginator->numbers() ?>
+                                    <?= $this->Paginator->next('»') ?>
+                                </ul>
+                                <p class="hidden"><?= $this->Paginator->counter() ?></p>
+                            </div>
+                    <?php } ?>
                 </div>
             </div>            
 

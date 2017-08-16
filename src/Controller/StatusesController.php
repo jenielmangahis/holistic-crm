@@ -2,6 +2,7 @@
 namespace App\Controller;
 
 use App\Controller\AppController;
+use Cake\ORM\TableRegistry;
 
 /**
  * Statuses Controller
@@ -21,8 +22,18 @@ class StatusesController extends AppController
         $nav_selected = ["system_settings"];
         $this->set('nav_selected', $nav_selected);
 
+        $session   = $this->request->session();    
+        $user_data = $session->read('User.data');         
+        if( isset($user_data) ){
+            if( $user_data->group_id == 1 ){ //Admin
+              $this->Auth->allow();
+            }elseif( $user_data->group_id == 3 ) { //Staff
+              $this->Auth->allow();
+            }
+        }
+
         // Allow full access to this controller
-        $this->Auth->allow();
+        //$this->Auth->allow();
     }     
 
     /**
@@ -33,15 +44,24 @@ class StatusesController extends AppController
     public function index()
     {
         $this->unlock_lead_check();
+
+        $session   = $this->request->session();    
+        $user_data = $session->read('User.data'); 
+
         if( isset( $this->request->query['query'] ) ) {
             $query   = $this->request->query['query'];
             $statuses = $this->Statuses->find('all')
                 ->where( ['Statuses.name LIKE' => '%' . $query . '%'] );
         } else {
-            $statuses = $this->Statuses->find('all');
+            $statuses = $this->Statuses->find('all', ['order' => ['Statuses.sort' => 'ASC']]);
         }   
 
-        $this->set('statuses', $this->paginate($statuses));
+        $this->set('user_data', $user_data);
+        if($user_data->group_id == 1) {
+            $this->set('statuses', $statuses);
+        } else {
+            $this->set('statuses', $this->paginate($statuses));
+        }
         $this->set('_serialize', ['statuses']);
     }
 
@@ -135,4 +155,24 @@ class StatusesController extends AppController
         }
         return $this->redirect(['action' => 'index']);
     }
+
+    public function _update_status_order()
+    {
+        $this->Statuses = TableRegistry::get('Statuses');   
+        $ids = $_POST['ids'];
+
+        if(!empty($ids)) {
+            foreach($ids as $sort => $statuses_id) {
+                if($statuses_id != '') {
+                    $a_data = $this->Statuses->get($statuses_id, []);
+                    $data_sort['sort'] = $sort;
+                    $a_data = $this->Statuses->patchEntity($a_data, $data_sort);
+                    if ( !$this->Statuses->save($a_data) ) { echo "error unlocking lead"; }                    
+                }
+
+            }
+        }
+
+        exit;
+    }    
 }

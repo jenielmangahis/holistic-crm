@@ -180,11 +180,11 @@ class LeadsController extends AppController
                 $this->Flash->error(__('The lead could not be saved. Please, try again.'));
             }
         }
-        $statuses = $this->Leads->Statuses->find('list');
+        $statuses = $this->Leads->Statuses->find('list', ['order' => ['Statuses.sort' => 'ASC']]);
         $sources  = $this->Leads->Sources->find('list');
         $allocations = $this->Leads->Allocations->find('list', ['order' => ['Allocations.sort' => 'ASC']]);
-        $interestTypes = $this->Leads->InterestTypes->find('list');
-        $leadTypes = $this->Leads->LeadTypes->find('list');
+        $interestTypes = $this->Leads->InterestTypes->find('list', ['order' => ['InterestTypes.sort' => 'ASC']]);
+        $leadTypes = $this->Leads->LeadTypes->find('list', ['order' => ['LeadTypes.sort' => 'ASC']]);
         $this->set(compact('lead', 'statuses', 'sources', 'allocations', 'interestTypes', 'leadTypes'));
         $this->set('_serialize', ['lead']);
     }
@@ -258,11 +258,11 @@ class LeadsController extends AppController
                 $this->Flash->error(__('The lead could not be saved. Please, try again.'));
             }
         }
-        $statuses = $this->Leads->Statuses->find('list', ['limit' => 200]);
+        $statuses = $this->Leads->Statuses->find('list', ['order' => ['Statuses.sort' => 'ASC']]);
         $sources = $this->Leads->Sources->find('list', ['limit' => 200]);
-        $allocations = $this->Leads->Allocations->find('list', ['limit' => 200]);
-        $interestTypes = $this->Leads->InterestTypes->find('list',['limit' => 200]);
-        $leadTypes = $this->Leads->LeadTypes->find('list',['limit' => 200]);
+        $allocations = $this->Leads->Allocations->find('list', ['order' => ['Allocations.sort' => 'ASC']]);
+        $interestTypes = $this->Leads->InterestTypes->find('list', ['order' => ['InterestTypes.sort' => 'ASC']]);
+        $leadTypes = $this->Leads->LeadTypes->find('list', ['order' => ['LeadTypes.sort' => 'ASC']]);
         $this->set(compact('lead', 'statuses', 'sources', 'allocations', 'interestTypes', 'leadTypes'));
         $this->set('_serialize', ['lead']);
     }

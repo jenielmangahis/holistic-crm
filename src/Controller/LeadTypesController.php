@@ -2,6 +2,7 @@
 namespace App\Controller;
 
 use App\Controller\AppController;
+use Cake\ORM\TableRegistry;
 
 /**
  * LeadTypes Controller
@@ -21,6 +22,16 @@ class LeadTypesController extends AppController
         $nav_selected = ["system_settings"];
         $this->set('nav_selected', $nav_selected);
 
+        $session   = $this->request->session();    
+        $user_data = $session->read('User.data');         
+        if( isset($user_data) ){
+            if( $user_data->group_id == 1 ){ //Admin
+              $this->Auth->allow();
+            }elseif( $user_data->group_id == 3 ) { //Staff
+              $this->Auth->allow();
+            }
+        }         
+
         // Allow full access to this controller
         //$this->Auth->allow();
     }     
@@ -33,15 +44,25 @@ class LeadTypesController extends AppController
     public function index()
     {
         $this->unlock_lead_check();
+
+        $session   = $this->request->session();    
+        $user_data = $session->read('User.data'); 
+
         if( isset( $this->request->query['query'] ) ) {
             $query   = $this->request->query['query'];
             $LeadTypes = $this->LeadTypes->find('all')
                 ->where( ['LeadTypes.name LIKE' => '%' . $query . '%'] );
         } else {
-            $LeadTypes = $this->LeadTypes->find('all');
+            $LeadTypes = $this->LeadTypes->find('all', ['order' => ['LeadTypes.sort' => 'ASC']]);
         } 
 
-        $this->set('leadTypes', $this->paginate($LeadTypes));
+        $this->set('user_data', $user_data);
+
+        if($user_data->group_id == 1) {
+            $this->set('leadTypes', $LeadTypes);
+        } else {
+            $this->set('leadTypes', $this->paginate($LeadTypes));
+        }
         $this->set('_serialize', ['leadTypes']);
     }
 
@@ -135,4 +156,25 @@ class LeadTypesController extends AppController
         }
         return $this->redirect(['action' => 'index']);
     }
+
+    public function _update_lead_type_order()
+    {
+        $this->LeadTypes = TableRegistry::get('LeadTypes');   
+        $ids = $_POST['ids'];
+
+        if(!empty($ids)) {
+            foreach($ids as $sort => $lead_type_id) {
+                if($lead_type_id != '') {
+                    $a_data = $this->LeadTypes->get($lead_type_id, []);
+                    $data_sort['sort'] = $sort;
+                    $a_data = $this->LeadTypes->patchEntity($a_data, $data_sort);
+                    if ( !$this->LeadTypes->save($a_data) ) { echo "error unlocking lead"; }                    
+                }
+
+            }
+        }
+
+        exit;
+    } 
+
 }

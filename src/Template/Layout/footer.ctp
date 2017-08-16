@@ -63,6 +63,87 @@
       });           
     }
 
+    //drag and drop for statuses
+    var table_status = $('.sort_table_statuses').sortable({
+        containerSelector: 'table',
+        itemPath: '> tbody',
+        itemSelector: 'tr',
+        placeholder: '<tr class="placeholder"/>',
+        onDrop: function (item, container, _super) {
+            var ids = table_status.find('tr').map(function() {
+                return this.id;
+            }).get();
+        
+            console.log(ids);
+            _super(item, container);
+
+            _pass_post_data_statuses(ids);
+
+        }
+    });      
+
+    function _pass_post_data_statuses(ids) 
+    {
+      $(function() {
+        $.post( base_url + "statuses/_update_status_order", {ids:ids}, function( data ) {
+        });       
+      });           
+    }     
+
+    //drag and drop for lead types
+    var table_lead_types = $('.sort_table_lead_types').sortable({
+        containerSelector: 'table',
+        itemPath: '> tbody',
+        itemSelector: 'tr',
+        placeholder: '<tr class="placeholder"/>',
+        onDrop: function (item, container, _super) {
+            var ids = table_lead_types.find('tr').map(function() {
+                return this.id;
+            }).get();
+        
+            console.log(ids);
+            _super(item, container);
+
+            _pass_post_data_lead_types(ids);
+
+        }
+    });     
+
+    function _pass_post_data_lead_types(ids) 
+    {
+      $(function() {
+        $.post( base_url + "lead_types/_update_lead_type_order", {ids:ids}, function( data ) {
+        });       
+      });           
+    }
+
+    //drag and drop for intereset types
+    var table_interest_types = $('.sort_table_interest_types').sortable({
+        containerSelector: 'table',
+        itemPath: '> tbody',
+        itemSelector: 'tr',
+        placeholder: '<tr class="placeholder"/>',
+        onDrop: function (item, container, _super) {
+            var ids = table_interest_types.find('tr').map(function() {
+                return this.id;
+            }).get();
+        
+            console.log(ids);
+            _super(item, container);
+
+            _pass_post_data_interest_types(ids);
+
+        }
+    });     
+
+    function _pass_post_data_interest_types(ids) 
+    {
+      $(function() {
+        $.post( base_url + "interest_types/_update_interest_type", {ids:ids}, function( data ) {
+        });       
+      });           
+    }    
+
 </script>
 
 <script>

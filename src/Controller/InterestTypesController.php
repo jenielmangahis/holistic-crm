@@ -2,6 +2,7 @@
 namespace App\Controller;
 
 use App\Controller\AppController;
+use Cake\ORM\TableRegistry;
 
 /**
  * InterestTypes Controller
@@ -22,8 +23,18 @@ class InterestTypesController extends AppController
         $nav_selected = ["system_settings"];
         $this->set('nav_selected', $nav_selected);
 
-        // Allow full access to this controller
-        $this->Auth->allow();
+        $session   = $this->request->session();    
+        $user_data = $session->read('User.data');         
+        if( isset($user_data) ){
+            if( $user_data->group_id == 1 ){ //Admin
+              $this->Auth->allow();
+            }elseif( $user_data->group_id == 3 ) { //Staff
+              $this->Auth->allow();
+            }
+        }        
+
+        //Allow full access to this controller
+        //$this->Auth->allow();
     }    
 
     /**
@@ -34,15 +45,24 @@ class InterestTypesController extends AppController
     public function index()
     {
         $this->unlock_lead_check();
+
+        $session   = $this->request->session();    
+        $user_data = $session->read('User.data'); 
+
         if( isset( $this->request->query['query'] ) ) {
             $query   = $this->request->query['query'];
             $InterestTypes = $this->InterestTypes->find('all')
                 ->where( ['InterestTypes.name LIKE' => '%' . $query . '%'] );
         } else {
-            $InterestTypes = $this->InterestTypes->find('all');
+            $InterestTypes = $this->InterestTypes->find('all', ['order' => ['InterestTypes.sort' => 'ASC']]);
         }
 
-        $this->set('interestTypes', $this->paginate($InterestTypes));
+        $this->set('user_data', $user_data);
+        if($user_data->group_id == 1) {
+            $this->set('interestTypes', $InterestTypes);
+        } else {
+            $this->set('interestTypes', $this->paginate($InterestTypes));    
+        }
         $this->set('_serialize', ['interestTypes']);
     }
 
@@ -136,4 +156,24 @@ class InterestTypesController extends AppController
         }
         return $this->redirect(['action' => 'index']);
     }
+
+    public function _update_interest_type()
+    {
+        $this->InterestTypes = TableRegistry::get('InterestTypes');   
+        $ids = $_POST['ids'];
+
+        if(!empty($ids)) {
+            foreach($ids as $sort => $interest_type_id) {
+                if($interest_type_id != '') {
+                    $a_data = $this->InterestTypes->get($interest_type_id, []);
+                    $data_sort['sort'] = $sort;
+                    $a_data = $this->InterestTypes->patchEntity($a_data, $data_sort);
+                    if ( !$this->InterestTypes->save($a_data) ) { echo "error unlocking lead"; }                    
+                }
+
+            }
+        }
+
+        exit;
+    }     
 }
