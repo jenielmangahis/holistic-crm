@@ -112,7 +112,7 @@
             </li> 
 
             <li id="groups_nav" title="Groups" class="<?= $nav_selected["trainings"] ?>">
-                <?= $this->Html->link('<i class="fa fa-user-times"></i><span>' . __("Training") . "</span>",["controller" => "trainings", "action" => "index"],["escape" => false]) ?>
+                <?= $this->Html->link('<i class="fa fa-user-times"></i><span>' . __("Training") . "</span>",["controller" => "trainings", "action" => "users"],["escape" => false]) ?>
             </li> 
 
             <li id="groups_nav" title="Groups" class="treeview <?= $nav_selected["reports"] ?>">
@@ -149,7 +149,7 @@
             </li> 
 
             <li id="groups_nav" title="Groups" class="<?= $nav_selected["trainings"] ?>">
-                <?= $this->Html->link('<i class="fa fa-user-times"></i><span>' . __("Training") . "</span>",["controller" => "trainings", "action" => "index"],["escape" => false]) ?>
+                <?= $this->Html->link('<i class="fa fa-user-times"></i><span>' . __("Training") . "</span>",["controller" => "trainings", "action" => "users"],["escape" => false]) ?>
             </li> 
 
             <li id="groups_nav" title="Groups" class="treeview <?= $nav_selected["reports"] ?>">

@@ -21,21 +21,22 @@ class TrainingsController extends AppController
     public function initialize()
     {
         parent::initialize();
-        $nav_selected = ["leads"];
+        $nav_selected = ["trainings"];
         $this->set('nav_selected', $nav_selected);
 
         $session   = $this->request->session();    
-        $user_data = $session->read('User.data');         
+        $user_data = $session->read('User.data');      
+
         if( isset($user_data) ){
             if( $user_data->group_id == 1 ){ //Admin
               $this->Auth->allow();
+            }elseif( $user_data->group_id == 2 ) { //User
+              $this->Auth->allow(['users']);
             }elseif( $user_data->group_id == 3 ) { //Staff
-              $this->Auth->allow();
+              $this->Auth->allow(['users','register']);
             }
         }
-        $this->user = $user_data;
-        // Allow full access to this controller
-        $this->Auth->allow(['register']);
+        $this->user = $user_data;        
     }
 
     /**
@@ -44,6 +45,29 @@ class TrainingsController extends AppController
      * @return void
      */
     public function index()
+    {
+        if( isset($this->request->query['query']) ){
+            $query = $this->request->query['query'];
+            $training_data = $this->Trainings->find('all')
+                ->contain([])
+                ->where(['Trainings.title LIKE' => '%' . $query . '%'])       
+                ->orWhere(['Trainings.filename LIKE' => '%' . $query . '%'])       
+            ;
+            $this->set('trainings', $this->paginate($training_data));
+        }else{
+            $this->set('trainings', $this->paginate($this->Trainings));
+        }
+
+
+        $this->set('_serialize', ['trainings']);
+    }
+
+    /**
+     * Users method
+     *
+     * @return void
+     */
+    public function users()
     {
         if( isset($this->request->query['query']) ){
             $query = $this->request->query['query'];
