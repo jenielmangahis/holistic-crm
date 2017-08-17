@@ -87,8 +87,31 @@ class GroupsController extends AppController
                 $this->Flash->error(__('The group could not be saved. Please, try again.'));
             }
         }
+
+        $permision_array = array(
+                "View Only"             => "View Only",
+                "View and Edit"         => "View and Edit",
+                "View, Edit and Delete" => "View, Edit and Delete",
+                "No Access"             => "No Access"
+            );
+
+        $modules_array = array(
+                "dashboard" => "Dashboard",
+                "leads" => "Leads",
+                "training" => "Training",
+                "users" => "Users",
+                "allocations" => "Allocations",
+                "sources" => "Sources",
+                "groups" => "Groups",
+                "status" => "Status",
+                "lead_type" => "Lead Type",
+                "interest_type" => "Interest Type"
+            );
+
         $this->set(compact('group'));
-        $this->set('_serialize', ['group']);
+        $this->set('modules_array', $modules_array);
+        $this->set('permision_array', $permision_array);
+        $this->set('_serialize', ['group','modules_array','modules_array']);
     }
 
     /**
