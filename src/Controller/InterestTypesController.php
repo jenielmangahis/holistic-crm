@@ -52,7 +52,8 @@ class InterestTypesController extends AppController
         if( isset( $this->request->query['query'] ) ) {
             $query   = $this->request->query['query'];
             $InterestTypes = $this->InterestTypes->find('all')
-                ->where( ['InterestTypes.name LIKE' => '%' . $query . '%'] );
+                ->where( ['InterestTypes.name LIKE' => '%' . $query . '%'] )                
+            ;
         } else {
             $InterestTypes = $this->InterestTypes->find('all', ['order' => ['InterestTypes.sort' => 'ASC']]);
         }

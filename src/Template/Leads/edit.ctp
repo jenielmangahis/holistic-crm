@@ -155,11 +155,17 @@
                                 echo $this->Form->input('followup_notes', ['class' => 'form-control ckeditor', 'id' => 'followup_notes', 'label' => false]);                
                             echo " </div></div>";                             
                             
+                            if( $lead->followup_action_reminder_date == '12/31/69' ){
+                                $followup_action_reminder_date = '';
+                            }else{
+                                $followup_action_reminder_date = $lead->followup_action_reminder_date->format("d F, Y");
+                            }
+
                             echo "
                             <div class='form-group'>
                                 <label for='followup_action_reminder_date' class='col-sm-2 control-label'>" . __('Followup Action Reminder Date') . "</label>
                                 <div class='col-sm-6'>";
-                                echo $this->Form->input('followup_action_reminder_date', ['type' => 'text', 'class' => 'form-control', 'value' => $lead->followup_action_reminder_date->format("d F, Y"), 'id' => 'lead-followup-action-reminder-date', 'label' => false]);                
+                                echo $this->Form->input('followup_action_reminder_date', ['type' => 'text', 'class' => 'form-control', 'value' => $followup_action_reminder_date, 'id' => 'lead-followup-action-reminder-date', 'label' => false]);                
                             echo " </div></div>";    
 
                             echo "

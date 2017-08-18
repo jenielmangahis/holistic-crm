@@ -124,10 +124,10 @@ class LeadsTable extends Table
             ->requirePresence('followup_date', 'create')
             ->notEmpty('followup_date');
 
-        $validator
+       /* $validator
             ->date('followup_action_reminder_date')
             ->requirePresence('followup_action_reminder_date', 'create')
-            ->notEmpty('followup_action_reminder_date');
+            ->notEmpty('followup_action_reminder_date');*/
 
         $validator
             ->allowEmpty('notes');

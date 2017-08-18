@@ -19,19 +19,26 @@
                     <?= $this->Form->create($status,['id' => 'frm-default-add', 'data-toggle' => 'validator', 'role' => 'form','class' => 'form-horizontal']) ?>
                     <fieldset>        
                         <?php
-                                                            echo "
-                                    <div class='form-group'>
-                                        <label for='name' class='col-sm-2 control-label'>" . __('Name') . "</label>
-                                        <div class='col-sm-6'>";
-                                        echo $this->Form->input('name', ['class' => 'form-control', 'id' => 'name', 'label' => false]);                
-                                    echo " </div></div>";    
+                            echo "
+                            <div class='form-group'>
+                                <label for='name' class='col-sm-2 control-label'>" . __('Name') . "</label>
+                                <div class='col-sm-6'>";
+                                echo $this->Form->input('name', ['class' => 'form-control', 'id' => 'name', 'label' => false]);                
+                            echo " </div></div>";    
+
+                            echo "
+                            <div class='form-group'>
+                                <label for='sort' class='col-sm-2 control-label'>" . __('Sort') . "</label>
+                                <div class='col-sm-6'>";
+                                echo $this->Form->input('sort', ['class' => 'form-control', 'id' => 'sort', 'label' => false]);                
+                            echo " </div></div>"; 
                                     
-                                                ?>
+                        ?>
                     </fieldset>
                     <div class="form-group" style="margin-top: 80px;">
                         <div class="col-sm-offset-2 col-sm-10">                            
                             <?= $this->Form->button('<i class="fa fa-save"></i> ' . __('Save'),['name' => 'save', 'value' => 'save', 'class' => 'btn btn-success', 'escape' => false]) ?>
-                            <?= $this->Form->button('<i class="fa fa-edit"></i> ' . __('Save and Continue adding'),['name' => 'save', 'value' => 'edit', 'class' => 'btn btn-info', 'escape' => false]) ?>
+                            <?= $this->Form->button('<i class="fa fa-edit"></i> ' . __('Save and Continue editing'),['name' => 'save', 'value' => 'edit', 'class' => 'btn btn-info', 'escape' => false]) ?>
                             <?= $this->Html->link('<i class="fa fa-angle-left"> </i> ' . __('Back To list'), ['action' => 'index'],['class' => 'btn btn-warning', 'escape' => false]) ?>                            
                         </div>
                     </div>
