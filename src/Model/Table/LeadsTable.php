@@ -144,7 +144,7 @@ class LeadsTable extends Table
      */
     public function buildRules(RulesChecker $rules)
     {
-        $rules->add($rules->isUnique(['email']));
+        //$rules->add($rules->isUnique(['email']));
         $rules->add($rules->existsIn(['status_id'], 'Statuses'));
         $rules->add($rules->existsIn(['source_id'], 'Sources'));
         $rules->add($rules->existsIn(['allocation_id'], 'Allocations'));
