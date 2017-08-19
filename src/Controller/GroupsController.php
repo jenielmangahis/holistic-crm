@@ -2,6 +2,7 @@
 namespace App\Controller;
 
 use App\Controller\AppController;
+use Cake\ORM\TableRegistry;
 
 /**
  * Groups Controller
@@ -72,20 +73,43 @@ class GroupsController extends AppController
      */
     public function add()
     {
+        $this->GroupActions = TableRegistry::get('GroupActions');    
+
         $group = $this->Groups->newEntity();
+        $group_action = $this->GroupActions->newEntity();
+
         if ($this->request->is('post')) {
+
+            //Insert Group
             $group = $this->Groups->patchEntity($group, $this->request->data);
             if ($this->Groups->save($group)) {
                 $this->Flash->success(__('The group has been saved.'));
                 $action = $this->request->data['save'];
+
                 if( $action == 'save' ){
                     return $this->redirect(['action' => 'index']);
                 }else{
                     return $this->redirect(['action' => 'add']);
                 }
+
             } else {
                 $this->Flash->error(__('The group could not be saved. Please, try again.'));
             }
+
+            //Insert Group Permission
+            /*$post_data['group_id'] = 1;
+            $post_data['module']   = 'test';
+            $post_data['action']   = 'test123';
+
+            $group_action = $this->GroupActions->patchEntity($group_action, $post_data);
+            if ($this->GroupActions->save($group_action)) {
+
+                $action = $this->request->data['save'];
+
+            } else {
+                $this->Flash->error(__('The group could not be saved. Please, try again.'));
+            }*/
+            
         }
 
         $permision_array = array(
@@ -141,8 +165,31 @@ class GroupsController extends AppController
                 $this->Flash->error(__('The group could not be saved. Please, try again.'));
             }
         }
+
+        $permision_array = array(
+                "View Only"             => "View Only",
+                "View and Edit"         => "View and Edit",
+                "View, Edit and Delete" => "View, Edit and Delete",
+                "No Access"             => "No Access"
+            );
+
+        $modules_array = array(
+                "dashboard" => "Dashboard",
+                "leads" => "Leads",
+                "training" => "Training",
+                "users" => "Users",
+                "allocations" => "Allocations",
+                "sources" => "Sources",
+                "groups" => "Groups",
+                "status" => "Status",
+                "lead_type" => "Lead Type",
+                "interest_type" => "Interest Type"
+            );
+
         $this->set(compact('group'));        
-        $this->set('_serialize', ['group']);
+        $this->set('modules_array', $modules_array);
+        $this->set('permision_array', $permision_array);        
+        $this->set('_serialize', ['group','modules_array', 'permision_array']);
     }
 
     /**
