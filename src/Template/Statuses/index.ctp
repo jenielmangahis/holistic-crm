@@ -32,11 +32,11 @@ div.box-body{
 </style>
 
 <section class="content-header">
-    <h1><?= __('Statuses') ?></h1>
+    <h1><?= __('Status Options') ?></h1>
     <ol class="breadcrumb">
         <li><a href="<?php echo $base_url; ?>"><i class="fa fa-dashboard"></i> Home</a></li>
         <li><a href="<?php echo $base_url; ?>"><i class="fa fa-gear"></i> System Settings</a></li>
-        <li class="active"><?= __('Statuses') ?></li>
+        <li class="active"><?= __('Status Options') ?></li>
     </ol>
 </section>
 

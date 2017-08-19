@@ -15,6 +15,7 @@
 namespace App\Controller;
 
 use Cake\Controller\Controller;
+use Cake\Core\Configure;
 use Cake\Event\Event;
 use Cake\ORM\TableRegistry;
 use Cake\Routing\Router;
@@ -55,6 +56,11 @@ class AppController extends Controller
             $loginRedirect = 'user_dashboard';
         }
 
+        
+        if( $user_data->group_id == 1 || $user_data->group_id == 3 ){
+            //Configure::write('Session.timeout', '1');
+        }        
+        
         $this->loadComponent('Flash');
         $this->loadComponent('Auth', [
             'authorize' => [
@@ -83,10 +89,7 @@ class AppController extends Controller
             'flash' => [
                 'element' => 'error'
             ]
-        ]);
-
-        $session = $this->request->session();    
-        $user_data = $session->read('User.data');        
+        ]);        
         
         $base_url  = Router::url('/',true);          
         $this->set([
