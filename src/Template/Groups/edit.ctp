@@ -1,3 +1,4 @@
+<?php ?>
 <style>
 .form-hdr{
     background-color: #222D32;
@@ -42,7 +43,7 @@
                                         <div class='form-group'>
                                             <label for="city" class="col-sm-3 control-label"><?php echo ucfirst($module); ?>: </label>
                                             <div class="col-sm-9">
-                                                <?php echo $this->Form->input('permision_' . $mkey, array('type'=>'select', 'class' => 'form-control', 'options' => $permision_array, 'label'=>false, 'empty'=> '')); ?>
+                                                <?php echo $this->Form->input('permision_' . $mkey, array('type'=>'select', 'class' => 'form-control', 'options' => $permision_array, 'default' => $group_action_defauly_array[$mkey], 'label' => false, 'empty' => '')); ?>
                                             </div>
                                         </div>
                                     </div>

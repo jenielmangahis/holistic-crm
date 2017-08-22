@@ -87,6 +87,11 @@ class UsersController extends AppController
      */
     public function dashboard()
     {   
+        $p = $this->default_group_actions;
+        if($p && $p['dashboard'] == 'No Access' ){
+            return $this->redirect(['action' => 'no_access']);
+        } 
+                  
         $this->unlock_lead_check();
         $this->Leads    = TableRegistry::get('Leads');        
         $this->Sources  = TableRegistry::get('Sources');        
@@ -137,6 +142,12 @@ class UsersController extends AppController
      */
     public function user_dashboard()
     {  
+        $p = $this->default_group_actions;
+        if($p && $p['dashboard'] == 'No Access' ){
+            //$this->Flash->success(__('The user has been saved.'));
+            return $this->redirect(['action' => 'no_access']);
+        }        
+
         $this->unlock_lead_check(); 
         $this->Leads = TableRegistry::get('Leads');   
         $this->AllocationUsers = TableRegistry::get('AllocationUsers'); 
@@ -423,4 +434,8 @@ class UsersController extends AppController
 
         $this->set(['user' => $user]);
     }    
+
+    public function no_access() {
+        $this->set(['message' => '']);
+    }
 }

@@ -23,19 +23,29 @@ class LeadsController extends AppController
         parent::initialize();
         $nav_selected = ["leads"];
         $this->set('nav_selected', $nav_selected);
+        $p = $this->default_group_actions;
+
+        if($p && $p['leads'] != 'No Access' ){
+            //return $this->redirect(['action' => 'no_access']);
+            $this->Auth->allow();
+        }
 
         $session   = $this->request->session();    
         $user_data = $session->read('User.data');         
-        if( isset($user_data) ){
+
+        /*if( isset($user_data) ){
             if( $user_data->group_id == 1 ){ //Admin
               $this->Auth->allow();
             }elseif( $user_data->group_id == 3 ) { //Staff
               $this->Auth->allow();
             }
-        }
+        }*/
+        
         $this->user = $user_data;
         // Allow full access to this controller
         $this->Auth->allow(['register']);
+
+ 
     }
 
     /**
@@ -415,5 +425,9 @@ class LeadsController extends AppController
         }         
       }
       
+    }    
+
+    public function no_access() {
+        $this->set(['message' => '']);
     }    
 }

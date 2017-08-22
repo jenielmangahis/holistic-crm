@@ -89,7 +89,20 @@ class AppController extends Controller
             'flash' => [
                 'element' => 'error'
             ]
-        ]);        
+        ]);  
+
+        $this->GroupActions = TableRegistry::get('GroupActions');    
+        $group_actions = $this->GroupActions->find()
+            ->where(['GroupActions.group_id' => $user_data->group_id]);
+
+        foreach($group_actions as $gakey => $gadata) {
+            $default_group_actions[$gadata->module] = $gadata->action;
+        }  
+
+        $this->default_group_actions = $default_group_actions;
+        $this->set([
+            'default_group_actions' => $default_group_actions
+        ]);
         
         $base_url  = Router::url('/',true);          
         $this->set([

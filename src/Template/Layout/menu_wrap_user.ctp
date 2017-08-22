@@ -63,12 +63,16 @@
         <li class="header">MAIN NAVIGATION</li>
 
         <?php if($hdr_user_data->group_id == 1 || $group_name == 'admin') { //Admin ?>
-            <li id="groups_nav" title="Groups" class="<?= $nav_selected["dashboard"] ?>">
-                <?= $this->Html->link('<i class="fa fa-dashboard"></i><span>' . __("Dashboard") . "</span>",["controller" => "users", "action" => "dashboard"],["escape" => false]) ?>
-            </li>                     
-            <li id="groups_nav" title="Groups" class="<?= $nav_selected["leads"] ?>">
-                <?= $this->Html->link('<i class="fa fa-users"></i><span>' . __("Leads") . "</span>",["controller" => "leads", "action" => "index"],["escape" => false]) ?>
-            </li> 
+                <?php if($default_group_actions['dashboard'] != 'No Access') { ?>
+                        <li id="groups_nav" title="Groups" class="<?= $nav_selected["dashboard"] ?>">
+                            <?= $this->Html->link('<i class="fa fa-dashboard"></i><span>' . __("Dashboard") . "</span>",["controller" => "users", "action" => "dashboard"],["escape" => false]) ?>
+                        </li>                     
+                <?php } ?>
+                <?php if($default_group_actions['leads'] != 'No Access') { ?>
+                        <li id="groups_nav" title="Groups" class="<?= $nav_selected["leads"] ?>">
+                            <?= $this->Html->link('<i class="fa fa-users"></i><span>' . __("Leads") . "</span>",["controller" => "leads", "action" => "index"],["escape" => false]) ?>
+                        </li> 
+                <?php } ?>
 
             <li id="groups_nav" title="Groups" class="<?= $nav_selected["trainings"] ?>">
                 <?= $this->Html->link('<i class="fa fa-user-times"></i><span>' . __("Training") . "</span>",["controller" => "trainings", "action" => "index"],["escape" => false]) ?>
@@ -104,12 +108,16 @@
               </ul>
             </li>
         <?php }elseif($hdr_user_data->group_id ==  3 || $group_name == 'staff') { //Staff ?>
-            <li id="groups_nav" title="Groups" class="<?= $nav_selected["dashboard"] ?>">
-                <?= $this->Html->link('<i class="fa fa-dashboard"></i><span>' . __("Dashboard") . "</span>",["controller" => "users", "action" => "dashboard"],["escape" => false]) ?>
-            </li>                     
-            <li id="groups_nav" title="Groups" class="<?= $nav_selected["leads"] ?>">
-                <?= $this->Html->link('<i class="fa fa-users"></i><span>' . __("Leads") . "</span>",["controller" => "leads", "action" => "index"],["escape" => false]) ?>
-            </li> 
+                  <?php if($default_group_actions['dashboard'] != 'No Access') { ?>
+                        <li id="groups_nav" title="Groups" class="<?= $nav_selected["dashboard"] ?>">
+                            <?= $this->Html->link('<i class="fa fa-dashboard"></i><span>' . __("Dashboard") . "</span>",["controller" => "users", "action" => "dashboard"],["escape" => false]) ?>
+                        </li>
+                  <?php } ?>
+                  <?php if($default_group_actions['leads'] != 'No Access') { ?>
+                        <li id="groups_nav" title="Groups" class="<?= $nav_selected["leads"] ?>">
+                            <?= $this->Html->link('<i class="fa fa-users"></i><span>' . __("Leads") . "</span>",["controller" => "leads", "action" => "index"],["escape" => false]) ?>
+                        </li> 
+                  <?php } ?>
 
             <li id="groups_nav" title="Groups" class="<?= $nav_selected["trainings"] ?>">
                 <?= $this->Html->link('<i class="fa fa-user-times"></i><span>' . __("Training") . "</span>",["controller" => "trainings", "action" => "users"],["escape" => false]) ?>
