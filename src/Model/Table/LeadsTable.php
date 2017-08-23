@@ -94,14 +94,14 @@ class LeadsTable extends Table
             ->requirePresence('firstname', 'create')
             ->notEmpty('firstname');
 
-        $validator
+        /*$validator
             ->requirePresence('surname', 'create')
-            ->notEmpty('surname');
+            ->notEmpty('surname');*/
 
-        $validator
+        /*$validator
             ->email('email')
             ->requirePresence('email', 'create')
-            ->notEmpty('email');
+            ->notEmpty('email');*/
 
         /*$validator
             ->requirePresence('phone', 'create')
