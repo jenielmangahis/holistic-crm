@@ -170,7 +170,7 @@ class LeadsController extends AppController
     public function add()
     {
         $p = $this->default_group_actions;
-        if( $p && $p['leads'] != 'View and Edit' ){
+        if( $p && $p['leads'] == 'View Only' ){
             return $this->redirect(['controller' => 'users', 'action' => 'no_access']);
         } 
 

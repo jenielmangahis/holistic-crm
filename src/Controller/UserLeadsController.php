@@ -24,15 +24,22 @@ class UserLeadsController extends AppController
         $nav_selected = ["leads"];
         $this->set('nav_selected', $nav_selected);
 
+        $p = $this->default_group_actions;
+        if($p && $p['leads'] != 'No Access' ){
+            $this->Auth->allow();
+        }        
+
         $session   = $this->request->session();    
         $user_data = $session->read('User.data');         
-        if( isset($user_data) ){
+
+        /*if( isset($user_data) ){
             if( $user_data->group_id == 1 ){ //Admin
               $this->Auth->allow();
             }else{
               $this->Auth->allow();
             } 
-        }
+        }*/
+
         $this->user = $user_data;
 
         // Allow full access to this controller
@@ -166,6 +173,11 @@ class UserLeadsController extends AppController
      */
     public function add()
     {
+        $p = $this->default_group_actions;
+        if( $p && $p['leads'] == 'View Only' ){
+            return $this->redirect(['controller' => 'users', 'action' => 'no_access']);
+        }      
+
         if(isset($this->request->data['allocation_date']) || isset($this->request->data['followup_date']) || isset($this->request->data['followup_action_reminder_date'])) {
           $this->request->data['allocation_date']               = date("Y-m-d", strtotime($this->request->data['allocation_date']));
           $this->request->data['followup_date']                 = date("Y-m-d", strtotime($this->request->data['followup_date']));
@@ -205,6 +217,11 @@ class UserLeadsController extends AppController
      */
     public function edit($id = null, $redir = null)
     {
+        $p = $this->default_group_actions;
+        if( $p && $p['leads'] != 'View and Edit' ){
+            return $this->redirect(['controller' => 'users', 'action' => 'no_access']);
+        } 
+
         $login_user_id = $this->user->id;
         if(isset($this->request->data['allocation_date']) || isset($this->request->data['followup_date']) || isset($this->request->data['followup_action_reminder_date'])) {
           $this->request->data['allocation_date']               = date("Y-m-d", strtotime($this->request->data['allocation_date']));
@@ -277,6 +294,11 @@ class UserLeadsController extends AppController
      */
     public function delete($id = null)
     {
+        $p = $this->default_group_actions;
+        if( $p && $p['leads'] != 'View, Edit and Delete' ){
+            return $this->redirect(['controller' => 'users', 'action' => 'no_access']);
+        } 
+              
         $login_user_id = $this->user->id;
         $lead_lock = $this->Leads->get($id, [ 'contain' => ['LastModifiedBy'] ]);         
 
