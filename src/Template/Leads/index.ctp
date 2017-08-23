@@ -30,7 +30,9 @@
                     </div>
 
                     <div class="box-tools" style="top:9px;">                         
-                        <?= $this->Html->link('<i class="fa fa-plus"></i> Add New', ['action' => 'add'],['class' => 'btn btn-box-tool', 'escape' => false]) ?>
+                        <?php if( $default_group_actions && $default_group_actions['leads'] != 'View Only' ){ ?>
+                                    <?= $this->Html->link('<i class="fa fa-plus"></i> Add New', ['action' => 'add'],['class' => 'btn btn-box-tool', 'escape' => false]) ?>
+                        <?php } ?>
                         <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>                        
                     </div>                    
                     
@@ -61,9 +63,17 @@
                                             Action <span class="caret"></span>
                                         </button>
                                         <ul class="dropdown-menu" role="menu" aria-labelledby="drpdwn">
-                                            <li role="presentation"><?= $this->Html->link('<i class="fa fa-eye"></i> View', ['action' => 'view', $lead->id],['escape' => false]) ?></li>
-                                            <li role="presentation"><?= $this->Html->link('<i class="fa fa-pencil"></i> Edit', ['action' => 'edit', $lead->id],['escape' => false]) ?></li>
-                                            <li role="presentation"><?= $this->Html->link('<i class="fa fa-trash"></i> Delete', '#modal-'.$lead->id,['data-toggle' => 'modal','escape' => false]) ?></li>
+                                            <?php if( $default_group_actions && $default_group_actions['leads'] == 'View Only' ){ ?>
+                                                <li role="presentation"><?= $this->Html->link('<i class="fa fa-eye"></i> View', ['action' => 'view', $lead->id],['escape' => false]) ?></li>
+                                            <?php }elseif($default_group_actions && $default_group_actions['leads'] == 'View and Edit') { ?>
+                                                <li role="presentation"><?= $this->Html->link('<i class="fa fa-eye"></i> View', ['action' => 'view', $lead->id],['escape' => false]) ?></li>
+                                                <li role="presentation"><?= $this->Html->link('<i class="fa fa-pencil"></i> Edit', ['action' => 'edit', $lead->id],['escape' => false]) ?></li>
+                                            <?php }elseif($default_group_actions && $default_group_actions['leads'] == 'View, Edit and Delete') { ?>
+                                                <li role="presentation"><?= $this->Html->link('<i class="fa fa-eye"></i> View', ['action' => 'view', $lead->id],['escape' => false]) ?></li>
+                                                <li role="presentation"><?= $this->Html->link('<i class="fa fa-pencil"></i> Edit', ['action' => 'edit', $lead->id],['escape' => false]) ?></li>
+                                                <li role="presentation"><?= $this->Html->link('<i class="fa fa-trash"></i> Delete', '#modal-'.$lead->id,['data-toggle' => 'modal','escape' => false]) ?></li>
+                                            <?php } ?>
+
                                             <?php if($is_admin_user == 1 && $lead->is_lock == 1){ ?>
                                                     <li role="presentation"><?= $this->Html->link('<i class="fa fa-unlock"></i> Unlock', '#unlock-modal-'.$lead->id,['data-toggle' => 'modal','escape' => false]) ?></li>
                                             <?php } ?>

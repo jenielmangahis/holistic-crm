@@ -169,6 +169,11 @@ class LeadsController extends AppController
      */
     public function add()
     {
+        $p = $this->default_group_actions;
+        if( $p && $p['leads'] != 'View and Edit' ){
+            return $this->redirect(['controller' => 'users', 'action' => 'no_access']);
+        } 
+
         if(isset($this->request->data['allocation_date']) || isset($this->request->data['followup_date']) || isset($this->request->data['followup_action_reminder_date'])) {
           $this->request->data['allocation_date']               = date("Y-m-d", strtotime($this->request->data['allocation_date']));
           $this->request->data['followup_date']                 = date("Y-m-d", strtotime($this->request->data['followup_date']));
@@ -208,6 +213,11 @@ class LeadsController extends AppController
      */
     public function edit($id = null, $redir = null)
     {
+        $p = $this->default_group_actions;
+        if( $p && $p['leads'] != 'View and Edit' ){
+            return $this->redirect(['controller' => 'users', 'action' => 'no_access']);
+        } 
+
         $login_user_id = $this->user->id;
         if(isset($this->request->data['allocation_date']) || isset($this->request->data['followup_date']) || isset($this->request->data['followup_action_reminder_date'])) {
           $this->request->data['allocation_date']               = date("Y-m-d", strtotime($this->request->data['allocation_date']));
@@ -286,6 +296,11 @@ class LeadsController extends AppController
      */
     public function delete($id = null)
     {
+        $p = $this->default_group_actions;
+        if( $p && $p['leads'] != 'View, Edit and Delete' ){
+            return $this->redirect(['controller' => 'users', 'action' => 'no_access']);
+        } 
+
         $login_user_id = $this->user->id;
         $lead_lock = $this->Leads->get($id, [ 'contain' => ['LastModifiedBy'] ]);         
 
