@@ -130,8 +130,10 @@ class TrainingsController extends AppController
 
                     $imageFileName = $setNewFileName . '.' . $ext;
 
-                    $request_data['title']    = $this->request->data['title'];  
-                    $request_data['filename'] = $imageFileName;  
+                    $request_data['title']       = $this->request->data['title'];  
+                    $request_data['filename']    = $imageFileName;  
+                    $request_data['anchor_text'] = $this->request->data['anchor_text'];  
+                    $request_data['video_url']   = $this->request->data['video_url'];  
 
                     $training = $this->Trainings->patchEntity($training, $request_data);
                     if ($this->Trainings->save($training)) {
@@ -197,6 +199,9 @@ class TrainingsController extends AppController
                 } else {
                     $request_data['filename'] = $imageFileName;      
                 }
+
+                $request_data['anchor_text'] = $this->request->data['anchor_text'];  
+                $request_data['video_url']   = $this->request->data['video_url'];                  
                 
                 $training = $this->Trainings->patchEntity($training, $request_data);
                 if ($this->Trainings->save($training)) {

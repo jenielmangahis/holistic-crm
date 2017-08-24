@@ -269,12 +269,13 @@ class AllocationUsersController extends AppController
 
         if( !empty($a_allocation_users) ){
             $users = $this->AllocationUsers->Users->find('all')
-                ->where(['Users.group_id' => 2, 'Users.id NOT IN' => $a_allocation_users])
+                //->where(['Users.group_id' => 2, 'Users.id NOT IN' => $a_allocation_users])
+                ->where(['Users.id NOT IN' => $a_allocation_users])
                 ->toArray()
             ;    
         }else{
             $users = $this->AllocationUsers->Users->find('all')
-                ->where(['Users.group_id' => 2])
+                //->where(['Users.group_id' => 2])
                 ->toArray()
             ;    
         }

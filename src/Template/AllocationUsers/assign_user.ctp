@@ -1,3 +1,4 @@
+<?php ?>
 <style>
 .form-caption{
     background-color: #3C8DBC;
