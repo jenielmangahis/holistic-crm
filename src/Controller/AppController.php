@@ -91,6 +91,7 @@ class AppController extends Controller
             ]
         ]);  
 
+        $default_group_actions = array();
         $this->GroupActions = TableRegistry::get('GroupActions');    
         $group_actions = $this->GroupActions->find()
             ->where(['GroupActions.group_id' => $user_data->group_id]);
