@@ -34,11 +34,29 @@ class SourcesController extends AppController
     {
         $this->unlock_lead_check();
         if( isset( $this->request->query['query'] ) ) {
+
             $query   = $this->request->query['query'];
             $sources = $this->Sources->find('all')
                 ->where( ['Sources.name LIKE' => '%' . $query . '%'] );
+
         } else {
-            $sources = $this->Sources->find('all');
+            $sort_direction = !empty($this->request->query['direction']) ? $this->request->query['direction'] : 'ASC';
+
+            if( !empty($this->request->query['direction']) && !empty($this->request->query['sort']) ) {
+                $sources_to_sort  = $this->Sources->find('all', ['order' => ['Sources.name' => $sort_direction]]);
+                $sort = 1;
+                foreach($sources_to_sort as $skey => $sd) {
+
+                    $a_data = $this->Sources->get($sd->id, []);
+                    $data_sort['sort'] = $sort;
+                    $a_data = $this->Sources->patchEntity($a_data, $data_sort);
+                    if ( !$this->Sources->save($a_data) ) { echo "error unlocking lead"; }                    
+
+                $sort++;
+                }
+            }
+
+            $sources = $this->Sources->find('all', ['order' => ['Sources.sort' => 'ASC']]);
         }     
 
         $this->set('sources', $this->paginate($sources));

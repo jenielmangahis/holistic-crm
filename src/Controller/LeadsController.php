@@ -196,7 +196,7 @@ class LeadsController extends AppController
             }
         }
         $statuses = $this->Leads->Statuses->find('list', ['order' => ['Statuses.sort' => 'ASC']]);
-        $sources  = $this->Leads->Sources->find('list');
+        $sources  = $this->Leads->Sources->find('list', ['order' => ['Sources.sort' => 'ASC']]);
         $allocations = $this->Leads->Allocations->find('list', ['order' => ['Allocations.sort' => 'ASC']]);
         $interestTypes = $this->Leads->InterestTypes->find('list', ['order' => ['InterestTypes.sort' => 'ASC']]);
         $leadTypes = $this->Leads->LeadTypes->find('list', ['order' => ['LeadTypes.sort' => 'ASC']]);
@@ -214,7 +214,7 @@ class LeadsController extends AppController
     public function edit($id = null, $redir = null)
     {
         $p = $this->default_group_actions;
-        if( $p && $p['leads'] != 'View and Edit' ){
+        if( $p && $p['leads'] == 'View Only' ){
             return $this->redirect(['controller' => 'users', 'action' => 'no_access']);
         } 
 
@@ -279,7 +279,7 @@ class LeadsController extends AppController
             }
         }
         $statuses = $this->Leads->Statuses->find('list', ['order' => ['Statuses.sort' => 'ASC']]);
-        $sources = $this->Leads->Sources->find('list', ['limit' => 200]);
+        $sources = $this->Leads->Sources->find('list', ['order' => ['Sources.sort' => 'ASC']]);
         $allocations = $this->Leads->Allocations->find('list', ['order' => ['Allocations.sort' => 'ASC']]);
         $interestTypes = $this->Leads->InterestTypes->find('list', ['order' => ['InterestTypes.sort' => 'ASC']]);
         $leadTypes = $this->Leads->LeadTypes->find('list', ['order' => ['LeadTypes.sort' => 'ASC']]);
