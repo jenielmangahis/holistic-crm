@@ -231,7 +231,15 @@ class UsersController extends AppController
                 $this->Flash->error(__('The user could not be saved. Please, try again.'));
             }
         }
-        $groups = $this->Users->Groups->find('list', ['limit' => 200]);
+
+        $this->set('user_group', $this->user->group_id);
+        if($this->user->group_id == 1) {
+            $groups = $this->Users->Groups->find('list', ['limit' => 200]);
+        } else {
+            $groups = $this->Users->Groups->find('list')
+                ->where(['Groups.id !=' => 1]);
+        }
+        
         $this->set(compact('user', 'groups'));
         $this->set('_serialize', ['user']);
     }
@@ -265,7 +273,17 @@ class UsersController extends AppController
         $this->set(compact('user'));
         $this->set('_serialize', ['user']);
 
-         $this->set('groups', $this->Users->Groups->find('list', array('fields' => array('name','id') ) ) );
+        if($this->user->group_id == 1) {
+            $this->set('groups', $this->Users->Groups->find('list', array('fields' => array('name','id') ) ) );
+        } else {
+            $groups = $this->Users->Groups->find('list')
+                ->where(['Groups.id !=' => 1]);
+
+            $this->set('groups', $groups);
+        }
+
+
+        
     }
 
     /**

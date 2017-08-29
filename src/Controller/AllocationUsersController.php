@@ -20,14 +20,20 @@ class AllocationUsersController extends AppController
         parent::initialize();
         $nav_selected = ["system_settings"];
         $this->set('nav_selected', $nav_selected);        
+        $p = $this->default_group_actions;
 
-        $session = $this->request->session();    
+        if($p && $p['users'] != 'No Access' ){
+            $this->Auth->allow();
+        }        
+
+        $session   = $this->request->session();    
         $user_data = $session->read('User.data');         
-        if( isset($user_data) ){
+
+        /*if( isset($user_data) ){
             if( $user_data->group_id == 1 ){ //Admin
               $this->Auth->allow();
             }
-        }
+        }*/
     }
 
     /**

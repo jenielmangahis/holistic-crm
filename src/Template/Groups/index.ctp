@@ -83,7 +83,10 @@ div.box-body{
                                         <ul class="dropdown-menu" role="menu" aria-labelledby="drpdwn">
                                             <li role="presentation"><?= $this->Html->link('<i class="fa fa-eye"></i> View', ['action' => 'view', $g->id],['escape' => false]) ?></li>
                                             <li role="presentation"><?= $this->Html->link('<i class="fa fa-pencil"></i> Edit', ['action' => 'edit', $g->id],['escape' => false]) ?></li>
-                                            <li role="presentation"><?= $this->Html->link('<i class="fa fa-trash"></i> Delete', '#modal-'.$g->id,['data-toggle' => 'modal','escape' => false]) ?></li>
+                                            <?php if( $g->id != 1 ) { ?>
+                                                    <li role="presentation"><?= $this->Html->link('<i class="fa fa-trash"></i> Delete', '#modal-'.$g->id,['data-toggle' => 'modal','escape' => false]) ?></li>
+                                            <?php } ?>
+                                            
                                         </ul>
                                     </div>   
                                     <div id="modal-<?=$g->id?>" class="modal fade">

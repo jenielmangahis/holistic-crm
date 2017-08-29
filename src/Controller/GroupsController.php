@@ -22,6 +22,10 @@ class GroupsController extends AppController
         $nav_selected = ["system_settings"];
         $this->set('nav_selected', $nav_selected);
 
+        $session    = $this->request->session();    
+        $user_data  = $session->read('User.data');         
+        $this->user = $user_data;        
+
         // Allow full access to this controller
         //$this->Auth->allow();
     }
@@ -44,6 +48,7 @@ class GroupsController extends AppController
             $groups = $this->Groups->find('all');
         }      
         
+        $this->set('user_group', $this->user->group_id);
         $this->set('groups', $this->paginate($groups));
         $this->set('_serialize', ['groups']);
     }

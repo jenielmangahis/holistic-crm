@@ -29,7 +29,10 @@
                         <?= $this->Form->end() ?>
                     </div>
 
-                    <div class="box-tools" style="top:9px;">                                                 
+                    <div class="box-tools" style="top:9px;">    
+                        <?php if( $default_group_actions && $default_group_actions['leads'] != 'View Only' ){ ?>
+                                    <?= $this->Html->link('<i class="fa fa-plus"></i> Add New', ['action' => 'add'],['class' => 'btn btn-box-tool', 'escape' => false]) ?>
+                        <?php } ?>                                                                 
                         <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>                        
                     </div>                    
                     

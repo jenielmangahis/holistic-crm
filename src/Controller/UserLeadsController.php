@@ -123,7 +123,7 @@ class UserLeadsController extends AppController
 
           $allocationUsers = $this->AllocationUsers->find('all')            
             ->where(['AllocationUsers.user_id' => $user_data->id])            
-          ;
+          ;       
 
           if( $allocationUsers->count() > 0 ) {
 
