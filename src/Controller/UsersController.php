@@ -87,6 +87,13 @@ class UsersController extends AppController
      */
     public function dashboard()
     {   
+        $session   = $this->request->session();    
+        $user_data = $session->read('User.data');         
+        
+        /*if( $user_data->group_id <> 1 ){
+            //return $this->redirect(['action' => 'user_dashboard']);
+        }*/
+
         $p = $this->default_group_actions;
         if($p && $p['dashboard'] == 'No Access' ){
             return $this->redirect(['action' => 'no_access']);

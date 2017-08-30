@@ -50,7 +50,7 @@ class AppController extends Controller
         $session = $this->request->session();    
         $user_data = $session->read('User.data');
 
-        if( $user_data->group_id == 1 ){
+        if( $user_data->group_id == 1 || $user_data->group_id == 3 ){
             $loginRedirect = 'dashboard';
         }else{
             $loginRedirect = 'user_dashboard';
