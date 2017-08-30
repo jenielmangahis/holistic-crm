@@ -29,12 +29,25 @@ class AllocationsController extends AppController
         if( isset($user_data) ){
             if( $user_data->group_id == 1 ){ //Admin
               $this->Auth->allow();
-            }elseif( $user_data->group_id == 3 ) { //Staff
-              $this->Auth->allow();
+            }else{                           
+                $authorized_modules = array();     
+                $rights = $this->default_group_actions['allocations'];                
+                switch ($rights) {
+                    case 'View Only':
+                        $authorized_modules = ['index', 'view'];
+                        break;
+                    case 'View and Edit':
+                        $authorized_modules = ['index', 'view', 'edit'];
+                        break;
+                    case 'View, Edit and Delete':
+                        $authorized_modules = ['index', 'view', 'edit', 'delete'];
+                        break;        
+                    default:            
+                        break;
+                }                
+                $this->Auth->allow($authorized_modules);
             }
-        }        
-
-        // Allow full access to this controller
+        }    
     }
 
     /**

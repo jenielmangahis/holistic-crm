@@ -28,12 +28,28 @@ class AllocationUsersController extends AppController
 
         $session   = $this->request->session();    
         $user_data = $session->read('User.data');         
-
-        /*if( isset($user_data) ){
+        if( isset($user_data) ){
             if( $user_data->group_id == 1 ){ //Admin
               $this->Auth->allow();
+            }else{           
+                $authorized_modules = array();     
+                $rights = $this->default_group_actions['allocations'];                
+                switch ($rights) {
+                    case 'View Only':
+                        $authorized_modules = ['index', 'view'];
+                        break;
+                    case 'View and Edit':
+                        $authorized_modules = ['index', 'view', 'edit', 'add_user', 'edit_user', 'assign_user', 'change_password'];
+                        break;
+                    case 'View, Edit and Delete':
+                        $authorized_modules = ['index', 'view', 'edit', 'delete', 'add_user', 'edit_user', 'assign_user', 'change_password'];
+                        break;        
+                    default:            
+                        break;
+                }                
+                $this->Auth->allow($authorized_modules);
             }
-        }*/
+        }      
     }
 
     /**

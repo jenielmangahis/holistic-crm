@@ -21,8 +21,30 @@ class SourcesController extends AppController
         $nav_selected = ["system_settings"];
         $this->set('nav_selected', $nav_selected);
 
-        // Allow full access to this controller
-        $this->Auth->allow();
+        $session   = $this->request->session();    
+        $user_data = $session->read('User.data');         
+        if( isset($user_data) ){
+            if( $user_data->group_id == 1 ){ //Admin
+              $this->Auth->allow();
+            }else{                          
+                $authorized_modules = array();     
+                $rights = $this->default_group_actions['sources'];                
+                switch ($rights) {
+                    case 'View Only':
+                        $authorized_modules = ['index', 'view'];
+                        break;
+                    case 'View and Edit':
+                        $authorized_modules = ['index', 'view', 'edit'];
+                        break;
+                    case 'View, Edit and Delete':
+                        $authorized_modules = ['index', 'view', 'edit', 'delete'];
+                        break;        
+                    default:            
+                        break;
+                }                
+                $this->Auth->allow($authorized_modules);
+            }
+        }    
     }    
 
     /**

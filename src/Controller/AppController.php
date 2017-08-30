@@ -100,7 +100,7 @@ class AppController extends Controller
             $default_group_actions[$gadata->module] = $gadata->action;
         }  
 
-        $this->default_group_actions = $default_group_actions;
+        $this->default_group_actions = $default_group_actions;        
         $this->set([
             'default_group_actions' => $default_group_actions
         ]);

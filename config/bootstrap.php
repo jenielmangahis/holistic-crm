@@ -296,16 +296,21 @@ function stringToArray( $value = '', $delimiter = '' ){
     return $stringToArray;
 }
 
-use Cake\Network\Session;
-function get_customer_directory() {
-
-    $session = new Session();
-    $sessionData = $session->read('Customer.data');   
-
-    if(!empty($sessionData)) {
-       return $sessionData->customer_domain; 
-   }else{
-        return "";
-   }
-     
+function getUserAllowedModules( $module = '', $rights = '' ){
+    $authorized_modules = array();
+    switch ($rights) {
+        case 'View Only':
+            $authorized_modules = ['view'];
+            break;
+        case 'View and Edit':
+            $authorized_modules = ['view', 'edit'];
+            break;
+        case 'View, Edit and Delete':
+            $authorized_modules = ['view', 'edit', 'delete'];
+            break;
+        case 'No Access':            
+            break;
+        default:            
+            break;
+    }
 }
