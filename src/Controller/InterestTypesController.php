@@ -28,13 +28,25 @@ class InterestTypesController extends AppController
         if( isset($user_data) ){
             if( $user_data->group_id == 1 ){ //Admin
               $this->Auth->allow();
-            }elseif( $user_data->group_id == 3 ) { //Staff
-              $this->Auth->allow();
+            }else{                          
+                $authorized_modules = array();     
+                $rights = $this->default_group_actions['interest_type'];                
+                switch ($rights) {
+                    case 'View Only':
+                        $authorized_modules = ['index', 'view'];
+                        break;
+                    case 'View and Edit':
+                        $authorized_modules = ['index', 'view', 'edit', 'add'];
+                        break;
+                    case 'View, Edit and Delete':
+                        $authorized_modules = ['index', 'view', 'edit', 'delete', 'add'];
+                        break;        
+                    default:            
+                        break;
+                }                
+                $this->Auth->allow($authorized_modules);
             }
-        }        
-
-        //Allow full access to this controller
-        //$this->Auth->allow();
+        }    
     }    
 
     /**

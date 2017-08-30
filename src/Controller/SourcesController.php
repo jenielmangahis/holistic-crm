@@ -34,10 +34,10 @@ class SourcesController extends AppController
                         $authorized_modules = ['index', 'view'];
                         break;
                     case 'View and Edit':
-                        $authorized_modules = ['index', 'view', 'edit'];
+                        $authorized_modules = ['index', 'view', 'edit', 'add'];
                         break;
                     case 'View, Edit and Delete':
-                        $authorized_modules = ['index', 'view', 'edit', 'delete'];
+                        $authorized_modules = ['index', 'view', 'edit', 'delete', 'add'];
                         break;        
                     default:            
                         break;

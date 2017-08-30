@@ -39,10 +39,10 @@ class AllocationUsersController extends AppController
                         $authorized_modules = ['index', 'view'];
                         break;
                     case 'View and Edit':
-                        $authorized_modules = ['index', 'view', 'edit', 'add_user', 'edit_user', 'assign_user', 'change_password'];
+                        $authorized_modules = ['index', 'view', 'edit', 'add', 'add_user', 'edit_user', 'assign_user', 'change_password'];
                         break;
                     case 'View, Edit and Delete':
-                        $authorized_modules = ['index', 'view', 'edit', 'delete', 'add_user', 'edit_user', 'assign_user', 'change_password'];
+                        $authorized_modules = ['index', 'view', 'edit', 'add', 'delete', 'add_user', 'edit_user', 'assign_user', 'change_password'];
                         break;        
                     default:            
                         break;
