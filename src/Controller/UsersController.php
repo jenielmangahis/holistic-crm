@@ -29,15 +29,31 @@ class UsersController extends AppController
 
         $session = $this->request->session();    
         $user_data = $session->read('User.data');         
+
         if( isset($user_data) ){
             if( $user_data->group_id == 1 ){ //Admin
-                $this->Auth->allow();
-            }elseif( $user_data->group_id == 3 ){ //Staff
-                $this->Auth->allow();
-            }else{        
-                $this->Auth->allow(['user_dashboard','login','logout']);
-            } 
-        }
+              $this->Auth->allow();
+            }else{                          
+                $authorized_modules = array();     
+                $rights = $this->default_group_actions['users'];                
+                switch ($rights) {
+                    case 'View Only':
+                        $authorized_modules = ['index', 'view', 'dashboard', 'user_dashboard'];
+                        break;
+                    case 'View and Edit':
+                        $authorized_modules = ['index', 'view', 'edit', 'add', 'change_password', 'request_forgot_password', 'dashboard', 'user_dashboard'];
+                        break;
+                    case 'View, Edit and Delete':
+                        $authorized_modules = ['index', 'view', 'edit', 'delete', 'add', 'change_password', 'request_forgot_password', 'dashboard', 'user_dashboard'];
+                        break;        
+                    default:        
+                        $this->Auth->allow(['user_dashboard','login','logout']);    
+                        break;
+                }                
+                $this->Auth->allow($authorized_modules);
+            }
+        } 
+
         $this->user = $user_data;
         $this->Auth->allow(['request_forgot_password']);
     }
@@ -89,10 +105,6 @@ class UsersController extends AppController
     {   
         $session   = $this->request->session();    
         $user_data = $session->read('User.data');         
-        
-        /*if( $user_data->group_id <> 1 ){
-            //return $this->redirect(['action' => 'user_dashboard']);
-        }*/
 
         $p = $this->default_group_actions;
         if($p && $p['dashboard'] == 'No Access' ){
@@ -151,7 +163,6 @@ class UsersController extends AppController
     {  
         $p = $this->default_group_actions;
         if($p && $p['dashboard'] == 'No Access' ){
-            //$this->Flash->success(__('The user has been saved.'));
             return $this->redirect(['action' => 'no_access']);
         }        
 

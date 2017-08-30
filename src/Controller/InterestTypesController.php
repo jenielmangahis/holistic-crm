@@ -36,10 +36,10 @@ class InterestTypesController extends AppController
                         $authorized_modules = ['index', 'view'];
                         break;
                     case 'View and Edit':
-                        $authorized_modules = ['index', 'view', 'edit', 'add'];
+                        $authorized_modules = ['index', 'view', 'edit', 'add', '_update_interest_type'];
                         break;
                     case 'View, Edit and Delete':
-                        $authorized_modules = ['index', 'view', 'edit', 'delete', 'add'];
+                        $authorized_modules = ['index', 'view', 'edit', 'delete', 'add', '_update_interest_type'];
                         break;        
                     default:            
                         break;

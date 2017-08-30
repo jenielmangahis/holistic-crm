@@ -24,16 +24,30 @@ class StatusesController extends AppController
 
         $session   = $this->request->session();    
         $user_data = $session->read('User.data');         
+
         if( isset($user_data) ){
             if( $user_data->group_id == 1 ){ //Admin
               $this->Auth->allow();
-            }elseif( $user_data->group_id == 3 ) { //Staff
-              $this->Auth->allow();
+            }else{                           
+                $authorized_modules = array();     
+                $rights = $this->default_group_actions['status'];                
+                switch ($rights) {
+                    case 'View Only':
+                        $authorized_modules = ['index', 'view'];
+                        break;
+                    case 'View and Edit':
+                        $authorized_modules = ['index', 'view', 'add', 'edit', '_update_status_order'];
+                        break;
+                    case 'View, Edit and Delete':
+                        $authorized_modules = ['index', 'view', 'add', 'edit', 'delete', '_update_status_order'];
+                        break;        
+                    default:            
+                        break;
+                }                
+                $this->Auth->allow($authorized_modules);
             }
-        }
+        }          
 
-        // Allow full access to this controller
-        //$this->Auth->allow();
     }     
 
     /**

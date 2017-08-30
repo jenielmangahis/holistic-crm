@@ -24,19 +24,32 @@ class TrainingsController extends AppController
         $nav_selected = ["trainings"];
         $this->set('nav_selected', $nav_selected);
 
-        $session   = $this->request->session();    
-        $user_data = $session->read('User.data');      
+        $session    = $this->request->session();    
+        $user_data  = $session->read('User.data');      
+        $this->user = $user_data;        
 
         if( isset($user_data) ){
             if( $user_data->group_id == 1 ){ //Admin
               $this->Auth->allow();
-            }elseif( $user_data->group_id == 2 ) { //User
-              $this->Auth->allow(['users']);
-            }elseif( $user_data->group_id == 3 ) { //Staff
-              $this->Auth->allow(['users','register']);
+            }else{                           
+                $authorized_modules = array();     
+                $rights = $this->default_group_actions['training'];                
+                switch ($rights) {
+                    case 'View Only':
+                        $authorized_modules = ['index', 'view', 'users'];
+                        break;
+                    case 'View and Edit':
+                        $authorized_modules = ['index', 'view', 'users', 'add', 'edit'];
+                        break;
+                    case 'View, Edit and Delete':
+                        $authorized_modules = ['index', 'view', 'users', 'add', 'edit', 'delete'];
+                        break;        
+                    default:            
+                        break;
+                }                
+                $this->Auth->allow($authorized_modules);
             }
-        }
-        $this->user = $user_data;        
+        }         
     }
 
     /**

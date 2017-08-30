@@ -23,26 +23,38 @@ class LeadsController extends AppController
         parent::initialize();
         $nav_selected = ["leads"];
         $this->set('nav_selected', $nav_selected);
-        $p = $this->default_group_actions;
 
+        /*$p = $this->default_group_actions;
         if($p && $p['leads'] != 'No Access' ){
-            //return $this->redirect(['action' => 'no_access']);
             $this->Auth->allow();
-        }
+        }*/
 
         $session   = $this->request->session();    
         $user_data = $session->read('User.data');         
-
-        /*if( isset($user_data) ){
+        if( isset($user_data) ){
             if( $user_data->group_id == 1 ){ //Admin
               $this->Auth->allow();
-            }elseif( $user_data->group_id == 3 ) { //Staff
-              $this->Auth->allow();
+            }else{                           
+                $authorized_modules = array();     
+                $rights = $this->default_group_actions['leads'];                
+                switch ($rights) {
+                    case 'View Only':
+                        $authorized_modules = ['index', 'view', 'from_source'];
+                        break;
+                    case 'View and Edit':
+                        $authorized_modules = ['index', 'view', 'from_source', 'add', 'edit', 'register', 'unlock', 'leads_unlock'];
+                        break;
+                    case 'View, Edit and Delete':
+                        $authorized_modules = ['index', 'view', 'from_source', 'add', 'edit', 'delete', 'register', 'unlock', 'leads_unlock'];
+                        break;        
+                    default:            
+                        break;
+                }                
+                $this->Auth->allow($authorized_modules);
             }
-        }*/
+        }         
         
         $this->user = $user_data;
-        // Allow full access to this controller
         $this->Auth->allow(['register']);
 
  
@@ -55,7 +67,6 @@ class LeadsController extends AppController
      */
     public function index()
     {
-
       if(isset($this->request->query['unlock']) && isset($this->request->query['lead_id']) ) {
         $lead_id = $this->request->query['lead_id'];
         if($this->request->query['unlock'] == 1) {
@@ -98,8 +109,8 @@ class LeadsController extends AppController
       $this->set('_serialize', ['leads', 'is_admin_user']);
     }
 
-    public function from_source($source_id) {
-
+    public function from_source($source_id)
+    {
       $this->Sources = TableRegistry::get('Sources');     
       $source        = $this->Sources->get($source_id, ['']);
 
@@ -108,7 +119,7 @@ class LeadsController extends AppController
         if($this->request->query['unlock'] == 1) {
           $lead_unlock = $this->Leads->get($lead_id, [ 'contain' => ['LastModifiedBy'] ]);       
 
-          $login_user_id                = $this->user->id;
+          $login_user_id                      = $this->user->id;
           $data_unlck['is_lock']              = 0;
           $data_unlck['last_modified_by_id '] = $login_user_id;
           $lead_unlock = $this->Leads->patchEntity($lead_unlock, $data_unlck);
@@ -388,7 +399,8 @@ class LeadsController extends AppController
         $this->set('_serialize', ['lead']);      
     }
 
-    public function leads_unlock() {
+    public function leads_unlock()
+    {
       $session     = $this->request->session(); 
       $ulock_leads = $session->read('LeadsLock.data');
       $u           = $session->read('User.data');
@@ -442,7 +454,8 @@ class LeadsController extends AppController
       
     }    
 
-    public function no_access() {
+    public function no_access() 
+    {
         $this->set(['message' => '']);
     }    
 }

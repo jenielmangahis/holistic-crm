@@ -24,10 +24,31 @@ class GroupsController extends AppController
 
         $session    = $this->request->session();    
         $user_data  = $session->read('User.data');         
-        $this->user = $user_data;        
+        $this->user = $user_data;
 
-        // Allow full access to this controller
-        //$this->Auth->allow();
+        if( isset($user_data) ){
+            if( $user_data->group_id == 1 ){ //Admin
+              $this->Auth->allow();
+            }else{                           
+                $authorized_modules = array();     
+                $rights = $this->default_group_actions['groups'];                
+                switch ($rights) {
+                    case 'View Only':
+                        $authorized_modules = ['index', 'view'];
+                        break;
+                    case 'View and Edit':
+                        $authorized_modules = ['index', 'view', 'add', 'edit'];
+                        break;
+                    case 'View, Edit and Delete':
+                        $authorized_modules = ['index', 'view', 'add', 'edit', 'delete'];
+                        break;        
+                    default:            
+                        break;
+                }                
+                $this->Auth->allow($authorized_modules);
+            }
+        }  
+
     }
 
     /**
