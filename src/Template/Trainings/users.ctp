@@ -1,4 +1,9 @@
 <?php ?>
+<style>
+.link_box_cntr{
+    padding-bottom: 2px;
+}
+</style>
 <section class="content-header">
     <h1><?= __('Trainings') ?></h1>
     <ol class="breadcrumb">
@@ -49,10 +54,19 @@
                         <tbody>
                             <?php foreach ($trainings as $training): ?>
                             <tr>                                
-                                <td><?= h($training->title) ?></td>
                                 <td>
-                                    <?php //$this->Html->link('Open File', ['action' => 'view', $training->id],['target' => '_blank', 'class' => 'btn btn-info', 'escape' => false]) ?>
-                                    <a target="_blank" class="btn btn-info" href="upload/trainings/<?php echo $training->filename; ?>">Open File</a>        
+                                    <?php //h($training->title) ?>
+                                    <p><strong>File:</strong> <?= h($training->title) ?></p>
+                                    <?php if($training->anchor_text && $training->video_url) { ?>
+                                            <p><strong>Video:</strong> <?= h($training->anchor_text) ?></p>
+                                    <?php } ?>                                
+                                </td>
+                                <td>
+                                    <!--<a target="_blank" class="btn btn-info" href="upload/trainings/<?php echo $training->filename; ?>">Open File</a>-->
+                                    <div class="link_box_cntr"><a target="_blank" class="btn btn-sm btn-info" href="<?php echo $this->Url->build("/"); ?>upload/trainings/<?php echo $training->filename; ?>">Open File</a></div>
+                                    <?php if($training->anchor_text && $training->video_url) { ?>
+                                            <div class="link_box_cntr"><a target="_blank" class="btn btn-sm btn-info" href="<?php echo $training->video_url; ?>">Watch Video</a></div>
+                                    <?php } ?>                                    
                                 </td>
                             </tr>
                             <?php ;endforeach; ?>

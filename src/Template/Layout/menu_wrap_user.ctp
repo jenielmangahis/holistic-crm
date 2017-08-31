@@ -149,17 +149,26 @@
               </ul>
             </li>
         <?php }else{ ?>
-            <li id="groups_nav" title="Groups" class="<?= $nav_selected["dashboard"] ?>">
-                <?= $this->Html->link('<i class="fa fa-dashboard"></i><span>' . __("Dashboard") . "</span>",["controller" => "users", "action" => "user_dashboard"],["escape" => false]) ?>
-            </li>                     
-            <li id="groups_nav" title="Groups" class="<?= $nav_selected["leads"] ?>">
-                <?= $this->Html->link('<i class="fa fa-users"></i><span>' . __("Leads") . "</span>",["controller" => "user_leads", "action" => "index"],["escape" => false]) ?>
-            </li> 
 
+            <?php if($default_group_actions['dashboard'] != 'No Access') { ?>
+              <li id="groups_nav" title="Groups" class="<?= $nav_selected["dashboard"] ?>">
+                  <?= $this->Html->link('<i class="fa fa-dashboard"></i><span>' . __("Dashboard") . "</span>",["controller" => "users", "action" => "user_dashboard"],["escape" => false]) ?>
+              </li>                     
+            <?php } ?>
+
+            <?php if($default_group_actions['leads'] != 'No Access') { ?>
+              <li id="groups_nav" title="Groups" class="<?= $nav_selected["leads"] ?>">
+                  <?= $this->Html->link('<i class="fa fa-users"></i><span>' . __("Leads") . "</span>",["controller" => "user_leads", "action" => "index"],["escape" => false]) ?>
+              </li> 
+            <?php } ?>
+
+            <?php if($default_group_actions['training'] != 'No Access') { ?>
             <li id="groups_nav" title="Groups" class="<?= $nav_selected["trainings"] ?>">
                 <?= $this->Html->link('<i class="fa fa-user-times"></i><span>' . __("Training") . "</span>",["controller" => "trainings", "action" => "users"],["escape" => false]) ?>
             </li> 
+            <?php } ?>
 
+            <!-- Another -->            
             <li id="groups_nav" title="Groups" class="treeview <?= $nav_selected["reports"] ?>">
               <a href="#">
                 <i class="fa fa-sticky-note-o"></i> <span>Reports</span>
@@ -171,6 +180,45 @@
                 <li><?= $this->Html->link('<i class="fa fa-users"></i><span>' . __("Report 1") . "</span>",["controller" => "sample", "action" => "index"],["escape" => false]) ?></li>
               </ul>
             </li>
+
+
+            <li id="groups_nav" title="Groups" class="treeview active <?php //echo $nav_selected["system_settings"] ?>">
+              <a href="#">
+                <i class="fa fa-gear"></i> <span>System Settings</span>
+                <span class="pull-right-container">
+                  <i class="fa fa-angle-left pull-right"></i>
+                </span>
+              </a>
+              <ul class="treeview-menu">            
+                <?php if($default_group_actions['users'] != 'No Access') { ?>
+                        <li><?= $this->Html->link('<i class="fa fa-users"></i><span>' . __("Users") . "</span>",["controller" => "users", "action" => "index"],["escape" => false]) ?></li>
+                <?php } ?>
+
+                <?php if($default_group_actions['allocations'] != 'No Access') { ?>
+                        <li><?= $this->Html->link('<i class="fa fa-circle-o"></i><span>' . __("Allocations") . "</span>",["controller" => "allocations", "action" => "index"],["escape" => false]) ?></li>
+                <?php } ?>
+
+                <?php if($default_group_actions['sources'] != 'No Access') { ?>
+                        <li><?= $this->Html->link('<i class="fa fa-circle-o"></i><span>' . __("Sources") . "</span>",["controller" => "sources", "action" => "index"],["escape" => false]) ?></li>
+                <?php } ?>
+
+                <?php if($default_group_actions['groups'] != 'No Access') { ?>
+                        <li><?= $this->Html->link('<i class="fa fa-circle-o"></i><span>' . __("Groups") . "</span>",["controller" => "groups", "action" => "index"],["escape" => false]) ?></li>
+                <?php } ?>
+
+                <?php if($default_group_actions['status'] != 'No Access') { ?>
+                        <li><?= $this->Html->link('<i class="fa fa-circle-o"></i><span>' . __("Status") . "</span>",["controller" => "statuses", "action" => "index"],["escape" => false]) ?></li>
+                <?php } ?>
+
+                <?php if($default_group_actions['lead_type'] != 'No Access') { ?>
+                        <li><?= $this->Html->link('<i class="fa fa-circle-o"></i><span>' . __("Lead Type") . "</span>",["controller" => "lead_types", "action" => "index"],["escape" => false]) ?></li>
+                <?php } ?>
+
+                <?php if($default_group_actions['interest_type'] != 'No Access') { ?>
+                        <li><?= $this->Html->link('<i class="fa fa-circle-o"></i><span>' . __("Interest Type") . "</span>",["controller" => "interest_types", "action" => "index"],["escape" => false]) ?></li>
+                <?php } ?>
+              </ul>
+            </li>            
         <?php } ?>
       </ul>
     </section>    

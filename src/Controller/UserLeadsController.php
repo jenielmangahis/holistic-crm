@@ -31,7 +31,8 @@ class UserLeadsController extends AppController
               $this->Auth->allow();
             }else{                          
                 $authorized_modules = array();     
-                $rights = $this->default_group_actions['users'];                
+                $rights = $this->default_group_actions['leads'];
+
                 switch ($rights) {
                     case 'View Only':
                         $authorized_modules = ['index', 'view'];
@@ -48,14 +49,6 @@ class UserLeadsController extends AppController
                 $this->Auth->allow($authorized_modules);
             }
         }        
-
-        /*if( isset($user_data) ){
-            if( $user_data->group_id == 1 ){ //Admin
-              $this->Auth->allow();
-            }else{
-              $this->Auth->allow();
-            } 
-        }*/
 
         $this->user = $user_data;
         // Allow full access to this controller
@@ -234,9 +227,10 @@ class UserLeadsController extends AppController
     public function edit($id = null, $redir = null)
     {
         $p = $this->default_group_actions;
-        if( $p && $p['leads'] != 'View and Edit' ){
+
+        /*if( $p && $p['leads'] != 'View and Edit' ){
             return $this->redirect(['controller' => 'users', 'action' => 'no_access']);
-        } 
+        } */
 
         $login_user_id = $this->user->id;
         if(isset($this->request->data['allocation_date']) || isset($this->request->data['followup_date']) || isset($this->request->data['followup_action_reminder_date'])) {

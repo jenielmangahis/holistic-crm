@@ -1,14 +1,14 @@
 <?php
 namespace App\Controller;
 
-use App\Controller\AppController;
-use Cake\ORM\TableRegistry;
-use Cake\Filesystem\Folder;
-use Cake\Filesystem\File;
+use App\Controller\AppController; 
+use Cake\ORM\TableRegistry; 
+use Cake\Filesystem\Folder; 
+use Cake\Filesystem\File; 
 
 /**
  * Trainings Controller
- *
+ * ID
  * @property \App\Model\Table\TrainingsTable $Trainings
  */
 class TrainingsController extends AppController
