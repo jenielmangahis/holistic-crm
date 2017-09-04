@@ -94,7 +94,6 @@ class TrainingsController extends AppController
             $this->set('trainings', $this->paginate($this->Trainings));
         }
 
-
         $this->set('_serialize', ['trainings']);
     }
 

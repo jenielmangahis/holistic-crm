@@ -2,7 +2,7 @@
 <style>
 .form-hdr{
     background-color: #222D32;
-    color:#ffff;
+    color:#ffffff;
     padding: 10px;
 }
 </style>

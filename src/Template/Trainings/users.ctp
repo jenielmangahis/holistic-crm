@@ -46,14 +46,52 @@
                 <div class="box-body">
                     <table id="dt-users-list" class="table table-hover table-striped">
                         <thead class="thead-inverse">
-                            <tr>                                
+                            <tr>     
+
+                                <th class="actions">&nbsp;</th>                                                     
                                 <th style="width:80%;"><?= $this->Paginator->sort('title') ?></th>                                
                                 <th class="actions">&nbsp;</th>                                
                             </tr>
                         </thead>
                         <tbody>
                             <?php foreach ($trainings as $training): ?>
-                            <tr>                                
+                            <tr>      
+                                <td class="table-actions">
+                                    <div class="dropdown">
+                                        <button class="btn btn-default dropdown-toggle" type="button" id="drpdwn" data-toggle="dropdown" aria-expanded="true">
+                                            Action <span class="caret"></span>
+                                        </button>
+                                        <ul class="dropdown-menu" role="menu" aria-labelledby="drpdwn">
+                                            <!-- <li role="presentation"><?= $this->Html->link('<i class="fa fa-eye"></i> View', ['action' => 'view', $training->id],['escape' => false]) ?></li> -->
+                                            <li role="presentation"><?= $this->Html->link('<i class="fa fa-pencil"></i> Edit', ['action' => 'edit', $training->id],['escape' => false]) ?></li>
+                                            <li role="presentation"><?= $this->Html->link('<i class="fa fa-trash"></i> Delete', '#modal-'.$training->id,['data-toggle' => 'modal','escape' => false]) ?></li>
+                                        </ul>
+                                    </div> 
+
+                                    <div id="modal-<?=$training->id?>" class="modal fade">
+                                        <div class="modal-dialog">
+                                          <div class="modal-content">
+                                            <div class="modal-header">
+                                                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                                                <h4 class="modal-title">Delete Confirmation</h4>
+                                            </div>
+                                            <div class="modal-body">
+                                                <p><?= __('Are you sure you want to delete selected entry?') ?></p>
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" data-dismiss="modal" class="btn btn-default">No</button>
+                                                <?= $this->Form->postLink(
+                                                        'Yes',
+                                                        ['action' => 'delete', $training->id],
+                                                        ['class' => 'btn btn-danger', 'escape' => false]
+                                                    )
+                                                ?>
+                                            </div>
+                                          </div>
+                                        </div>                              
+                                    </div>                                    
+
+                                </td>                                                      
                                 <td>
                                     <?php //h($training->title) ?>
                                     <p><strong>File:</strong> <?= h($training->title) ?></p>
