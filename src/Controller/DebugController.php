@@ -5,6 +5,7 @@ use App\Controller\AppController;
 use Cake\ORM\TableRegistry;
 use Cake\Event\Event;
 use Cake\Network\Exception\NotFoundException;
+use Cake\Network\Email\Email;
 use Cake\Routing\Router;
 /**
  * Users Controller
@@ -81,6 +82,45 @@ class DebugController extends AppController
         foreach( $data as $d ){
             debug($d);
         }        
+        exit;
+    }
+
+    /**
+     * debug Leads Allocation Auto Email method     
+     * @return void
+     */
+    public function debugLeadsExternalAutoEmail()
+    {   
+        $this->AllocationUsers = TableRegistry::get('AllocationUsers');
+
+        $allocation_id = 2;
+        $allocation_users = $this->AllocationUsers->find('all')
+            ->contain(['Users'])
+            ->where(['AllocationUsers.allocation_id' => $allocation_id])
+        ;
+
+        $users_email = array();
+        
+        foreach($allocation_users as $users){            
+            $users_email[$users->user->email] = $users->user->email;            
+        }        
+
+        $new_lead = [
+            'name' => 'Test New Lead',
+            'email' => 'test@test.com',
+            'phone' => '3435-3453',
+            'city_state' => 'City / State'            
+        ];
+
+        $email_customer = new Email('cake_smtp');
+        $email_customer->from(['websystem@holisticwebpresencecrm.com' => 'Holistic'])
+          ->template('external_leads_registration')
+          ->emailFormat('html')          
+          ->bcc($users_email)                                                                                               
+          ->subject('New Leads')
+          ->viewVars(['new_lead' => $new_lead])
+          ->send();
+
         exit;
     }
     
