@@ -37,6 +37,11 @@ class SourcesTable extends Table
         $this->primaryKey('id');
 
         $this->addBehavior('Timestamp');
+
+        $this->belongsTo('Allocations', [
+            'foreignKey' => 'allocation_id',
+            'joinType' => 'INNER'
+        ]);        
     }
 
     /**

@@ -123,7 +123,10 @@ class SourcesController extends AppController
                 $this->Flash->error(__('The source could not be saved. Please, try again.'));
             }
         }
-        $this->set(compact('source'));
+
+        $allocations = $this->Sources->Allocations->find('list', ['order' => ['Allocations.sort' => 'ASC']]);
+
+        $this->set(compact('source', 'allocations'));
         $this->set('_serialize', ['source']);
     }
 
@@ -153,7 +156,10 @@ class SourcesController extends AppController
                 $this->Flash->error(__('The source could not be saved. Please, try again.'));
             }
         }
-        $this->set(compact('source'));
+
+        $allocations = $this->Sources->Allocations->find('list', ['order' => ['Allocations.sort' => 'ASC']]);
+
+        $this->set(compact('source', 'allocations'));
         $this->set('_serialize', ['source']);
     }
 

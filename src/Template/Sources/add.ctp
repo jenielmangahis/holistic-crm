@@ -19,14 +19,19 @@
                     <?= $this->Form->create($source,['id' => 'frm-default-add', 'data-toggle' => 'validator', 'role' => 'form','class' => 'form-horizontal']) ?>
                     <fieldset>        
                         <?php
-                                                            echo "
+                            echo "
                                     <div class='form-group'>
                                         <label for='name' class='col-sm-2 control-label'>" . __('Name') . "</label>
                                         <div class='col-sm-6'>";
                                         echo $this->Form->input('name', ['class' => 'form-control', 'id' => 'name', 'label' => false]);                
-                                    echo " </div></div>";    
-                                    
-                                                ?>
+                                    echo " </div></div>";  
+                            echo "
+                                    <div class='form-group'>
+                                        <label for='allocation_id' class='col-sm-2 control-label'>" . __('Allocation to') . "</label>
+                                        <div class='col-sm-6'>";
+                                        echo $this->Form->input('allocation_id', ['class' => 'form-control', 'id' => 'allocation_id', 'label' => false]);                
+                                    echo " </div></div>";                                       
+                        ?>
                     </fieldset>
                     <div class="form-group" style="margin-top: 80px;">
                         <div class="col-sm-offset-2 col-sm-10">                            
