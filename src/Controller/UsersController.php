@@ -313,12 +313,14 @@ class UsersController extends AppController
     {
         $this->request->allowMethod(['post', 'delete']);
         $user = $this->Users->get($id);
-        /*if ($this->Users->delete($user)) {
+ 
+        if ($this->Users->delete($user)) {
             $this->Flash->success(__('The user has been deleted.'));
         } else {
             $this->Flash->error(__('The user could not be deleted. Please, try again.'));
-        }*/
-        $this->Flash->error(__('Deleting of user is currently disabled.'));
+        }
+
+        //$this->Flash->error(__('Deleting of user is currently disabled.'));
         return $this->redirect(['action' => 'index']);
     }
 

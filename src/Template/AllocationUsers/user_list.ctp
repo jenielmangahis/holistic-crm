@@ -29,7 +29,7 @@ div.box-body{
 </style>
 
 <section class="content-header">
-    <h1><?= __('Allocation Users') . " : " . $allocation->name ?></h1>
+    <h1><?= __('Client Users') . " : " . $allocation->name ?></h1>
     <ol class="breadcrumb">
         <li><a href="<?php echo $base_url; ?>"><i class="fa fa-dashboard"></i> Home</a></li>
         <li><a href="<?php echo $base_url; ?>"><i class="fa fa-gear"></i> System Settings</a></li>
