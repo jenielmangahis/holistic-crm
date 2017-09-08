@@ -21,11 +21,11 @@
 }
 </style>
 <section class="content-header">
-    <h1><?= __('Allocation Assign Users') ?></h1>
+    <h1><?= __('Client Assign Users') ?></h1>
     <ol class="breadcrumb">
         <li><a href="<?php echo $base_url; ?>"><i class="fa fa-dashboard"></i> Home</a></li>
         <li><a href="<?php echo $base_url; ?>"><i class="fa fa-gear"></i> System Settings</a></li>
-        <li><a href="<?php echo $base_url; ?>"><i class="fa fa-gear"></i> Allocations</a></li>        
+        <li><a href="<?php echo $base_url; ?>"><i class="fa fa-gear"></i> Client</a></li>        
         <li class="active"><?= __('Assign Users') ?></li>
     </ol>   
 </section>
@@ -41,9 +41,9 @@
                 <div class="box-body">
                     <?= $this->Form->create(null,['id' => 'frm-default-add', 'data-toggle' => 'validator', 'role' => 'form','class' => 'form-horizontal']) ?>
                     <fieldset>        
-                        <h3 class="form-caption" style="background-color:#374850;">Allocation : <?php echo $allocation->name; ?></h3>         
+                        <h3 class="form-caption" style="background-color:#374850;">Client : <?php echo $allocation->name; ?></h3>         
                         <?php if( $users ){ ?>               
-                            <h3 class="form-caption">Check user to assign in this allocation</h3>
+                            <h3 class="form-caption">Check user to assign in this client</h3>
                             <ul class="allocation-users-list">
                             <?php foreach($users as $u){ ?>
                                 <li>

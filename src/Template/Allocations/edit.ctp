@@ -1,8 +1,8 @@
 <section class="content-header">
-    <h1><?= __('Edit Allocation') ?></h1>
+    <h1><?= __('Edit Client') ?></h1>
     <ol class="breadcrumb">
         <li><?= $this->Html->link("<i class='fa fa-dashboard'></i>" . __("Home"), ['controller' => 'users', 'action' => 'dashboard'],['escape' => false]) ?></li>
-        <li><?= $this->Html->link("<i class='fa fa-gear'></i>" . __('Allocations'), ['action' => 'index'],['escape' => false]) ?></li>
+        <li><?= $this->Html->link("<i class='fa fa-gear'></i>" . __('Clients'), ['action' => 'index'],['escape' => false]) ?></li>
         <li class="active"><?= __('Edit') ?></li>
     </ol>
 </section>

@@ -1,6 +1,6 @@
 
 <section class="content-header">
-    <h1><?= __('View Allocation') ?></h1>
+    <h1><?= __('View Client') ?></h1>
 </section>
 
 <section class="content">   

@@ -1,9 +1,9 @@
 <?php ?>
 <section class="content-header">
-    <h1><?= __('Allocation Users') ?></h1>
+    <h1><?= __('Client Users') ?></h1>
     <ol class="breadcrumb">
         <li><a href="<?php echo $base_url; ?>"><i class="fa fa-dashboard"></i> Home</a></li>
-        <li class="active"><?= __('Allocation Users') ?></li>
+        <li class="active"><?= __('Client Users') ?></li>
     </ol>
 </section>
 
@@ -13,7 +13,7 @@
         <section class="col-lg-12 ">
             <div class="box " >
                 <div class="box-header">
-                    <?= $this->Html->link(__('Add New Allocation User'), ['action' => 'add'], ['class' => 'btn btn-primary btn-sm', 'escape' => false]) ?>
+                    <?= $this->Html->link(__('Add New Client User'), ['action' => 'add'], ['class' => 'btn btn-primary btn-sm', 'escape' => false]) ?>
                     <h3 class="box-title text-black" ></h3>
                 </div>
                 <div class="box-body">
