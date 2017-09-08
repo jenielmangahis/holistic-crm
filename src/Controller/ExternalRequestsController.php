@@ -77,7 +77,7 @@ class ExternalRequestsController extends AppController
 
             if( !empty($users_email) ){
               //Send email notification
-              $email_customer = new Email('cake_smtp');
+              $email_customer = new Email('default');
               $email_customer->from(['websystem@holisticwebpresencecrm.com' => 'Holistic'])
                 ->template('external_leads_registration')
                 ->emailFormat('html')          

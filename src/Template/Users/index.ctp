@@ -70,12 +70,10 @@ div.box-body{
                     <table id="dt-users-list" class="table table-hover table-striped">
                         <thead class="thead-inverse">
                             <tr>
-                                <th class="actions"></th>                                
-                                <th style="width:45%;"><?= $this->Paginator->sort('firstname', __("Name") . "<i class='fa fa-sort pull-right'> </i>", array('escape' => false)) ?></th>                                
-                                <th><?= $this->Paginator->sort('username', __("Username") . "<i class='fa fa-sort pull-right'> </i>", array('escape' => false)) ?></th>                                
+                                <th class="actions"></th>                                                                
+                                <th style="width:50%;"><?= $this->Paginator->sort('username', __("Username") . "<i class='fa fa-sort pull-right'> </i>", array('escape' => false)) ?></th>                                
                                 <th><?= $this->Paginator->sort('group_id', __("Group Name") . "<i class='fa fa-sort pull-right'> </i>", array('escape' => false)) ?></th>                            
-                                <th><?= __('Allocations') ?></th>                            
-                                <th><?= $this->Paginator->sort('created', __("Created") . "<i class='fa fa-sort pull-right'> </i>", array('escape' => false)) ?></th>
+                                <th><?= __('Clients') ?></th>                                                            
                             </tr>
                         </thead>
                         <tbody>
@@ -115,8 +113,7 @@ div.box-body{
                                           </div>
                                         </div>                              
                                     </div>              
-                                </td>                                
-                                <td><?= h($user->firstname . ' ' . $user->lastname) ?></td>                                                                                                           
+                                </td>                                                                
                                 <td><?= h($user->username) ?></td>                                                           
                                 <td><?= h($user->group->name) ?></td>
                                 <td>
@@ -135,8 +132,7 @@ div.box-body{
                                             }
                                         }
                                     ?>
-                                </td>                                                           
-                                <td><?= h($user->created) ?></td>                                
+                                </td>                                                                                           
                             </tr>
                             <?php endforeach; ?>
                         </tbody>

@@ -76,6 +76,30 @@ Router::scope('/', function ($routes) {
 
     $u = Router::url(null,true);  
     
+    //Allocations
+    Router::connect(
+        '/clients/',
+        array('controller' => 'Allocations', 'action' => 'index'),
+        array('pass' => array('id', 'slug'),
+        'id' => '[0-9]+')
+    ); 
+
+    Router::connect(
+        '/clients/add',
+        array('controller' => 'Allocations', 'action' => 'add'),
+        array('pass' => array('id', 'slug'),
+        'id' => '[0-9]+')
+    ); 
+
+    Router::connect(
+        '/clients/edit/:id',
+        array('controller' => 'Allocations', 'action' => 'edit'),
+        array(
+            'pass' => array('id'),
+            'id' => '[0-9]+'            
+        )
+    ); 
+
     //slug Services
     Router::connect(
         '/services/:id/:slug',

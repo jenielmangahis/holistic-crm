@@ -115,7 +115,7 @@
                 <?php } ?>
 
                 <?php if($default_group_actions['allocations'] != 'No Access') { ?>
-                        <li><?= $this->Html->link('<i class="fa fa-circle-o"></i><span>' . __("Allocations") . "</span>",["controller" => "allocations", "action" => "index"],["escape" => false]) ?></li>
+                        <li><?= $this->Html->link('<i class="fa fa-circle-o"></i><span>' . __("Clients") . "</span>",["controller" => "clients", "action" => "index"],["escape" => false]) ?></li>
                 <?php } ?>
 
                 <?php if($default_group_actions['sources'] != 'No Access') { ?>

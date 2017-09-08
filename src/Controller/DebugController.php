@@ -112,7 +112,7 @@ class DebugController extends AppController
             'city_state' => 'City / State'            
         ];
 
-        $email_customer = new Email('cake_smtp');
+        $email_customer = new Email('default');
         $email_customer->from(['websystem@holisticwebpresencecrm.com' => 'Holistic'])
           ->template('external_leads_registration')
           ->emailFormat('html')          
