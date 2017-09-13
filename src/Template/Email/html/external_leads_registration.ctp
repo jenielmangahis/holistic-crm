@@ -17,12 +17,6 @@
 	<td>City / State</td>
 	<td>: <?php echo $new_lead['city_state']; ?></td>
 </tr>
-<?php if( $new_lead['lead_action'] != '' ){ ?>
-<tr>
-	<td>Action</td>
-	<td>: <?php echo $new_lead['lead_action']; ?></td>
-</tr>
-<?php } ?>
 </table>
 
 <br/>
