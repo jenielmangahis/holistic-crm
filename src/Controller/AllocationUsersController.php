@@ -209,9 +209,16 @@ class AllocationUsersController extends AppController
     {        
         $allocationUsers = $this->AllocationUsers->get($id);
         $allocation = $this->AllocationUsers->Allocations->get($allocationUsers->allocation_id);
-        $user       = $this->AllocationUsers->Users->get($allocationUsers->user_id, [
+        
+        /*$user       = $this->AllocationUsers->Users->get($allocationUsers->user_id, [
+            'contain' => []
+        ]);*/
+
+        $this->Users = TableRegistry::get('Users');     
+        $user = $this->Users->get($allocationUsers->user_id, [
             'contain' => []
         ]);
+
         if ($this->request->is(['patch', 'post', 'put'])) {
             $user = $this->Users->patchEntity($user, $this->request->data);
             $result = $this->Users->save($user);
