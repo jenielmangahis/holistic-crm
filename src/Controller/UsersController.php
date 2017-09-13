@@ -279,7 +279,8 @@ class UsersController extends AppController
             $result = $this->Users->save($user);
             if ($result) {
                 $this->Flash->success(__('User data has been updated.'));
-                if(isset($this->request->data['edit'])) {
+                $action = $this->request->data['save'];
+                if( $action == 'edit' ){
                     return $this->redirect(['action' => 'edit', $id]);
                 }else{
                     return $this->redirect(['action' => 'index']);

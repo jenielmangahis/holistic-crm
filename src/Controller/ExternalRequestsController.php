@@ -40,6 +40,12 @@ class ExternalRequestsController extends AppController
 
       if( $data ){
         $lead = $this->Leads->newEntity();
+
+        $lead_action = "";
+        if( isset($data['lead-action']) ){
+          $lead_action = $data['lead-action'];
+        }
+
         $data_leads = [
           'firstname' => $data['lead-firstname'],
           'surname' => $data['lead-lastname'],
@@ -48,6 +54,7 @@ class ExternalRequestsController extends AppController
           'city' => $data['lead-city'],
           'state' => $data['lead-state'],
           'source_id' => $data['lead-source-id'],
+          'lead_action' => $lead_action,
           'status_id' => 2,
           'lead_type_id' => 1,
           'allocation_id' => $data['lead-allocation-id'],
@@ -62,6 +69,7 @@ class ExternalRequestsController extends AppController
                 'name' => $data['lead-firstname'] . ' ' . $data['lead-lastname'],
                 'email' => $data['lead-email'],
                 'phone' => $data['lead-phone'],
+                'lead_action' => $lead_action,
                 'city_state' => $data['lead-city'] . ' / ' . $data['lead-state']        
             ];
 
