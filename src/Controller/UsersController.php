@@ -74,7 +74,7 @@ class UsersController extends AppController
      * ID : CA-03
      * @return void
      */
-    public function index()
+    public function indexDepre()
     {
         $this->unlock_lead_check();
         if( isset($this->request->query['query']) ){
@@ -95,6 +95,47 @@ class UsersController extends AppController
         $this->set('users', $this->paginate($users));
         $this->set('_serialize', ['users']);
     }
+
+    public function index()
+    {
+        $this->unlock_lead_check();
+        if( isset( $this->request->query['query'] ) ) {
+
+            $query = $this->request->query['query'];
+            $users = $this->Users->find('all')
+                ->contain(['Groups','AllocationUsers' => ['Allocations']])
+                ->where(['Users.firstname LIKE' => '%' . $query . '%'])       
+                ->orWhere(['Users.lastname LIKE' => '%' . $query . '%'])       
+                ->orWhere(['Users.email LIKE' => '%' . $query . '%'])       
+                ->orWhere(['Groups.name LIKE' => '%' . $query . '%'])       
+            ;
+
+        } else {
+
+            $sort_direction = !empty($this->request->query['direction']) ? $this->request->query['direction'] : 'ASC';
+
+            if( !empty($this->request->query['direction']) && !empty($this->request->query['sort']) ) {
+                $user_to_sort  = $this->Users->find('all', ['order' => ['Users.username' => $sort_direction]]);
+                $sort = 1;
+                foreach($user_to_sort as $skey => $sd) {
+
+                    $a_data = $this->Users->get($sd->id, []);
+                    $data_sort['sort'] = $sort;
+                    $a_data = $this->Users->patchEntity($a_data, $data_sort);
+                    if ( !$this->Users->save($a_data) ) { echo "error unlocking lead"; }                    
+
+                $sort++;
+                }
+            }
+
+            $users = $this->Users->find('all', ['order' => ['Users.sort' => 'ASC']])
+                                ->contain(['Groups','AllocationUsers' => ['Allocations']])
+                    ;
+        } 
+
+        $this->set('users', $this->paginate($users));
+        $this->set('_serialize', ['users']);
+    }    
 
     /**
      * Dashboard method
