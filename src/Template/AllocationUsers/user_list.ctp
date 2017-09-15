@@ -33,7 +33,7 @@ div.box-body{
     <ol class="breadcrumb">
         <li><a href="<?php echo $base_url; ?>"><i class="fa fa-dashboard"></i> Home</a></li>
         <li><a href="<?php echo $base_url; ?>"><i class="fa fa-gear"></i> System Settings</a></li>
-        <li><a href="<?php echo $base_url; ?>"><i class="fa fa-gear"></i> Allocations</a></li>
+        <li><a href="<?php echo $base_url; ?>"><i class="fa fa-gear"></i> Client</a></li>
         <li class="active"><?= __('Users') ?></li>
     </ol>
 </section>

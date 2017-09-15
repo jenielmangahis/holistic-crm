@@ -1,6 +1,6 @@
 <?php ?>
 <section class="content-header">
-    <h1><?= __('Allocation User: Change Password') ?></h1>
+    <h1><?= __('Client User: Change Password') ?></h1>
     <ol class="breadcrumb">
         <li><?= $this->Html->link("<i class='fa fa-dashboard'></i>" . __("Home"), ['controller' => 'users', 'action' => 'dashboard'],['escape' => false]) ?></li>
         <li class="active"><?= __('Profile') ?></li>
@@ -44,7 +44,7 @@
                     <div class="form-group" style="margin-top: 80px;">
                         <div class="col-sm-offset-2 col-sm-10">                            
                             <?= $this->Form->button('<i class="fa fa-save"></i> ' . __('Change Password'),['name' => 'save', 'value' => 'save', 'class' => 'btn btn-success', 'escape' => false]) ?>                            
-                            <?= $this->Html->link('<i class="fa fa-angle-left"> </i> ' . __('Back'), ['action' => 'index'],['class' => 'btn btn-warning', 'escape' => false]) ?>                            
+                            <?= $this->Html->link('<i class="fa fa-angle-left"> </i> ' . __('Back'), ['action' => 'user_list', $allocation_id],['class' => 'btn btn-warning', 'escape' => false]) ?>                            
                         </div>
                     </div>
                     <?= $this->Form->end() ?>

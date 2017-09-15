@@ -352,6 +352,6 @@ class AllocationUsersController extends AppController
             }
         }
 
-        $this->set(['user' => $user]);
+        $this->set(['user' => $user, 'allocation_id' => $allocation_id]);
     }     
 }
