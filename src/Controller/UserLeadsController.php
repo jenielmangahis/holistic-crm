@@ -62,6 +62,8 @@ class UserLeadsController extends AppController
      */
     public function index()
     {
+      $this->paginate = ['order' => ['Leads.allocation_date' => 'DESC']];
+
       $this->Leads = TableRegistry::get('Leads');
       $this->AllocationUsers = TableRegistry::get('AllocationUsers');
 
@@ -182,6 +184,8 @@ class UserLeadsController extends AppController
      */
     public function add()
     {
+        $this->AllocationUsers = TableRegistry::get('AllocationUsers');
+
         $p = $this->default_group_actions;
         if( $p && $p['leads'] == 'View Only' ){
             return $this->redirect(['controller' => 'users', 'action' => 'no_access']);
@@ -195,8 +199,42 @@ class UserLeadsController extends AppController
 
         $lead = $this->Leads->newEntity();
         if ($this->request->is('post')) {
-            $lead = $this->Leads->patchEntity($lead, $this->request->data);
+            $data = $this->request->data;
+            $lead = $this->Leads->patchEntity($lead, $data);
             if ($this->Leads->save($lead)) {
+
+                //Send Email notification
+                $allocation_users = $this->AllocationUsers->find('all')
+                    ->contain(['Users'])
+                    ->where(['AllocationUsers.allocation_id' => $data['allocation_id']])
+                ;
+
+                $users_email = array();
+                foreach($allocation_users as $users){            
+                    $users_email[$users->user->email] = $users->user->email;            
+                }
+
+                if( !empty($users_email) ){
+
+                  //Send email notification                  
+                  $new_lead = [
+                      'name' => $data['firstname'] . ' ' . $data['surname'],
+                      'email' => $data['email'],
+                      'phone' => $data['phone'],
+                      'lead_action' => '',
+                      'city_state' => $data['city'] . ' / ' . $data['state']        
+                  ];
+
+                  $email_customer = new Email('default');
+                  $email_customer->from(['websystem@holisticwebpresencecrm.com' => 'Holistic'])
+                    ->template('crm_new_leads')
+                    ->emailFormat('html')          
+                    ->bcc($users_email)                                                                                               
+                    ->subject('New Lead')
+                    ->viewVars(['new_lead' => $new_lead])
+                    ->send();
+                }
+
                 $this->Flash->success(__('The lead has been saved.'));
                 $action = $this->request->data['save'];
                 if( $action == 'save' ){
@@ -226,6 +264,8 @@ class UserLeadsController extends AppController
      */
     public function edit($id = null, $redir = null)
     {
+        $this->AllocationUsers = TableRegistry::get('AllocationUsers');
+
         $p = $this->default_group_actions;
 
         /*if( $p && $p['leads'] != 'View and Edit' ){
@@ -262,8 +302,36 @@ class UserLeadsController extends AppController
         ]);        
 
         if ($this->request->is(['patch', 'post', 'put'])) {
-            $lead = $this->Leads->patchEntity($lead, $this->request->data);
+            $data = $this->request->data;
+            $lead = $this->Leads->patchEntity($lead, $data);
             if ($this->Leads->save($lead)) {
+
+                //Send Email notification
+                $allocation_users = $this->AllocationUsers->find('all')
+                    ->contain(['Users'])
+                    ->where(['AllocationUsers.allocation_id' => $data['allocation_id']])
+                ;
+
+                $users_email = array();
+                foreach($allocation_users as $users){            
+                    $users_email[$users->user->email] = $users->user->email;            
+                }
+
+                if( !empty($users_email) ){                                                      
+                  $modifiedLead = $this->Leads->get($id, [
+                      'contain' => ['Statuses', 'Sources', 'Allocations', 'LastModifiedBy','LeadTypes','InterestTypes']
+                  ]); 
+                
+                  $email_customer = new Email('default');
+                  $email_customer->from(['websystem@holisticwebpresencecrm.com' => 'Holistic'])
+                    ->template('crm_modified_leads')
+                    ->emailFormat('html')          
+                    ->bcc($users_email)                                                                                               
+                    ->subject('Updated Lead')
+                    ->viewVars(['lead' => $modifiedLead->toArray()])
+                    ->send();
+                }  
+
                 $this->Flash->success(__('The lead has been saved.'));
                 $action = $this->request->data['save'];
                 if( $action == 'save' ){

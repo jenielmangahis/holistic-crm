@@ -90,7 +90,7 @@ class ExternalRequestsController extends AppController
                 ->template('external_leads_registration')
                 ->emailFormat('html')          
                 ->bcc($users_email)                                                                                               
-                ->subject('New Leads')
+                ->subject('New Lead')
                 ->viewVars(['new_lead' => $new_lead])
                 ->send();
             }
