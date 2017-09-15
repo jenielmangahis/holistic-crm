@@ -119,7 +119,15 @@ div.box-body{
                                 <td>
                                     <?php 
                                         if($user->group_id == 1){
-                                            echo "-";
+                                            if(count($user->allocation_users) > 0){
+                                                echo "<ul class='user-allocations'>";
+                                                foreach($user->allocation_users as $au){
+                                                    echo "<li>" . $au->allocation->name . "</li>";
+                                                }
+                                                echo "</ul>";
+                                            }else{
+                                                echo "-";
+                                            }
                                         }else{                                            
                                             if(count($user->allocation_users) > 0){
                                                 echo "<ul class='user-allocations'>";

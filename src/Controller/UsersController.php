@@ -102,7 +102,7 @@ class UsersController extends AppController
         if( isset( $this->request->query['query'] ) ) {
 
             $query = $this->request->query['query'];
-            $users = $this->Users->find('all')
+            $users = $this->Users->find('all', ['order' => ['Users.sort' => 'ASC']])
                 ->contain(['Groups','AllocationUsers' => ['Allocations']])
                 ->where(['Users.firstname LIKE' => '%' . $query . '%'])       
                 ->orWhere(['Users.lastname LIKE' => '%' . $query . '%'])       
@@ -282,7 +282,18 @@ class UsersController extends AppController
     {      
         $user = $this->Users->newEntity();
         if ($this->request->is('post')) {
-            $user = $this->Users->patchEntity($user, $this->request->data);
+
+            $post_data = $this->request->data;
+            $request_data['firstname']  = ltrim($post_data['firstname']);
+            $request_data['middlename'] = ltrim($post_data['middlename']);
+            $request_data['lastname']   = ltrim($post_data['lastname']);
+            $request_data['email']      = $post_data['email'];
+            $request_data['group_id']   = $post_data['group_id'];
+            $request_data['username']   = ltrim($post_data['username']);
+            $request_data['password']   = $post_data['password'];
+            $request_data['save']       = $post_data['save'];
+
+            $user = $this->Users->patchEntity($user, $request_data);
             if ($this->Users->save($user)) {
                 $this->Flash->success(__('The user has been saved.'));
                 return $this->redirect(['action' => 'index']);
