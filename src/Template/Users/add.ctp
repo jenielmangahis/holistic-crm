@@ -35,12 +35,12 @@
                                         echo $this->Form->input('firstname', ['class' => 'form-control', 'id' => 'firstname', 'label' => false, 'default' => ' ']);                
                                     echo " </div></div>";    
 
-                                    echo "
+                                    /*echo "
                                     <div class='form-group'>
                                         <label for='middlename' class='col-sm-2 control-label'>" . __('Middlename') . "</label>
                                         <div class='col-sm-6'>";
                                         echo $this->Form->input('middlename', ['class' => 'form-control', 'id' => 'middlename', 'label' => false, 'default' => ' ']);                
-                                    echo " </div></div>";    
+                                    echo " </div></div>";*/    
 
                                     echo "
                                     <div class='form-group'>

@@ -19,9 +19,5 @@
 </tr>
 </table>
 
-<br/>
-<p>How Can We Help:  Request more information</p>
-<br/>
-<p><i>Message: these notes need to be added to the CRM automatically. (NOTE: both these lines are the information from the web site form that needs to go into the ‘Action’ field- see previous email)</i></p>
 <br/><br/>
 <p><a href="https://www.holisticwebpresence.com">Holistic Web Presence LLC</a></p>

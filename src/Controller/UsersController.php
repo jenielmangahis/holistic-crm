@@ -74,27 +74,6 @@ class UsersController extends AppController
      * ID : CA-03
      * @return void
      */
-    public function indexDepre()
-    {
-        $this->unlock_lead_check();
-        if( isset($this->request->query['query']) ){
-            $query = $this->request->query['query'];
-            $users = $this->Users->find('all')
-                ->contain(['Groups','AllocationUsers' => ['Allocations']])
-                ->where(['Users.firstname LIKE' => '%' . $query . '%'])       
-                ->orWhere(['Users.lastname LIKE' => '%' . $query . '%'])       
-                ->orWhere(['Users.email LIKE' => '%' . $query . '%'])       
-                ->orWhere(['Groups.name LIKE' => '%' . $query . '%'])       
-            ;
-        }else{
-            $users = $this->Users->find('all')
-                ->contain(['Groups','AllocationUsers' => ['Allocations']])
-            ;
-        }
-
-        $this->set('users', $this->paginate($users));
-        $this->set('_serialize', ['users']);
-    }
 
     public function index()
     {
@@ -113,9 +92,10 @@ class UsersController extends AppController
         } else {
 
             $sort_direction = !empty($this->request->query['direction']) ? $this->request->query['direction'] : 'ASC';
+            $sort_field     = !empty($this->request->query['sort']) ? $this->request->query['sort'] : 'ASC';
 
             if( !empty($this->request->query['direction']) && !empty($this->request->query['sort']) ) {
-                $user_to_sort  = $this->Users->find('all', ['order' => ['Users.username' => $sort_direction]]);
+                $user_to_sort  = $this->Users->find('all', ['order' => ['Users.'.$sort_field  => $sort_direction]]);
                 $sort = 1;
                 foreach($user_to_sort as $skey => $sd) {
 
