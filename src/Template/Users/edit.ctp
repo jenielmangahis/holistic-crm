@@ -46,7 +46,14 @@
                                         <label for='email' class='col-sm-2 control-label'>" . __('Email') . "</label>
                                         <div class='col-sm-6'>";
                                         echo $this->Form->input('email', ['class' => 'form-control', 'id' => 'email', 'label' => false]);                
-                                    echo " </div></div>";    
+                                    echo " </div></div>";
+
+                                    echo "
+                                    <div class='form-group'>
+                                        <label for='email' class='col-sm-2 control-label'>" . __('Other Emails') . "</label>
+                                        <div class='col-sm-6'>";
+                                        echo $this->Form->input('other_email', ['class' => 'form-control', 'id' => 'other_email', 'label' => false]);                
+                                    echo " </div>* emails separated by semicolon</div>";    
 
                                     echo "
                                     <div class='form-group'>

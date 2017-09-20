@@ -268,6 +268,7 @@ class UsersController extends AppController
             $request_data['middlename'] = ltrim($post_data['middlename']);
             $request_data['lastname']   = ltrim($post_data['lastname']);
             $request_data['email']      = $post_data['email'];
+            $request_data['other_email'] = ltrim($post_data['other_email']);
             $request_data['group_id']   = $post_data['group_id'];
             $request_data['username']   = ltrim($post_data['username']);
             $request_data['password']   = $post_data['password'];

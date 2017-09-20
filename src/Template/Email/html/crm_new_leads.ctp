@@ -17,6 +17,11 @@
 	<td>City / State</td>
 	<td>: <?php echo $new_lead['city_state']; ?></td>
 </tr>
+<tr>
+	<td>Action</td>
+	<td>: <?php echo $new_lead['lead_action']; ?></td>
+</tr>
+
 </table>
 
 <br/><br/>

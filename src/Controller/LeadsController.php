@@ -220,7 +220,7 @@ class LeadsController extends AppController
                       'name' => $data['firstname'] . ' ' . $data['surname'],
                       'email' => $data['email'],
                       'phone' => $data['phone'],
-                      'lead_action' => '',
+                      'lead_action' => $data['lead_action'],
                       'city_state' => $data['city'] . ' / ' . $data['state']        
                   ];
 
