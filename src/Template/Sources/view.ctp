@@ -7,13 +7,17 @@
     <table class="table table-striped table-bordered table-hover">
     <tbody>
         <tr>
+            <th><?= __('Id') ?></th>
+            <td><?= $this->Number->format($source->id) ?></td>
+        </tr>    
+        <tr>
             <th><?= __('Name') ?></th>
             <td><?= h($source->name) ?></td>
         </tr>
         <tr>
-            <th><?= __('Id') ?></th>
-            <td><?= $this->Number->format($source->id) ?></td>
-        </tr>
+            <th><?= __('Allocated to') ?></th>
+            <td><?= h($source->allocation->name) ?></td>
+        </tr>        
         <tr>
             <th><?= __('Created') ?></th>
             <td><?= h($source->created) ?></td>
