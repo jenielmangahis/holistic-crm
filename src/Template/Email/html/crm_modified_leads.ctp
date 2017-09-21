@@ -54,6 +54,9 @@
 	<td>Interest Type</td>
 	<td>: <?php echo $lead['interest_type']['name']; ?></td>
 </tr>	
+</table>
+<h3 class="form-hdr" style="background-color: #222D32;color:#ffffff;padding: 10px;">Followup Information</h3>
+<table>
 <tr>
 	<td>Followup Date</td>
 	<td>: <?php echo date("Y-m-d",strtotime($lead['followup_date'])); ?></td>

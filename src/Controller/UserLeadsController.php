@@ -201,7 +201,7 @@ class UserLeadsController extends AppController
         if ($this->request->is('post')) {
             $data = $this->request->data;
             $lead = $this->Leads->patchEntity($lead, $data);
-            if ($this->Leads->save($lead)) {
+            if ($newLead = $this->Leads->save($lead)) {
 
                 //Send Email notification
                 $allocation_users = $this->AllocationUsers->find('all')
@@ -217,13 +217,9 @@ class UserLeadsController extends AppController
                 if( !empty($users_email) ){
 
                   //Send email notification                  
-                  $new_lead = [
-                      'name' => $data['firstname'] . ' ' . $data['surname'],
-                      'email' => $data['email'],
-                      'phone' => $data['phone'],
-                      'lead_action' => $data['lead_action'],
-                      'city_state' => $data['city'] . ' / ' . $data['state']        
-                  ];
+                  $leadData = $this->Leads->get($newLead->id, [
+                      'contain' => ['Statuses', 'Sources', 'Allocations', 'LastModifiedBy','LeadTypes','InterestTypes']
+                  ]);   
 
                   $email_customer = new Email('default');
                   $email_customer->from(['websystem@holisticwebpresencecrm.com' => 'Holistic'])
@@ -231,7 +227,7 @@ class UserLeadsController extends AppController
                     ->emailFormat('html')          
                     ->bcc($users_email)                                                                                               
                     ->subject('New Lead')
-                    ->viewVars(['new_lead' => $new_lead])
+                    ->viewVars(['new_lead' => $leadData->toArray()])
                     ->send();
                 }
 

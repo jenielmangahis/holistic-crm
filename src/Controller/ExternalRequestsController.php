@@ -65,14 +65,6 @@ class ExternalRequestsController extends AppController
         $lead = $this->Leads->patchEntity($lead, $data_leads);        
         if ($new_lead = $this->Leads->save($lead)) {
 
-            $new_lead = [
-                'name' => $data['lead-firstname'] . ' ' . $data['lead-lastname'],
-                'email' => $data['lead-email'],
-                'phone' => $data['lead-phone'],
-                'lead_action' => $lead_action,
-                'city_state' => $data['lead-city'] . ' / ' . $data['lead-state']        
-            ];
-
             $allocation_users = $this->AllocationUsers->find('all')
                 ->contain(['Users'])
                 ->where(['AllocationUsers.allocation_id' => $data['lead-allocation-id']])
@@ -91,7 +83,7 @@ class ExternalRequestsController extends AppController
                 ->emailFormat('html')          
                 ->bcc($users_email)                                                                                               
                 ->subject('New Lead')
-                ->viewVars(['new_lead' => $new_lead])
+                ->viewVars(['new_lead' => $new_lead->toArray()])
                 ->send();
             }
             
