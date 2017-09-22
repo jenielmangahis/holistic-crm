@@ -199,7 +199,8 @@ class UserLeadsController extends AppController
 
         $lead = $this->Leads->newEntity();
         if ($this->request->is('post')) {
-            $data = $this->request->data;
+            $data = $this->request->data;           
+            
             $lead = $this->Leads->patchEntity($lead, $data);
             if ($newLead = $this->Leads->save($lead)) {
 
@@ -213,6 +214,27 @@ class UserLeadsController extends AppController
                 foreach($allocation_users as $users){            
                     $users_email[$users->user->email] = $users->user->email;            
                 }
+
+                //add other emails to be sent - start
+                foreach($allocation_users as $users){            
+                    $other_email_to_explode = $users->user->other_email;
+
+                    if( !empty($other_email_to_explode) || $other_email_to_explode != '' ) {
+
+                      $other_email = explode(";", $other_email_to_explode);
+
+                      foreach($other_email as $oekey => $em) {
+
+                        if( !empty($em) || $em != '') {
+                            $other_email_to_add = ltrim($em);
+                            $users_email[$other_email_to_add] = $other_email_to_add;  
+                        }
+
+                      }
+                      
+                    }
+                }    
+                //add other emails to be sent - end            
 
                 if( !empty($users_email) ){
 
@@ -312,6 +334,27 @@ class UserLeadsController extends AppController
                 foreach($allocation_users as $users){            
                     $users_email[$users->user->email] = $users->user->email;            
                 }
+
+                //add other emails to be sent - start
+                foreach($allocation_users as $users){            
+                    $other_email_to_explode = $users->user->other_email;
+
+                    if( !empty($other_email_to_explode) || $other_email_to_explode != '' ) {
+
+                      $other_email = explode(";", $other_email_to_explode);
+
+                      foreach($other_email as $oekey => $em) {
+
+                        if( !empty($em) || $em != '') {
+                            $other_email_to_add = ltrim($em);
+                            $users_email[$other_email_to_add] = $other_email_to_add;  
+                        }
+
+                      }
+                      
+                    }
+                }    
+                //add other emails to be sent - end                
 
                 if( !empty($users_email) ){                                                      
                   $modifiedLead = $this->Leads->get($id, [
