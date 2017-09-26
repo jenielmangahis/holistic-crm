@@ -77,13 +77,16 @@ class ExternalRequestsController extends AppController
 
             if( !empty($users_email) ){
               //Send email notification
+              $leadData = $this->Leads->get($new_lead->id, [
+                  'contain' => ['Statuses', 'Sources', 'Allocations', 'LastModifiedBy','LeadTypes','InterestTypes']
+              ]);  
               $email_customer = new Email('default');
               $email_customer->from(['websystem@holisticwebpresencecrm.com' => 'Holistic'])
                 ->template('external_leads_registration')
                 ->emailFormat('html')          
                 ->bcc($users_email)                                                                                               
                 ->subject('New Lead')
-                ->viewVars(['new_lead' => $new_lead->toArray()])
+                ->viewVars(['new_lead' => $leadData->toArray()])
                 ->send();
             }
             
