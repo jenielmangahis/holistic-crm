@@ -21,6 +21,8 @@ class GroupsTable extends Table
      */
     public function initialize(array $config)
     {
+        //parent::initialize($config);
+
         $this->table('groups');
         $this->displayField('name');
         $this->primaryKey('id');

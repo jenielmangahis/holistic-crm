@@ -67,6 +67,23 @@ class AllocationsController extends AppController
             $allocations = $this->Allocations->find('all')
                 ->where( ['Allocations.name LIKE' => '%' . $query . '%'] );
         } else {
+            $sort_direction = !empty($this->request->query['direction']) ? $this->request->query['direction'] : 'ASC';
+            $sort_field     = !empty($this->request->query['sort']) ? $this->request->query['sort'] : 'ASC';
+
+            if( !empty($this->request->query['direction']) && !empty($this->request->query['sort']) ) {
+                $allocation_to_sort  = $this->Allocations->find('all', ['order' => ['Allocations.'.$sort_field => $sort_direction]]);
+                $sort = 1;
+                foreach($allocation_to_sort as $skey => $sd) {
+
+                    $a_data = $this->Allocations->get($sd->id, []);
+                    $data_sort['sort'] = $sort;
+                    $a_data = $this->Allocations->patchEntity($a_data, $data_sort);
+                    if ( !$this->Allocations->save($a_data) ) { echo "error unlocking lead"; }                    
+
+                $sort++;
+                }
+            }
+
             $allocations = $this->Allocations->find('all', ['order' => ['Allocations.sort' => 'ASC']]);
         }          
 

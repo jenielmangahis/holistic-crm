@@ -415,26 +415,38 @@ class LeadsController extends AppController
      */
     public function delete($id = null)
     {
+
         $p = $this->default_group_actions;
         if( $p && $p['leads'] != 'View, Edit and Delete' ){
             return $this->redirect(['controller' => 'users', 'action' => 'no_access']);
         } 
 
-        $login_user_id = $this->user->id;
-        $lead_lock = $this->Leads->get($id, [ 'contain' => ['LastModifiedBy'] ]);         
+        $lead_exists = $this->Leads->exists(['id' => $id]);
 
-        if($lead_lock->is_lock && $lead_lock->last_modified_by->id != $this->user->id) {
-          $this->Flash->error(__('This lead is being accessed by another user, please try again later.'));
-          return $this->redirect(['action' => 'index']);
-        }       
+        if($lead_exists) {
 
-        $this->request->allowMethod(['post', 'delete']);
-        $lead = $this->Leads->get($id);
-        if ($this->Leads->delete($lead)) {
-            $this->Flash->success(__('The lead has been deleted.'));
+          $login_user_id = $this->user->id;
+          $lead_lock = $this->Leads->get($id, [ 'contain' => ['LastModifiedBy'] ]);
+
+          if($lead_lock->is_lock && $lead_lock->last_modified_by->id != $this->user->id) {
+            $this->Flash->error(__('This lead is being accessed by another user, please try again later.'));
+            return $this->redirect(['action' => 'index']);
+          }       
+
+          $this->request->allowMethod(['post', 'delete']);
+          $lead = $this->Leads->get($id);
+          if ($this->Leads->delete($lead)) {
+              $this->Flash->success(__('The lead has been deleted.'));
+          } else {
+              $this->Flash->error(__('The lead could not be deleted. Please try again.'));
+          }
+
         } else {
-            $this->Flash->error(__('The lead could not be deleted. Please, try again.'));
+
+          $this->Flash->error(__('The lead could not be found. Please try again.'));
+
         }
+
         return $this->redirect(['action' => 'index']);
     }
 
