@@ -98,7 +98,16 @@ Router::scope('/', function ($routes) {
             'pass' => array('id'),
             'id' => '[0-9]+'            
         )
-    ); 
+    );
+
+    Router::connect(
+        '/clients/view/:id',
+        array('controller' => 'Allocations', 'action' => 'edit'),
+        array(
+            'pass' => array('id'),
+            'id' => '[0-9]+'            
+        )
+    );     
 
     //slug Services
     Router::connect(

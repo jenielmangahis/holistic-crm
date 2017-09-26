@@ -59,6 +59,7 @@ class SourcesController extends AppController
 
             $query   = $this->request->query['query'];
             $sources = $this->Sources->find('all')
+                ->contain(['Allocations'])
                 ->where( ['Sources.name LIKE' => '%' . $query . '%'] );
 
         } else {
@@ -78,7 +79,7 @@ class SourcesController extends AppController
                 }
             }
 
-            $sources = $this->Sources->find('all', ['order' => ['Sources.sort' => 'ASC']]);
+            $sources = $this->Sources->find('all', ['order' => ['Sources.sort' => 'ASC']])->contain(['Allocations']);
         }     
 
         $this->set('sources', $this->paginate($sources));
@@ -95,7 +96,7 @@ class SourcesController extends AppController
     public function view($id = null)
     {
         $source = $this->Sources->get($id, [
-            'contain' => []
+            'contain' => ['Allocations']
         ]);
         $this->set('source', $source);
         $this->set('_serialize', ['source']);

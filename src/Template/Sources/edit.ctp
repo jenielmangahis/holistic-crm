@@ -1,3 +1,4 @@
+<?php ?>
 <section class="content-header">
     <h1><?= __('Edit Source') ?></h1>
     <ol class="breadcrumb">
@@ -27,7 +28,7 @@
                                     echo " </div></div>";    
                             echo "
                                     <div class='form-group'>
-                                        <label for='allocation_id' class='col-sm-2 control-label'>" . __('Allocation to') . "</label>
+                                        <label for='allocation_id' class='col-sm-2 control-label'>" . __('Allocated to') . "</label>
                                         <div class='col-sm-6'>";
                                         echo $this->Form->input('allocation_id', ['class' => 'form-control', 'id' => 'allocation_id', 'label' => false]);                
                                     echo " </div></div>";                                     
