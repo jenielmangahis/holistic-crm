@@ -90,7 +90,7 @@ class StatusesController extends AppController
 
         $this->set('user_data', $user_data);
         if($user_data->group_id == 1) {
-            $this->set('statuses', $statuses);
+            $this->set('statuses', $this->paginate($statuses, ['limit' => 800]));
         } else {
             $this->set('statuses', $this->paginate($statuses));
         }

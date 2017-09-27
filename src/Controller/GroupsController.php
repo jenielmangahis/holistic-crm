@@ -67,7 +67,7 @@ class GroupsController extends AppController
             ;
         }else{
 
-            /*$sort_direction = !empty($this->request->query['direction']) ? $this->request->query['direction'] : 'ASC';
+            $sort_direction = !empty($this->request->query['direction']) ? $this->request->query['direction'] : 'ASC';
             $sort_field     = !empty($this->request->query['sort']) ? $this->request->query['sort'] : 'ASC';            
 
             if( !empty($this->request->query['direction']) && !empty($this->request->query['sort']) ) {
@@ -81,7 +81,7 @@ class GroupsController extends AppController
 
                 $sort++;
                 }
-            }*/
+            }
 
             $groups = $this->Groups->find('all');
         }      

@@ -67,12 +67,30 @@ class InterestTypesController extends AppController
                 ->where( ['InterestTypes.name LIKE' => '%' . $query . '%'] )                
             ;
         } else {
+
+            $sort_direction = !empty($this->request->query['direction']) ? $this->request->query['direction'] : 'ASC';
+            $sort_field     = !empty($this->request->query['sort']) ? $this->request->query['sort'] : 'ASC';            
+
+            if( !empty($this->request->query['direction']) && !empty($this->request->query['sort']) ) {
+                $interest_types_to_sort  = $this->InterestTypes->find('all', ['order' => ['InterestTypes.'.$sort_field => $sort_direction]]);
+                $sort = 1;
+                foreach($interest_types_to_sort as $skey => $sd) {
+
+                    $a_data = $this->InterestTypes->get($sd->id, []);
+                    $data_sort['sort'] = $sort;
+                    $a_data = $this->InterestTypes->patchEntity($a_data, $data_sort);
+                    if ( !$this->InterestTypes->save($a_data) ) { echo "error unlocking lead"; }                    
+
+                $sort++;
+                }
+            }
+
             $InterestTypes = $this->InterestTypes->find('all', ['order' => ['InterestTypes.sort' => 'ASC']]);
         }
 
         $this->set('user_data', $user_data);
         if($user_data->group_id == 1) {
-            $this->set('interestTypes', $InterestTypes);
+            $this->set('interestTypes', $this->paginate($InterestTypes, ['limit' => 800]));   
         } else {
             $this->set('interestTypes', $this->paginate($InterestTypes));    
         }

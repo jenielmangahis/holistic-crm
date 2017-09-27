@@ -87,7 +87,7 @@ class AllocationsController extends AppController
             $allocations = $this->Allocations->find('all', ['order' => ['Allocations.sort' => 'ASC']]);
         }          
 
-        //$this->set('allocations', $this->paginate($allocations));
+        $this->set('allocations', $this->paginate($allocations, ['limit' => 999]));
         $this->set('user_data', $user_data);
         $this->set('allocations', $allocations);
         $this->set('_serialize', ['allocations']);

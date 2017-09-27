@@ -66,13 +66,31 @@ class LeadTypesController extends AppController
             $LeadTypes = $this->LeadTypes->find('all')
                 ->where( ['LeadTypes.name LIKE' => '%' . $query . '%'] );
         } else {
+
+            $sort_direction = !empty($this->request->query['direction']) ? $this->request->query['direction'] : 'ASC';
+            $sort_field     = !empty($this->request->query['sort']) ? $this->request->query['sort'] : 'ASC';            
+
+            if( !empty($this->request->query['direction']) && !empty($this->request->query['sort']) ) {
+                $lead_types_to_sort  = $this->LeadTypes->find('all', ['order' => ['LeadTypes.'.$sort_field => $sort_direction]]);
+                $sort = 1;
+                foreach($lead_types_to_sort as $skey => $sd) {
+
+                    $a_data = $this->LeadTypes->get($sd->id, []);
+                    $data_sort['sort'] = $sort;
+                    $a_data = $this->LeadTypes->patchEntity($a_data, $data_sort);
+                    if ( !$this->LeadTypes->save($a_data) ) { echo "error unlocking lead"; }                    
+
+                $sort++;
+                }
+            }
+
             $LeadTypes = $this->LeadTypes->find('all', ['order' => ['LeadTypes.sort' => 'ASC']]);
         } 
 
         $this->set('user_data', $user_data);
 
         if($user_data->group_id == 1) {
-            $this->set('leadTypes', $LeadTypes);
+            $this->set('leadTypes', $this->paginate($LeadTypes, ['limit' => 800]));
         } else {
             $this->set('leadTypes', $this->paginate($LeadTypes));
         }
