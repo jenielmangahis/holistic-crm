@@ -4,23 +4,23 @@
 <table>
 <tr>
 	<td>Name</td>
-	<td>: <?php echo $lead['firstname'] . ' ' . $lead['surname']; ?></td>
+	<td>: <?php echo $new_lead['firstname'] . ' ' . $new_lead['surname']; ?></td>
 </tr>
 <tr>
 	<td>Email</td>
-	<td>: <?php echo $lead['email']; ?></td>
+	<td>: <?php echo $new_lead['email']; ?></td>
 </tr>
 <tr>
 	<td>Phone</td>
-	<td>: <?php echo $lead['phone']; ?></td>
+	<td>: <?php echo $new_lead['phone']; ?></td>
 </tr>
 <tr>
 	<td>City / State</td>
-	<td>: <?php echo $lead['city'] . ' / ' . $lead['state']; ?></td>
+	<td>: <?php echo $new_lead['city'] . ' / ' . $new_lead['state']; ?></td>
 </tr>
 <tr>
 	<td>Address</td>
-	<td>: <?php echo $lead['address']; ?></td>
+	<td>: <?php echo $new_lead['address']; ?></td>
 </tr>	
 </table>
 
@@ -28,54 +28,54 @@
 <table>
 <tr>
 	<td>Status</td>
-	<td>: <?php echo $lead['status']['name']; ?></td>
+	<td>: <?php echo $new_lead['status']['name']; ?></td>
 </tr>
 <tr>
 	<td>Action</td>
-	<td>: <?php echo $lead['lead_action']; ?></td>
+	<td>: <?php echo $new_lead['lead_action']; ?></td>
 </tr>
 <tr>
 	<td>Source</td>
-	<td>: <?php echo $lead['source']['name']; ?></td>
+	<td>: <?php echo $new_lead['source']['name']; ?></td>
 </tr>
 <tr>
 	<td>Lead Type</td>
-	<td>: <?php echo $lead['lead_type']['name']; ?></td>
+	<td>: <?php echo $new_lead['lead_type']['name']; ?></td>
 </tr>
 <tr>
 	<td>Allocated to</td>
-	<td>: <?php echo $lead['allocation']['name']; ?></td>
+	<td>: <?php echo $new_lead['allocation']['name']; ?></td>
 </tr>	
 <tr>
 	<td>Allocation Date</td>
-	<td>: <?php echo date("Y-m-d",strtotime($lead['allocation_date'])); ?></td>
+	<td>: <?php echo date("Y-m-d",strtotime($new_lead['allocation_date'])); ?></td>
 </tr>	
 <tr>
 	<td>Interest Type</td>
-	<td>: <?php echo $lead['interest_type']['name']; ?></td>
+	<td>: <?php echo $new_lead['interest_type']['name']; ?></td>
 </tr>	
 </table>
 <h3 class="form-hdr" style="background-color: #222D32;color:#ffffff;padding: 10px;">New Followup Information</h3>
 <table>
 <tr>
 	<td>Followup Date</td>
-	<td>: <?php echo date("Y-m-d",strtotime($lead['followup_date'])); ?></td>
+	<td>: <?php echo date("Y-m-d",strtotime($new_lead['followup_date'])); ?></td>
 </tr>
 <tr>
 	<td>Followup Notes</td>
-	<td>: <?php echo strip_tags($lead['followup_notes']); ?></td>
+	<td>: <?php echo strip_tags($new_lead['followup_notes']); ?></td>
 </tr>
 <tr>
 	<td>Followup Action Reminder Date</td>
-	<td>: <?php echo date("Y-m-d",strtotime($lead['followup_action_reminder_date'])); ?></td>
+	<td>: <?php echo date("Y-m-d",strtotime($new_lead['followup_action_reminder_date'])); ?></td>
 </tr>
 <tr>
 	<td>Followup Action Notes</td>
-	<td>: <?php echo strip_tags($lead['followup_action_notes']); ?></td>
+	<td>: <?php echo strip_tags($new_lead['followup_action_notes']); ?></td>
 </tr>	
 <tr>
 	<td>Notes</td>
-	<td>: <?php echo strip_tags($lead['notes']); ?></td>
+	<td>: <?php echo strip_tags($new_lead['notes']); ?></td>
 </tr>	
 </table>
 
