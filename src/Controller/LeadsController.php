@@ -224,8 +224,8 @@ class LeadsController extends AppController
 
                       foreach($other_email as $oekey => $em) {
 
-                        if( !empty($em) || $em != '') {
-                            $other_email_to_add = ltrim($em);
+                        if (trim($em) != '') {
+                            $other_email_to_add = $em; //ltrim($em);
                             $users_email[$other_email_to_add] = $other_email_to_add;  
                         }
 
@@ -242,7 +242,7 @@ class LeadsController extends AppController
                       'contain' => ['Statuses', 'Sources', 'Allocations', 'LastModifiedBy','LeadTypes','InterestTypes']
                   ]);                 
                   
-                  $email_customer = new Email('default');
+                  $email_customer = new Email('default'); //default or cake_smtp (for testing in local)
                   $email_customer->from(['websystem@holisticwebpresencecrm.com' => 'Holistic'])
                     ->template('crm_new_leads')
                     ->emailFormat('html')          
@@ -349,8 +349,8 @@ class LeadsController extends AppController
 
                       foreach($other_email as $oekey => $em) {
 
-                        if( !empty($em) || $em != '') {
-                            $other_email_to_add = ltrim($em);
+                        if (trim($em) != '') {
+                            $other_email_to_add = $em; //ltrim($em);
                             $users_email[$other_email_to_add] = $other_email_to_add;  
                         }
 
@@ -422,7 +422,6 @@ class LeadsController extends AppController
         } 
 
         $lead_exists = $this->Leads->exists(['id' => $id]);
-
         if($lead_exists) {
 
           $login_user_id = $this->user->id;

@@ -86,8 +86,8 @@ class ExternalRequestsController extends AppController
 
                     foreach($other_email as $oekey => $em) {
 
-                      if( !empty($em) || $em != '') {
-                          $other_email_to_add = ltrim($em);
+                      if (trim($em) != '') {
+                          $other_email_to_add = $em; //ltrim($em);
                           $users_email[$other_email_to_add] = $other_email_to_add;  
                       }
 
@@ -102,7 +102,7 @@ class ExternalRequestsController extends AppController
               $leadData = $this->Leads->get($new_lead->id, [
                   'contain' => ['Statuses', 'Sources', 'Allocations', 'LeadTypes','InterestTypes']
               ]);  
-              $email_customer = new Email('default');
+              $email_customer = new Email('default'); //default or cake_smtp (for testing in local)
               $email_customer->from(['websystem@holisticwebpresencecrm.com' => 'Holistic'])
                 ->template('external_leads_registration')
                 ->emailFormat('html')          
@@ -119,5 +119,104 @@ class ExternalRequestsController extends AppController
       $this->viewBuilder()->layout('');     
       echo json_encode($json);
       exit;
-    }   
+    } 
+
+    public function ajax_register_leadsTest()
+    {
+      echo 'Test External Email';
+      echo '<hr />';
+
+      $this->AllocationUsers = TableRegistry::get('AllocationUsers');
+
+      $data = true;
+      $json['is_success'] = false;      
+
+      if( $data ){
+        $lead = $this->Leads->newEntity();
+
+        $lead_action = "This is lead action";
+        /*if( isset($data['lead-action']) ){
+          $lead_action = $data['lead-action'];
+        }*/
+
+        $data_leads = [
+          'firstname' => 'BryTest',
+          'surname' => 'Bio',
+          'email' => 'bryan.bio@gmail.com',
+          'phone' => '246456',
+          'city' => 'Test City',
+          'state' => 'Test State',
+          'source_id' => 12,
+          'lead_action' => 'Test Action',
+          'status_id' => 2,
+          'lead_type_id' => 1,
+          'interest_type_id' => 6,
+          'allocation_id' => 12,
+          'allocation_date' => date("Y-m-d"),
+          'followup_date' => date("Y-m-d"),
+          'followup_action_reminder_date' => date("Y-m-d")
+        ];
+        $lead = $this->Leads->patchEntity($lead, $data_leads);        
+        if ($new_lead = $this->Leads->save($lead)) {
+
+            $allocation_users = $this->AllocationUsers->find('all')
+                ->contain(['Users'])
+                ->where(['AllocationUsers.allocation_id' => 12])
+            ;
+
+            $users_email = array();
+            foreach($allocation_users as $users){            
+                $users_email[$users->user->email] = $users->user->email;            
+            }
+
+            //add other emails to be sent - start
+              foreach($allocation_users as $users){            
+                  $other_email_to_explode = $users->user->other_email;
+
+                  if( !empty($other_email_to_explode) || $other_email_to_explode != '' ) {
+
+                    $other_email = explode(";", $other_email_to_explode);
+
+                    foreach($other_email as $oekey => $em) {
+
+                      if (trim($em) != '') {
+                          $other_email_to_add = $em; //ltrim($em);
+                          $users_email[$other_email_to_add] = $other_email_to_add;  
+                      }
+
+                    }
+                    
+                  }
+              }    
+            //add other emails to be sent - end             
+
+              echo 'emails:';
+              echo '<pre>';
+              print_r($users_email);
+              echo '</pre>';
+              exit;
+
+            if( !empty($users_email) ){
+              //Send email notification
+              $leadData = $this->Leads->get($new_lead->id, [
+                  'contain' => ['Statuses', 'Sources', 'Allocations', 'LeadTypes','InterestTypes']
+              ]);  
+              $email_customer = new Email('default'); //default or cake_smtp (for testing in local)
+              $email_customer->from(['websystem@holisticwebpresencecrm.com' => 'Holistic'])
+                ->template('external_leads_registration')
+                ->emailFormat('html')          
+                ->bcc($users_email)                                                                                               
+                ->subject('New Lead')
+                ->viewVars(['new_lead' => $leadData->toArray()])
+                ->send();
+            }
+            
+          $json['is_success'] = true;
+        } 
+      }
+
+      $this->viewBuilder()->layout('');     
+      echo json_encode($json);
+      exit;
+    }       
 }

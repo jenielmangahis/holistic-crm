@@ -179,15 +179,20 @@ class AppController extends Controller
 
                 if($user_id == $u->id) {
 
-                    $lead_unlock = $this->Leads->get($lead_id, [ 'contain' => ['LastModifiedBy'] ]);       
+                    $lead_exists = $this->Leads->exists(['id' => $lead_id]);
+                    if($lead_exists) {
 
-                    $login_user_id                      = $u->id;
-                    $data_unlck['is_lock']              = 0;
-                    $data_unlck['last_modified_by_id '] = $login_user_id;
-                    $lead_unlock = $this->Leads->patchEntity($lead_unlock, $data_unlck);
-                    if ( $this->Leads->save($lead_unlock) ) { 
-                        //session_start();
-                        unset($ulock_leads[$login_user_id]);
+                        $lead_unlock = $this->Leads->get($lead_id, [ 'contain' => ['LastModifiedBy'] ]);       
+
+                        $login_user_id                      = $u->id;
+                        $data_unlck['is_lock']              = 0;
+                        $data_unlck['last_modified_by_id '] = $login_user_id;
+                        $lead_unlock = $this->Leads->patchEntity($lead_unlock, $data_unlck);
+                        if ( $this->Leads->save($lead_unlock) ) { 
+                            //session_start();
+                            unset($ulock_leads[$login_user_id]);
+                        }
+
                     }
 
                 }
@@ -211,11 +216,14 @@ class AppController extends Controller
 
                 if($last_modified_user_id == $u->id) {
                     
-                    $lead_unlock = $this->Leads->get($lead_id, [ 'contain' => ['LastModifiedBy'] ]);      
-                    $data['is_lock']              = 0;
-                    $data['last_modified_by_id '] = $login_user_id;
-                    $lead_unlock = $this->Leads->patchEntity($lead_unlock, $data);
-                    if ( !$this->Leads->save($lead_unlock) ) { echo "error updating lock lead"; exit; }                
+                    $lead_exists = $this->Leads->exists(['id' => $lead_id]);
+                    if($lead_exists) {
+                        $lead_unlock = $this->Leads->get($lead_id, [ 'contain' => ['LastModifiedBy'] ]);      
+                        $data['is_lock']              = 0;
+                        $data['last_modified_by_id '] = $login_user_id;
+                        $lead_unlock = $this->Leads->patchEntity($lead_unlock, $data);
+                        if ( !$this->Leads->save($lead_unlock) ) { echo "error updating lock lead"; exit; }                
+                    }
 
                 }
 

@@ -132,13 +132,14 @@ class DebugController extends AppController
     {
         $this->Leads = TableRegistry::get('Leads');   
 
-        $id = 1;        
+        $id = 131;        
         $leadData = $this->Leads->get($id, [
             'contain' => ['Statuses', 'Sources', 'Allocations', 'LastModifiedBy','LeadTypes','InterestTypes']
         ]); 
         
-        $users_email['bryan.yobi@gmail.com'] = 'bryan.yobi@gmail.com';
-        $email_customer = new Email('default');
+        $users_email['bryann.revina@gmail.com'] = 'bryann.revina@gmail.com';
+        
+        $email_customer = new Email('cake_smtp');
         $email_customer->from(['websystem@holisticwebpresencecrm.com' => 'Holistic'])
           ->template('external_leads_registration')
           ->emailFormat('html')          
