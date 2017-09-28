@@ -57,6 +57,7 @@ class ExternalRequestsController extends AppController
           'lead_action' => $lead_action,
           'status_id' => 2,
           'lead_type_id' => 1,
+          'interest_type_id' => 6,
           'allocation_id' => $data['lead-allocation-id'],
           'allocation_date' => date("Y-m-d"),
           'followup_date' => date("Y-m-d"),
@@ -76,30 +77,30 @@ class ExternalRequestsController extends AppController
             }
 
             //add other emails to be sent - start
-            foreach($allocation_users as $users){            
-                $other_email_to_explode = $users->user->other_email;
+              /*foreach($allocation_users as $users){            
+                  $other_email_to_explode = $users->user->other_email;
 
-                if( !empty($other_email_to_explode) || $other_email_to_explode != '' ) {
+                  if( !empty($other_email_to_explode) || $other_email_to_explode != '' ) {
 
-                  $other_email = explode(";", $other_email_to_explode);
+                    $other_email = explode(";", $other_email_to_explode);
 
-                  foreach($other_email as $oekey => $em) {
+                    foreach($other_email as $oekey => $em) {
 
-                    if( !empty($em) || $em != '') {
-                        $other_email_to_add = ltrim($em);
-                        $users_email[$other_email_to_add] = $other_email_to_add;  
+                      if( !empty($em) || $em != '') {
+                          $other_email_to_add = ltrim($em);
+                          $users_email[$other_email_to_add] = $other_email_to_add;  
+                      }
+
                     }
-
+                    
                   }
-                  
-                }
-            }    
+              }    */
             //add other emails to be sent - end             
 
             if( !empty($users_email) ){
               //Send email notification
               $leadData = $this->Leads->get($new_lead->id, [
-                  'contain' => ['Statuses', 'Sources', 'Allocations', 'LastModifiedBy','LeadTypes','InterestTypes']
+                  'contain' => ['Statuses', 'Sources', 'Allocations', 'LeadTypes','InterestTypes']
               ]);  
               $email_customer = new Email('default');
               $email_customer->from(['websystem@holisticwebpresencecrm.com' => 'Holistic'])

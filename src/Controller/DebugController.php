@@ -123,6 +123,30 @@ class DebugController extends AppController
 
         exit;
     }
-    
-    
+
+    /**
+     * debug Leads Allocation Auto Email method     
+     * @return void
+     */
+    public function debugEmailDefault()
+    {
+        $this->Leads = TableRegistry::get('Leads');   
+
+        $id = 1;        
+        $leadData = $this->Leads->get($id, [
+            'contain' => ['Statuses', 'Sources', 'Allocations', 'LastModifiedBy','LeadTypes','InterestTypes']
+        ]); 
+        
+        $users_email['bryan.yobi@gmail.com'] = 'bryan.yobi@gmail.com';
+        $email_customer = new Email('default');
+        $email_customer->from(['websystem@holisticwebpresencecrm.com' => 'Holistic'])
+          ->template('external_leads_registration')
+          ->emailFormat('html')          
+          ->bcc($users_email)                                                                                               
+          ->subject('New Leads')
+          ->viewVars(['lead' => $leadData->toArray()])
+          ->send();
+
+        exit;
+    }
 }
