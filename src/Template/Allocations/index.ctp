@@ -137,7 +137,7 @@ div.box-body{
                         </tbody>
                     </table>
                     
-                    <!--
+                    <?php if($user_data->group_id != 1) { ?>
                     <div class="paginator" style="text-align:center;">
                         <ul class="pagination">
                         <?= $this->Paginator->prev('«') ?>
@@ -146,7 +146,7 @@ div.box-body{
                         </ul>
                         <p class="hidden"><?= $this->Paginator->counter() ?></p>
                     </div>  
-                    -->
+                    <?php } ?>
                    
                 </div>
             </div>    

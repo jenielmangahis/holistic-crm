@@ -66,6 +66,23 @@ class GroupsController extends AppController
                 ->where(['Groups.name LIKE' => '%' . $query . '%'])                                
             ;
         }else{
+
+            $sort_direction = !empty($this->request->query['direction']) ? $this->request->query['direction'] : 'ASC';
+            $sort_field     = !empty($this->request->query['sort']) ? $this->request->query['sort'] : 'ASC';            
+
+            if( !empty($this->request->query['direction']) && !empty($this->request->query['sort']) ) {
+                $group_to_sort  = $this->Groups->find('all', ['order' => ['Groups.'.$sort_field => $sort_direction]]);
+                $sort = 1;
+                foreach($group_to_sort as $skey => $sd) {
+                    $a_data = $this->Groups->get($sd->id);
+                    $data_sort['sort'] = $sort;
+                    $a_data = $this->Groups->patchEntity($a_data, $data_sort);
+                    if ( !$this->Groups->save($a_data) ) { echo "error unlocking lead"; }                    
+
+                $sort++;
+                }
+            }
+
             $groups = $this->Groups->find('all');
         }      
         

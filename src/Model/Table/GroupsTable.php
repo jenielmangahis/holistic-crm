@@ -1,7 +1,7 @@
 <?php
 namespace App\Model\Table;
 
-use App\Model\Entity\Group;
+//use App\Model\Entity\Group;
 use Cake\ORM\Query;
 use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
@@ -21,6 +21,8 @@ class GroupsTable extends Table
      */
     public function initialize(array $config)
     {
+        parent::initialize($config);
+
         $this->table('groups');
         $this->displayField('name');
         $this->primaryKey('id');
@@ -38,11 +40,19 @@ class GroupsTable extends Table
      */
     public function validationDefault(Validator $validator)
     {
-        $validator
+        /*$validator
             ->add('id', 'valid', ['rule' => 'numeric'])
             ->allowEmpty('id', 'create')
             ->requirePresence('name', 'create')
-            ->notEmpty('name');
+            ->notEmpty('name');*/
+
+        $validator
+            ->integer('id')
+            ->allowEmpty('id', 'create');
+
+        $validator
+            ->requirePresence('name', 'create')
+            ->notEmpty('name');            
 
         return $validator;
     }

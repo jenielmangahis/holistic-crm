@@ -71,7 +71,7 @@ div.box-body{
                         <thead class="thead-inverse">
                             <tr>
                                 <th class="actions"></th>                                                                
-                                <th style="width:50%;"><?= $this->Paginator->sort('username', __("Username") . "<i class='fa fa-sort pull-right'> </i>", array('escape' => false)) ?></th>
+                                <th style=""><?= $this->Paginator->sort('username', __("Username") . "<i class='fa fa-sort pull-right'> </i>", array('escape' => false)) ?></th>
                                 <th><?= $this->Paginator->sort('group_id', __("Group Name") . "<i class='fa fa-sort pull-right'> </i>", array('escape' => false)) ?></th>
                                 <th><?= __('Clients') ?></th>                                                            
                             </tr>

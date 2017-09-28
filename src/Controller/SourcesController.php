@@ -64,9 +64,10 @@ class SourcesController extends AppController
 
         } else {
             $sort_direction = !empty($this->request->query['direction']) ? $this->request->query['direction'] : 'ASC';
+            $sort_field     = !empty($this->request->query['sort']) ? $this->request->query['sort'] : 'ASC';            
 
             if( !empty($this->request->query['direction']) && !empty($this->request->query['sort']) ) {
-                $sources_to_sort  = $this->Sources->find('all', ['order' => ['Sources.name' => $sort_direction]]);
+                $sources_to_sort  = $this->Sources->find('all', ['order' => ['Sources.'.$sort_field => $sort_direction]]);
                 $sort = 1;
                 foreach($sources_to_sort as $skey => $sd) {
 

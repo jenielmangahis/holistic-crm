@@ -67,12 +67,30 @@ class StatusesController extends AppController
             $statuses = $this->Statuses->find('all')
                 ->where( ['Statuses.name LIKE' => '%' . $query . '%'] );
         } else {
+
+            $sort_direction = !empty($this->request->query['direction']) ? $this->request->query['direction'] : 'ASC';
+            $sort_field     = !empty($this->request->query['sort']) ? $this->request->query['sort'] : 'ASC';            
+
+            if( !empty($this->request->query['direction']) && !empty($this->request->query['sort']) ) {
+                $statuses_to_sort  = $this->Statuses->find('all', ['order' => ['Statuses.'.$sort_field => $sort_direction]]);
+                $sort = 1;
+                foreach($statuses_to_sort as $skey => $sd) {
+
+                    $a_data = $this->Statuses->get($sd->id, []);
+                    $data_sort['sort'] = $sort;
+                    $a_data = $this->Statuses->patchEntity($a_data, $data_sort);
+                    if ( !$this->Statuses->save($a_data) ) { echo "error unlocking lead"; }                    
+
+                $sort++;
+                }
+            }
+
             $statuses = $this->Statuses->find('all', ['order' => ['Statuses.sort' => 'ASC']]);
         }   
 
         $this->set('user_data', $user_data);
         if($user_data->group_id == 1) {
-            $this->set('statuses', $statuses);
+            $this->set('statuses', $this->paginate($statuses, ['limit' => 800]));
         } else {
             $this->set('statuses', $this->paginate($statuses));
         }
