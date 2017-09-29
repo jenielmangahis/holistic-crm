@@ -60,6 +60,9 @@ class SourcesTable extends Table
             ->requirePresence('name', 'create')
             ->notEmpty('name');
 
+        $validator
+            ->allowEmpty('emails');             
+
         return $validator;
     }
 }
