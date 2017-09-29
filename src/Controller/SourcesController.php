@@ -112,7 +112,9 @@ class SourcesController extends AppController
     {
         $source = $this->Sources->newEntity();
         if ($this->request->is('post')) {
-            $source = $this->Sources->patchEntity($source, $this->request->data);
+            $data = $this->request->data;      
+            $data['emails'] = str_replace(",", ";", $this->request->data['emails']);             
+            $source = $this->Sources->patchEntity($source, $data);
             if ($this->Sources->save($source)) {
                 $this->Flash->success(__('The source has been saved.'));
                 $action = $this->request->data['save'];
@@ -128,6 +130,7 @@ class SourcesController extends AppController
 
         $allocations = $this->Sources->Allocations->find('list', ['order' => ['Allocations.sort' => 'ASC']]);
 
+        $this->set('enable_tags_input', true);
         $this->set(compact('source', 'allocations'));
         $this->set('_serialize', ['source']);
     }
@@ -145,7 +148,9 @@ class SourcesController extends AppController
             'contain' => []
         ]);
         if ($this->request->is(['patch', 'post', 'put'])) {
-            $source = $this->Sources->patchEntity($source, $this->request->data);
+            $data = $this->request->data;      
+            $data['emails'] = str_replace(",", ";", $this->request->data['emails']);              
+            $source = $this->Sources->patchEntity($source, $data);
             if ($this->Sources->save($source)) {
                 $this->Flash->success(__('The source has been saved.'));
                 $action = $this->request->data['save'];
@@ -161,6 +166,7 @@ class SourcesController extends AppController
 
         $allocations = $this->Sources->Allocations->find('list', ['order' => ['Allocations.sort' => 'ASC']]);
 
+        $this->set('enable_tags_input', true);
         $this->set(compact('source', 'allocations'));
         $this->set('_serialize', ['source']);
     }

@@ -31,8 +31,8 @@
                                     <div class='form-group'>
                                         <label for='email' class='col-sm-2 control-label'>" . __('Emails') . "</label>
                                         <div class='col-sm-6'>";
-                                        echo $this->Form->input('emails', ['class' => 'form-control', 'id' => 'emails', 'label' => false, 'default' => ' ']);                
-                                    echo " </div>* emails separated by semicolon</div>";
+                                        echo $this->Form->input('emails', ['class' => 'form-control', 'id' => 'tags-emails', 'data-role' => 'tagsinput', 'label' => false, 'default' => ' ']);                
+                                    echo " </div></div>";
 
                             echo "
                                     <div class='form-group'>
