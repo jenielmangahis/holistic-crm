@@ -67,7 +67,6 @@ class LeadsController extends AppController
      */
     public function index()
     {
-
       $this->paginate = ['order' => ['Leads.allocation_date' => 'DESC']];
 
       if(isset($this->request->query['unlock']) && isset($this->request->query['lead_id']) ) {
@@ -114,6 +113,7 @@ class LeadsController extends AppController
 
     public function from_source($source_id)
     {
+      $this->paginate = ['order' => ['Leads.allocation_date' => 'DESC']];
       $this->Sources = TableRegistry::get('Sources');     
       $source        = $this->Sources->get($source_id, ['']);
 
