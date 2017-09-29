@@ -264,15 +264,17 @@ class UsersController extends AppController
         if ($this->request->is('post')) {
 
             $post_data = $this->request->data;
-            $request_data['firstname']  = ltrim($post_data['firstname']);
-            $request_data['middlename'] = ltrim($post_data['middlename']);
-            $request_data['lastname']   = ltrim($post_data['lastname']);
-            $request_data['email']      = $post_data['email'];
-            $request_data['other_email'] = ltrim($post_data['other_email']);
-            $request_data['group_id']   = $post_data['group_id'];
-            $request_data['username']   = ltrim($post_data['username']);
-            $request_data['password']   = $post_data['password'];
-            $request_data['save']       = $post_data['save'];
+
+            $request_data['firstname']   = ltrim($post_data['firstname']);
+            $request_data['middlename']  = ltrim($post_data['middlename']);
+            $request_data['lastname']    = ltrim($post_data['lastname']);
+            $request_data['email']       = $post_data['email'];
+            $request_data['other_email'] = str_replace(",", ";", $post_data['other_email']); 
+            $request_data['other_email'] = ltrim($request_data['other_email']);
+            $request_data['group_id']    = $post_data['group_id'];
+            $request_data['username']    = ltrim($post_data['username']);
+            $request_data['password']    = $post_data['password'];
+            $request_data['save']        = $post_data['save'];
 
             $user = $this->Users->patchEntity($user, $request_data);
             if ($this->Users->save($user)) {
@@ -291,6 +293,7 @@ class UsersController extends AppController
                 ->where(['Groups.id !=' => 1]);
         }
         
+        $this->set('enable_tags_input', true);
         $this->set(compact('user', 'groups'));
         $this->set('_serialize', ['user']);
     }
@@ -308,7 +311,9 @@ class UsersController extends AppController
             'contain' => []
         ]);
         if ($this->request->is(['patch', 'post', 'put'])) {
-            $user = $this->Users->patchEntity($user, $this->request->data);
+            $data = $this->request->data;      
+            $data['other_email'] = str_replace(",", ";", $this->request->data['other_email']);            
+            $user = $this->Users->patchEntity($user, $data);            
             $result = $this->Users->save($user);
             if ($result) {
                 $this->Flash->success(__('User data has been updated.'));
@@ -334,8 +339,7 @@ class UsersController extends AppController
             $this->set('groups', $groups);
         }
 
-
-        
+        $this->set('enable_tags_input', true);
     }
 
     /**

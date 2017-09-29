@@ -150,7 +150,7 @@
 <script>
   $.widget.bridge('uibutton', $.ui.button);
 </script>
-
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
 <?php 
   echo $this->Html->script('bootstrap/js/bootstrap.min.js');
   echo $this->Html->script('jquery.ui.touch-punch.min.js');
@@ -167,6 +167,11 @@
   if( isset($enable_fancy_box) ){
     echo $this->Html->css('jquery.fancybox.min.css');
     echo $this->Html->script('jquery.fancybox.min.js');    
+  }
+
+  if( isset($enable_tags_input) ){
+    echo $this->Html->css('tagsinput/bootstrap-tagsinput.css');
+    echo $this->Html->script('tagsinput/bootstrap-tagsinput.js');     
   }
  
   /*echo $this->Html->script('dist/js/demo.js');    
@@ -191,6 +196,15 @@ $(function(){
         $("#system-time").html(n + ' ' + time);
     },1000);
 
+  //Tags input
+  <?php if( isset($enable_tags_input) ){ ?>   
+    $('#tags-other-emails').tagsinput({
+      itemText: 'Type Email',
+      confirmKeys: [188],
+      allowDuplicates: false,
+      trimValue: true
+    }); 
+  <?php } ?>
   //Sortable
   /*
   $( ".sortable-rows" ).sortable({
