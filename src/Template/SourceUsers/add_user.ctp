@@ -63,8 +63,9 @@
                                     <div class='form-group'>
                                         <label for='email' class='col-sm-2 control-label'>" . __('Other Emails') . "</label>
                                         <div class='col-sm-6'>";
-                                        echo $this->Form->input('other_email', ['class' => 'form-control', 'id' => 'other_email', 'label' => false]);                
+                                        echo $this->Form->input('other_email', ['class' => 'form-control', 'id' => 'tags-other-emails', 'data-role' => 'tagsinput', 'label' => false]);                
                                     echo " </div>* emails separated by semicolon</div>";
+                                   
                         ?>
                         <h3 class="form-caption">Login Details</h3>          
                         <?php                                    

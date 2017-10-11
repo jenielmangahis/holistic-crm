@@ -78,7 +78,7 @@ div.box-body{
                                         </button>
                                         <ul class="dropdown-menu" role="menu" aria-labelledby="drpdwn">                                            
                                             <li role="presentation"><?= $this->Html->link('<i class="fa fa-pencil"></i> Edit', ['action' => 'edit_user', $sourceUser->id],['escape' => false]) ?></li>
-                                            <li role="presentation"><?= $this->Html->link('<i class="fa fa-lock"></i> Change Password', ['action' => 'change_password', $sourceUser->id, $source->id],['escape' => false]) ?></li>
+                                            <li role="presentation"><?= $this->Html->link('<i class="fa fa-lock"></i> Change Password', ['action' => 'change_password', $sourceUser->user_id, $source->id],['escape' => false]) ?></li>
                                             <li role="presentation"><?= $this->Html->link('<i class="fa fa-trash"></i> Delete', '#modal-'.$sourceUser->id,['data-toggle' => 'modal','escape' => false]) ?></li>
                                         </ul>
                                     </div>   
