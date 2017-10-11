@@ -91,14 +91,14 @@ class LeadsController extends AppController
       if( isset($this->request->query['query']) ){
           $query = $this->request->query['query'];
           $leads = $this->Leads->find('all')
-              ->contain(['Statuses', 'Sources', 'Allocations'])
+              ->contain(['Statuses', 'Sources'])
               ->where(['Leads.firstname LIKE' => '%' . $query . '%'])       
               ->orWhere(['Leads.surname LIKE' => '%' . $query . '%'])       
               ->orWhere(['Leads.email LIKE' => '%' . $query . '%'])       
           ;
       }else{
           $leads = $this->Leads->find('all')
-              ->contain(['Statuses', 'Sources', 'Allocations', 'LastModifiedBy'])
+              ->contain(['Statuses', 'Sources', 'LastModifiedBy'])
           ;
       }
 
@@ -183,7 +183,7 @@ class LeadsController extends AppController
      */
     public function add()
     {
-        $this->AllocationUsers = TableRegistry::get('AllocationUsers');
+        $this->SourceUsers = TableRegistry::get('SourceUsers');
 
         $p = $this->default_group_actions;
         if( $p && $p['leads'] == 'View Only' ){
@@ -204,18 +204,18 @@ class LeadsController extends AppController
             if ($newLead = $this->Leads->save($lead)) {
 
                 //Send Email notification
-                $allocation_users = $this->AllocationUsers->find('all')
+                $source_users = $this->SourceUsers->find('all')
                     ->contain(['Users'])
-                    ->where(['AllocationUsers.allocation_id' => $data['allocation_id']])
+                    ->where(['SourceUsers.source_id' => $data['source_id']])
                 ;
 
                 $users_email = array();
-                foreach($allocation_users as $users){            
+                foreach($source_users as $users){            
                     $users_email[$users->user->email] = $users->user->email;            
                 }
 
                 //add other emails to be sent - start
-                foreach($allocation_users as $users){            
+                foreach($source_users as $users){            
                     $other_email_to_explode = $users->user->other_email;
 
                     if( !empty($other_email_to_explode) || $other_email_to_explode != '' ) {
@@ -239,9 +239,8 @@ class LeadsController extends AppController
 
                   //Send email notification  
                   $leadData = $this->Leads->get($newLead->id, [
-                      'contain' => ['Statuses', 'Sources', 'Allocations', 'LastModifiedBy','LeadTypes','InterestTypes']
-                  ]);                 
-                  
+                      'contain' => ['Statuses', 'Sources', 'LastModifiedBy','LeadTypes','InterestTypes']
+                  ]);                                   
                   $email_customer = new Email('default'); //default or cake_smtp (for testing in local)
                   $email_customer->from(['websystem@holisticwebpresencecrm.com' => 'Holistic'])
                     ->template('crm_new_leads')
@@ -264,11 +263,10 @@ class LeadsController extends AppController
             }
         }
         $statuses = $this->Leads->Statuses->find('list', ['order' => ['Statuses.sort' => 'ASC']]);
-        $sources  = $this->Leads->Sources->find('list', ['order' => ['Sources.sort' => 'ASC']]);
-        $allocations = $this->Leads->Allocations->find('list', ['order' => ['Allocations.sort' => 'ASC']]);
+        $sources  = $this->Leads->Sources->find('list', ['order' => ['Sources.sort' => 'ASC']]);        
         $interestTypes = $this->Leads->InterestTypes->find('list', ['order' => ['InterestTypes.sort' => 'ASC']]);
         $leadTypes = $this->Leads->LeadTypes->find('list', ['order' => ['LeadTypes.sort' => 'ASC']]);
-        $this->set(compact('lead', 'statuses', 'sources', 'allocations', 'interestTypes', 'leadTypes'));
+        $this->set(compact('lead', 'statuses', 'sources', 'interestTypes', 'leadTypes'));
         $this->set('_serialize', ['lead']);
     }
 
@@ -281,7 +279,7 @@ class LeadsController extends AppController
      */
     public function edit($id = null, $redir = null)
     {
-        $this->AllocationUsers = TableRegistry::get('AllocationUsers');
+        $this->SourceUsers = TableRegistry::get('SourceUsers');
 
         $p = $this->default_group_actions;
         if( $p && $p['leads'] == 'View Only' ){
@@ -329,18 +327,18 @@ class LeadsController extends AppController
             if ($this->Leads->save($lead)) {
                 
                 //Send Email notification
-                $allocation_users = $this->AllocationUsers->find('all')
+                $source_users = $this->SourceUsers->find('all')
                     ->contain(['Users'])
-                    ->where(['AllocationUsers.allocation_id' => $data['allocation_id']])
+                    ->where(['SourceUsers.source_id' => $data['source_id']])
                 ;
 
                 $users_email = array();
-                foreach($allocation_users as $users){            
+                foreach($source_users as $users){            
                     $users_email[$users->user->email] = $users->user->email;            
                 }
 
                 //add other emails to be sent - start
-                foreach($allocation_users as $users){            
+                foreach($source_users as $users){            
                     $other_email_to_explode = $users->user->other_email;
 
                     if( !empty($other_email_to_explode) || $other_email_to_explode != '' ) {
@@ -362,7 +360,7 @@ class LeadsController extends AppController
 
                 if( !empty($users_email) ){                                                      
                   $modifiedLead = $this->Leads->get($id, [
-                      'contain' => ['Statuses', 'Sources', 'Allocations', 'LastModifiedBy','LeadTypes','InterestTypes']
+                      'contain' => ['Statuses', 'Sources', 'LastModifiedBy','LeadTypes','InterestTypes']
                   ]); 
                 
                   $email_customer = new Email('default');
@@ -398,11 +396,10 @@ class LeadsController extends AppController
             }
         }
         $statuses = $this->Leads->Statuses->find('list', ['order' => ['Statuses.sort' => 'ASC']]);
-        $sources = $this->Leads->Sources->find('list', ['order' => ['Sources.sort' => 'ASC']]);
-        $allocations = $this->Leads->Allocations->find('list', ['order' => ['Allocations.sort' => 'ASC']]);
+        $sources = $this->Leads->Sources->find('list', ['order' => ['Sources.sort' => 'ASC']]);        
         $interestTypes = $this->Leads->InterestTypes->find('list', ['order' => ['InterestTypes.sort' => 'ASC']]);
         $leadTypes = $this->Leads->LeadTypes->find('list', ['order' => ['LeadTypes.sort' => 'ASC']]);
-        $this->set(compact('lead', 'statuses', 'sources', 'allocations', 'interestTypes', 'leadTypes'));
+        $this->set(compact('lead', 'statuses', 'sources', 'interestTypes', 'leadTypes'));
         $this->set('_serialize', ['lead']);
     }
 

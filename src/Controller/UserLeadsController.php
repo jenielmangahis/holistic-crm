@@ -65,7 +65,7 @@ class UserLeadsController extends AppController
       $this->paginate = ['order' => ['Leads.allocation_date' => 'DESC']];
 
       $this->Leads = TableRegistry::get('Leads');
-      $this->AllocationUsers = TableRegistry::get('AllocationUsers');
+      $this->SourceUsers = TableRegistry::get('SourceUsers');
 
       $session   = $this->request->session();    
       $user_data = $session->read('User.data');         
@@ -90,28 +90,28 @@ class UserLeadsController extends AppController
       }
 
       /*
-      $allocations  = $this->AllocationUsers->find('all')
-        ->where(['AllocationUsers.user_id' => $user_data->id])     
+      $allocations  = $this->SourceUsers->find('all')
+        ->where(['SourceUsers.user_id' => $user_data->id])     
         ; 
       */   
 
       if( isset($this->request->query['query']) ){
 
-          $allocationUsers = $this->AllocationUsers->find('all')            
-            ->where(['AllocationUsers.user_id' => $user_data->id])            
+          $sourceUsers = $this->SourceUsers->find('all')            
+            ->where(['SourceUsers.user_id' => $user_data->id])            
           ;
 
-          if( $allocationUsers->count() > 0 ) {
+          if( $sourceUsers->count() > 0 ) {
 
             $query = $this->request->query['query'];
-            $allocation_ids = array();
-            foreach($allocationUsers as $au){
-              $allocation_ids[] = $au->allocation_id;
+            $source_ids = array();
+            foreach($sourceUsers as $su){
+              $source_ids[] = $su->source_id;
             }
             
             $leads = $this->Leads->find('all')
-              ->contain(['Statuses', 'Sources', 'Allocations', 'LastModifiedBy'])
-              ->where(['Leads.allocation_id IN' => $allocation_ids])
+              ->contain(['Statuses', 'Sources', 'LastModifiedBy'])
+              ->where(['Leads.source_id IN' => $source_ids])
               ->andwhere([
                             'Leads.firstname LIKE' => '%' . $query . '%',
                             'OR' => [['Leads.surname LIKE' => '%' . $query . '%']],
@@ -127,26 +127,26 @@ class UserLeadsController extends AppController
 
       }else{
 
-          /*$allocationUsers = $this->AllocationUsers->find('all')
+          /*$sourceUsers = $this->SourceUsers->find('all')
             ->contain(['Allocations' => ['Leads' => ['LastModifiedBy', 'Statuses', 'Sources', 'Allocations']]])
-            ->where(['AllocationUsers.user_id' => $user_data->id])            
+            ->where(['SourceUsers.user_id' => $user_data->id])            
           ;*/
 
-          $allocationUsers = $this->AllocationUsers->find('all')            
-            ->where(['AllocationUsers.user_id' => $user_data->id])            
+          $sourceUsers = $this->SourceUsers->find('all')            
+            ->where(['SourceUsers.user_id' => $user_data->id])            
           ;       
 
-          if( $allocationUsers->count() > 0 ) {
+          if( $sourceUsers->count() > 0 ) {
 
             $query = $this->request->query['query'];
-            $allocation_ids = array();
-            foreach($allocationUsers as $au){
-              $allocation_ids[] = $au->allocation_id;
+            $source_ids = array();
+            foreach($sourceUsers as $au){
+              $source_ids[] = $au->source_id;
             }          
 
             $leads = $this->Leads->find('all')
                 ->contain(['LastModifiedBy', 'Statuses', 'Sources', 'Allocations'])
-                ->where(['Leads.allocation_id IN' => $allocation_ids])
+                ->where(['Leads.source_id IN' => $source_ids])
             ;
             $this->set('leads', $this->paginate($leads));
 
@@ -170,7 +170,7 @@ class UserLeadsController extends AppController
     public function view($id = null)
     {
         $lead = $this->Leads->get($id, [
-            'contain' => ['Statuses', 'Sources', 'Allocations', 'LeadTypes', 'InterestTypes', 'LastModifiedBy']
+            'contain' => ['Statuses', 'Sources', 'LeadTypes', 'InterestTypes', 'LastModifiedBy']
         ]);
 
         $this->set('lead', $lead);
@@ -184,7 +184,7 @@ class UserLeadsController extends AppController
      */
     public function add()
     {
-        $this->AllocationUsers = TableRegistry::get('AllocationUsers');
+        $this->SourceUsers = TableRegistry::get('SourceUsers');
 
         $p = $this->default_group_actions;
         if( $p && $p['leads'] == 'View Only' ){
@@ -205,18 +205,18 @@ class UserLeadsController extends AppController
             if ($newLead = $this->Leads->save($lead)) {
 
                 //Send Email notification
-                $allocation_users = $this->AllocationUsers->find('all')
+                $source_users = $this->SourceUsers->find('all')
                     ->contain(['Users'])
-                    ->where(['AllocationUsers.allocation_id' => $data['allocation_id']])
+                    ->where(['SourceUsers.source_id' => $data['source_id']])
                 ;
 
                 $users_email = array();
-                foreach($allocation_users as $users){            
+                foreach($source_users as $users){            
                     $users_email[$users->user->email] = $users->user->email;            
                 }
 
                 //add other emails to be sent - start
-                foreach($allocation_users as $users){            
+                foreach($source_users as $users){            
                     $other_email_to_explode = $users->user->other_email;
 
                     if( !empty($other_email_to_explode) || $other_email_to_explode != '' ) {
@@ -240,7 +240,7 @@ class UserLeadsController extends AppController
 
                   //Send email notification                  
                   $leadData = $this->Leads->get($newLead->id, [
-                      'contain' => ['Statuses', 'Sources', 'Allocations', 'LastModifiedBy','LeadTypes','InterestTypes']
+                      'contain' => ['Statuses', 'Sources', 'LastModifiedBy','LeadTypes','InterestTypes']
                   ]);   
 
                   $email_customer = new Email('default');
@@ -265,8 +265,7 @@ class UserLeadsController extends AppController
             }
         }
         $statuses = $this->Leads->Statuses->find('list');
-        $sources  = $this->Leads->Sources->find('list');
-        $allocations = $this->Leads->Allocations->find('list', ['order' => ['Allocations.sort' => 'ASC']]);
+        $sources  = $this->Leads->Sources->find('list');        
         $interestTypes = $this->Leads->InterestTypes->find('list');
         $leadTypes = $this->Leads->LeadTypes->find('list');
         $this->set(compact('lead', 'statuses', 'sources', 'allocations', 'interestTypes', 'leadTypes'));
@@ -282,7 +281,7 @@ class UserLeadsController extends AppController
      */
     public function edit($id = null, $redir = null)
     {
-        $this->AllocationUsers = TableRegistry::get('AllocationUsers');
+        $this->SourceUsers = TableRegistry::get('SourceUsers');
 
         $p = $this->default_group_actions;
 
@@ -325,18 +324,18 @@ class UserLeadsController extends AppController
             if ($this->Leads->save($lead)) {
 
                 //Send Email notification
-                $allocation_users = $this->AllocationUsers->find('all')
+                $source_users = $this->SourceUsers->find('all')
                     ->contain(['Users'])
-                    ->where(['AllocationUsers.allocation_id' => $data['allocation_id']])
+                    ->where(['SourceUsers.source_id' => $data['source_id']])
                 ;
 
                 $users_email = array();
-                foreach($allocation_users as $users){            
+                foreach($source_users as $users){            
                     $users_email[$users->user->email] = $users->user->email;            
                 }
 
                 //add other emails to be sent - start
-                foreach($allocation_users as $users){            
+                foreach($source_users as $users){            
                     $other_email_to_explode = $users->user->other_email;
 
                     if( !empty($other_email_to_explode) || $other_email_to_explode != '' ) {

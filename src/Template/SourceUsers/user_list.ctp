@@ -29,11 +29,12 @@ div.box-body{
 </style>
 
 <section class="content-header">
-    <h1><?= __('Sources') ?></h1>
+    <h1><?= __('Source Users') . " : " . $source->name ?></h1>
     <ol class="breadcrumb">
         <li><a href="<?php echo $base_url; ?>"><i class="fa fa-dashboard"></i> Home</a></li>
         <li><a href="<?php echo $base_url; ?>"><i class="fa fa-gear"></i> System Settings</a></li>
-        <li class="active"><?= __('Sources') ?></li>
+        <li><a href="<?php echo $base_url; ?>"><i class="fa fa-gear"></i> Sources</a></li>
+        <li class="active"><?= __('Users') ?></li>
     </ol>
 </section>
 
@@ -45,23 +46,12 @@ div.box-body{
             <div class="box box-primary box-solid">   
                 <div class="box-header with-border">  
                     <div class="user-block">   
-                        <?= $this->Form->create(null,[                
-                          'url' => ['action' => 'index'],
-                          'class' => 'form-inline',
-                          'type' => 'GET'
-                        ]) ?>                         
-                        <div class="input-group input-group-sm">
-                            <input class="form-control" name="query" type="text" placeholder="Enter query to search">
-                            <span class="input-group-btn">
-                                <?= $this->Form->button('<i class="fa fa-search"></i>',['name' => 'search', 'value' => 'search', 'class' => 'btn btn-info btn-flat', 'escape' => false]) ?>                                    
-                                <?= $this->Html->link(__('Reset'), ['action' => 'index'],['class' => 'btn btn-success btn-flat', 'escape' => false]) ?>                            
-                            </span>
-                        </div>                        
-                        <?= $this->Form->end() ?>
+                        &nbsp;
                     </div>
 
                     <div class="box-tools" style="top:9px;">                         
-                        <?= $this->Html->link('<i class="fa fa-plus"></i> Add New', ['action' => 'add'],['class' => 'btn btn-box-tool', 'escape' => false]) ?>
+                        <?= $this->Html->link('<i class="fa fa-user"></i> Assign User', ['action' => 'assign_user', $source->id],['class' => 'btn btn-box-tool', 'escape' => false]) ?>
+                        <?= $this->Html->link('<i class="fa fa-plus"></i> Create New User', ['action' => 'add_user', $source->id],['class' => 'btn btn-box-tool', 'escape' => false]) ?>
                         <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>                        
                     </div>                    
                     
@@ -74,27 +64,25 @@ div.box-body{
                         <thead class="thead-inverse">
                             <tr>
                                 <th class="actions"></th>                                
-                                <th><?= $this->Paginator->sort('name', __("Name") . "<i class='fa fa-sort pull-right'> </i>", array('escape' => false)) ?></th>                                
-                                <th><?= __("Created") ?></th>
-                                <th><?= __("Modified") ?></th>                                   
+                                <th style="width:70%;"><?= $this->Paginator->sort('user_id', __("Name") . "<i class='fa fa-sort pull-right'> </i>", array('escape' => false)) ?></th>
+                                <th><?= $this->Paginator->sort('created', __("Created") . "<i class='fa fa-sort pull-right'> </i>", array('escape' => false)) ?></th>
                             </tr>
                         </thead>
                         <tbody>
-                            <?php foreach ($sources as $source) { ?>
+                            <?php foreach ($sourceUsers as $sourceUser): ?>
                             <tr>
                                 <td class="table-actions">
                                     <div class="dropdown">
                                         <button class="btn btn-default dropdown-toggle" type="button" id="drpdwn" data-toggle="dropdown" aria-expanded="true">
                                             Action <span class="caret"></span>
                                         </button>
-                                        <ul class="dropdown-menu" role="menu" aria-labelledby="drpdwn">
-                                            <li role="presentation"><?= $this->Html->link('<i class="fa fa-eye"></i> View', ['action' => 'view', $source->id],['escape' => false]) ?></li>
-                                            <li role="presentation"><?= $this->Html->link('<i class="fa fa-pencil"></i> Edit', ['action' => 'edit', $source->id],['escape' => false]) ?></li>
-                                            <li role="presentation"><?= $this->Html->link('<i class="fa fa-users"></i> Users', ['controller' => 'source_users', 'action' => 'user_list', $source->id],['escape' => false]) ?></li>
-                                            <li role="presentation"><?= $this->Html->link('<i class="fa fa-trash"></i> Delete', '#modal-'.$source->id,['data-toggle' => 'modal','escape' => false]) ?></li>
+                                        <ul class="dropdown-menu" role="menu" aria-labelledby="drpdwn">                                            
+                                            <li role="presentation"><?= $this->Html->link('<i class="fa fa-pencil"></i> Edit', ['action' => 'edit_user', $sourceUser->id],['escape' => false]) ?></li>
+                                            <li role="presentation"><?= $this->Html->link('<i class="fa fa-lock"></i> Change Password', ['action' => 'change_password', $sourceUser->id, $source->id],['escape' => false]) ?></li>
+                                            <li role="presentation"><?= $this->Html->link('<i class="fa fa-trash"></i> Delete', '#modal-'.$sourceUser->id,['data-toggle' => 'modal','escape' => false]) ?></li>
                                         </ul>
                                     </div>   
-                                    <div id="modal-<?=$source->id?>" class="modal fade">
+                                    <div id="modal-<?=$sourceUser->id?>" class="modal fade">
                                         <div class="modal-dialog">
                                           <div class="modal-content">
                                             <div class="modal-header">
@@ -108,7 +96,7 @@ div.box-body{
                                                 <button type="button" data-dismiss="modal" class="btn btn-default">No</button>
                                                 <?= $this->Form->postLink(
                                                         'Yes',
-                                                        ['action' => 'delete', $source->id],
+                                                        ['action' => 'delete', $sourceUser->id],
                                                         ['class' => 'btn btn-danger', 'escape' => false]
                                                     )
                                                 ?>
@@ -117,11 +105,11 @@ div.box-body{
                                         </div>                              
                                     </div>                       
                                 </td>                                
-                                <td><?= $source->name; ?></td>                                
-                                <td><?= $source->created ?></td>
-                                <td><?= $source->modified ?></td>                          
+                                <td><?= $sourceUser->user->firstname . ' ' . $sourceUser->user->lastname ?></td>                                
+                                <td><?= h($sourceUser->created) ?></td>
+                  
                             </tr>
-                            <?php } ?>
+                            <?php ;endforeach; ?>
                         </tbody>
                     </table>
                     <div class="paginator" style="text-align:center;">
@@ -133,8 +121,7 @@ div.box-body{
                         <p class="hidden"><?= $this->Paginator->counter() ?></p>
                     </div>                     
                 </div>
-            </div>            
-
+            </div>    
         </section>
     </div>
 </section>

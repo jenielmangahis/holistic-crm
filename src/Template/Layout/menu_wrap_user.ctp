@@ -125,11 +125,6 @@
                   <?php if($default_group_actions['users'] != 'No Access') { ?>
                           <li><?= $this->Html->link('<i class="fa fa-users"></i><span>' . __("Users") . "</span>",["controller" => "users", "action" => "index"],["escape" => false]) ?></li>
                   <?php } ?>
-
-                  <?php if($default_group_actions['allocations'] != 'No Access') { ?>
-                          <li><?= $this->Html->link('<i class="fa fa-circle-o"></i><span>' . __("Clients") . "</span>",["controller" => "clients", "action" => "index"],["escape" => false]) ?></li>
-                  <?php } ?>
-
                   <?php if($default_group_actions['sources'] != 'No Access') { ?>
                           <li><?= $this->Html->link('<i class="fa fa-circle-o"></i><span>' . __("Sources") . "</span>",["controller" => "sources", "action" => "index"],["escape" => false]) ?></li>
                   <?php } ?>

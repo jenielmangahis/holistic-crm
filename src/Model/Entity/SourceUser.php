@@ -4,16 +4,17 @@ namespace App\Model\Entity;
 use Cake\ORM\Entity;
 
 /**
- * Source Entity
+ * SourceUser Entity
  *
  * @property int $id
- * @property string $name
- * @property string $emails
- * @property int $sort
+ * @property int $source_id
+ * @property int $user_id
  * @property \Cake\I18n\Time $created
- * @property \Cake\I18n\Time $modified
+ *
+ * @property \App\Model\Entity\Source $source
+ * @property \App\Model\Entity\User $user
  */
-class Source extends Entity
+class SourceUser extends Entity
 {
 
     /**

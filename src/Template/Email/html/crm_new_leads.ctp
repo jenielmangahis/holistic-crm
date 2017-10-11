@@ -43,10 +43,6 @@
 	<td>: <?php echo $lead['lead_type']['name']; ?></td>
 </tr>
 <tr>
-	<td>Allocated to</td>
-	<td>: <?php echo $lead['allocation']['name']; ?></td>
-</tr>	
-<tr>
 	<td>Allocation Date</td>
 	<td>: <?php echo date("Y-m-d",strtotime($lead['allocation_date'])); ?></td>
 </tr>	

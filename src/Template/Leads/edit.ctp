@@ -120,13 +120,6 @@
                                 <div class='col-sm-6'>";
                                  echo $this->Form->input('lead_type_id', ['class' => 'form-control', 'id' => 'lead_type_id', 'label' => false, 'options' => $leadTypes]);                 
                             echo " </div></div>";  
-
-                            echo "
-                            <div class='form-group'>
-                                <label for='allocation_id' class='col-sm-2 control-label'>" . __('Allocated to') . "</label>
-                                <div class='col-sm-6'>";
-                                 echo $this->Form->input('allocation_id', ['class' => 'form-control', 'id' => 'allocation_id', 'label' => false, 'options' => $allocations]);                 
-                            echo " </div></div>";    
                             echo "
                             <div class='form-group'>
                                 <label for='allocation_date' class='col-sm-2 control-label'>" . __('Allocation Date') . "</label>

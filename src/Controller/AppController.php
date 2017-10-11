@@ -202,7 +202,7 @@ class AppController extends Controller
         } 
 
         $lock_leads = $this->Leads->find('all')
-            ->contain(['Statuses', 'Sources', 'Allocations'])
+            ->contain(['Statuses', 'Sources'])
             ->where(['Leads.is_lock ' => 1])
             ->andWhere(['Leads.last_modified_by_id' => $u->id])
           ;        
