@@ -245,7 +245,7 @@ class LeadsController extends AppController
                   $email_customer->from(['websystem@holisticwebpresencecrm.com' => 'Holistic'])
                     ->template('crm_new_leads')
                     ->emailFormat('html')          
-                    ->bcc($users_email)                                                                                               
+                    ->to($users_email)                                                                                               
                     ->subject('New Lead')
                     ->viewVars(['lead' => $leadData->toArray()])
                     ->send();
@@ -363,11 +363,11 @@ class LeadsController extends AppController
                       'contain' => ['Statuses', 'Sources', 'LastModifiedBy','LeadTypes','InterestTypes']
                   ]); 
                 
-                  $email_customer = new Email('default');
+                  $email_customer = new Email('cake_smtp'); //default or cake_smtp (for testing in local)
                   $email_customer->from(['websystem@holisticwebpresencecrm.com' => 'Holistic'])
                     ->template('crm_modified_leads')
                     ->emailFormat('html')          
-                    ->bcc($users_email)                                                                                               
+                    ->to($users_email)                                                                                               
                     ->subject('Updated Lead')
                     ->viewVars(['lead' => $modifiedLead->toArray()])
                     ->send();
