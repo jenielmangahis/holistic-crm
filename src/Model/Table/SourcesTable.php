@@ -71,7 +71,7 @@ class SourcesTable extends Table
         $validator
             ->integer('sort')
             ->requirePresence('sort', 'create')
-            ->notEmpty('sort');
+            ->allowEmpty('sort');
 
         return $validator;
     }
