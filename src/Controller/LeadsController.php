@@ -145,7 +145,7 @@ class LeadsController extends AppController
           ;
       }else{
           $leads = $this->Leads->find('all')
-              ->contain(['Statuses', 'Sources', 'Allocations', 'LastModifiedBy'])
+              ->contain(['Statuses', 'Sources', 'LastModifiedBy'])
               ->where(['Leads.source_id ' => $source_id]) 
           ;
       }

@@ -39,6 +39,10 @@
 	<td>: <?php echo $lead['source']['name']; ?></td>
 </tr>
 <tr>
+	<td>URL</td>
+	<td>: <?php echo $lead['source_url']; ?></td>
+</tr>
+<tr>
 	<td>Lead Type</td>
 	<td>: <?php echo $lead['lead_type']['name']; ?></td>
 </tr>
