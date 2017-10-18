@@ -145,7 +145,7 @@ class UserLeadsController extends AppController
             }          
 
             $leads = $this->Leads->find('all')
-                ->contain(['LastModifiedBy', 'Statuses', 'Sources', 'Allocations'])
+                ->contain(['LastModifiedBy', 'Statuses', 'Sources'])
                 ->where(['Leads.source_id IN' => $source_ids])
             ;
             $this->set('leads', $this->paginate($leads));

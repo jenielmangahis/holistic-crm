@@ -82,7 +82,7 @@ class UsersController extends AppController
 
             $query = $this->request->query['query'];
             $users = $this->Users->find('all', ['order' => ['Users.sort' => 'ASC']])
-                ->contain(['Groups','AllocationUsers' => ['Allocations']])
+                ->contain(['Groups', 'SourceUsers' => ['Sources']])
                 ->where(['Users.firstname LIKE' => '%' . $query . '%'])       
                 ->orWhere(['Users.lastname LIKE' => '%' . $query . '%'])       
                 ->orWhere(['Users.email LIKE' => '%' . $query . '%'])       
@@ -188,8 +188,9 @@ class UsersController extends AppController
         }        
 
         $this->unlock_lead_check(); 
-        $this->Leads = TableRegistry::get('Leads');   
+        $this->Leads           = TableRegistry::get('Leads');   
         $this->AllocationUsers = TableRegistry::get('AllocationUsers'); 
+        $this->SourceUsers     = TableRegistry::get('SourceUsers'); 
 
         $session = $this->request->session();    
         $user_data = $session->read('User.data');
@@ -197,24 +198,22 @@ class UsersController extends AppController
         /*$allocationLeads = $this->AllocationUsers->find('all')
             ->contain(['Allocations' => ['Leads' => ['LastModifiedBy', 'Statuses', 'Sources', 'Allocations']]])
             ->where(['AllocationUsers.user_id' => $user_data->id])
-        ;*/
-
-        $allocationLeads = array();
+        ;
 
         $count_leads = 0;
-        foreach ($allocationLeads as $allocationUser) {
-            foreach( $allocationUser->allocation->leads as $lead ){
+        foreach ($userLeads as $allocationUser) {
+            foreach( $allocationUser->sources->leads as $lead ){
                 if(isset($lead->id) && $lead->id > 0 ) {
                     $count_leads++;
                 }
             }
         }
 
-        $total_leads = $count_leads; //$allocationLeads->count();
+        $total_leads = $count_leads;
         $new_leads   = array();
         $followup_leads_today = array();
         $total_leads_followup = 0;
-        foreach( $allocationLeads as $al ){
+        foreach( $userLeads as $al ){
             foreach( $al->allocation->leads as $l  ){                
                 if( date("Y-m-d",strtotime($l->followup_date)) == date("Y-m-d") ){
                     $total_leads_followup++;
@@ -225,8 +224,46 @@ class UsersController extends AppController
                     $new_leads[] = $l;
                 }
             }               
+        }*/        
+
+        $source_user = $this->SourceUsers->find('all')
+            ->contain(['Sources', 'Users'])
+            ->where(['SourceUsers.user_id' => $user_data->id])
+        ;        
+
+        $rids = array();
+        foreach($source_user as $su) {
+            $rids[] = $su->source_id;
         }
 
+        $userLeads = $this->Leads->find('all')
+            ->contain([])
+            ->where(['Leads.source_id IN' => $rids])
+        ;     
+
+        $count_leads = 0;
+        foreach ($userLeads as $ul) {
+            if(isset($ul->id) && $ul->id > 0 ) {
+                $count_leads++;
+            }
+        }
+
+        $total_leads = $count_leads;
+        $new_leads   = array();
+        $followup_leads_today = array();
+        $total_leads_followup = 0;
+        foreach( $userLeads as $ul ){
+                
+            if( date("Y-m-d",strtotime($ul->followup_date)) == date("Y-m-d") ){
+                $total_leads_followup++;
+                $followup_leads_today[] = $ul;
+            }
+
+            if( date("Y-m-d",strtotime($ul->created)) == date("Y-m-d") ){
+                $new_leads[] = $ul;
+            }
+              
+        }        
         $nav_selected = ["dashboard"];
 
         $this->set('nav_selected', $nav_selected);        
