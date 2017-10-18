@@ -112,9 +112,9 @@ class SourcesController extends AppController
         $source = $this->Sources->newEntity();
         if ($this->request->is('post')) {
             $data = $this->request->data;      
+            debug($data);exit;
             $data['emails'] = str_replace(",", ";", $this->request->data['emails']);             
-            $data['sort'] = 0;
-            $source = $this->Sources->patchEntity($source, $data);
+            $source = $this->Sources->patchEntity($source, $data);           
             if ($this->Sources->save($source)) {
                 $this->Flash->success(__('The source has been saved.'));
                 $action = $this->request->data['save'];
@@ -127,8 +127,6 @@ class SourcesController extends AppController
                 $this->Flash->error(__('The source could not be saved. Please, try again.'));
             }
         }
-
-        //$allocations = $this->Sources->Allocations->find('list', ['order' => ['Allocations.sort' => 'ASC']]);
 
         $this->set('enable_tags_input', true);
         $this->set(compact('source'));

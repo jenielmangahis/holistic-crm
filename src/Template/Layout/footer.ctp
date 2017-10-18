@@ -210,7 +210,7 @@ $(function(){
       confirmKeys: [188],
       allowDuplicates: false,
       trimValue: true
-    });     
+    });          
   <?php } ?>
   //Sortable
   /*

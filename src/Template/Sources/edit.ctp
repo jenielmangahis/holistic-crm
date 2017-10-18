@@ -31,15 +31,8 @@
                                     <div class='form-group'>
                                         <label for='email' class='col-sm-2 control-label'>" . __('Emails') . "</label>
                                         <div class='col-sm-6'>";
-                                        echo $this->Form->input('emails', ['class' => 'form-control', 'id' => 'tags-emails', 'data-role' => 'tagsinput', 'label' => false]);                
+                                        echo $this->Form->input('other_email', ['class' => 'form-control tags-emails', 'data-role' => 'tagsinput', 'label' => false, 'default' => ' ']);  
                                     echo " </div></div>"; 
-
-                            /*echo "
-                                    <div class='form-group'>
-                                        <label for='allocation_id' class='col-sm-2 control-label'>" . __('Allocated to') . "</label>
-                                        <div class='col-sm-6'>";
-                                        echo $this->Form->input('allocation_id', ['class' => 'form-control', 'id' => 'allocation_id', 'label' => false]);                
-                                    echo " </div></div>"; */                                    
                                     
                         ?>
                     </fieldset>

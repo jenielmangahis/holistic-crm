@@ -110,6 +110,13 @@
                                 <label for='source_id' class='col-sm-2 control-label'>" . __('Source') . "</label>
                                 <div class='col-sm-6'>";
                                  echo $this->Form->input('source_id', ['class' => 'form-control', 'id' => 'source_id', 'label' => false, 'options' => $sources]);                 
+                            echo " </div></div>";
+
+                            echo "
+                            <div class='form-group'>
+                                <label for='source_url' class='col-sm-2 control-label'>" . __('URL') . "</label>
+                                <div class='col-sm-6'>";
+                                 echo $this->Form->input('source_url', ['type' => 'text', 'class' => 'form-control', 'id' => 'url', 'label' => false]);                 
                             echo " </div></div>";    
 
                             echo "
@@ -178,8 +185,7 @@
                         </div>
                     </div>
                     <?= $this->Form->end() ?>
-                </div>
-            </div>
+                </div>            
         </section>
     </div>
 </section>

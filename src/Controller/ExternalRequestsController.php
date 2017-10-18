@@ -46,6 +46,11 @@ class ExternalRequestsController extends AppController
           $lead_action = $data['lead-action'];
         }
 
+        $source_url = "";
+        if( isset($data['lead-url']) ){
+          $source_url = $data['lead-url'];
+        }
+
         $data_leads = [
           'firstname' => $data['lead-firstname'],
           'surname' => $data['lead-lastname'],
@@ -55,6 +60,7 @@ class ExternalRequestsController extends AppController
           'state' => $data['lead-state'],
           'source_id' => $data['lead-source-id'],
           'lead_action' => $lead_action,
+          'source_url' => $source_url,
           'status_id' => 2,
           'lead_type_id' => 1,
           'interest_type_id' => 6,          

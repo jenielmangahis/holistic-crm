@@ -9,9 +9,6 @@ use Cake\Validation\Validator;
 /**
  * Sources Model
  *
- * @property \Cake\ORM\Association\HasMany $Leads
- * @property \Cake\ORM\Association\HasMany $SourceUsers
- *
  * @method \App\Model\Entity\Source get($primaryKey, $options = [])
  * @method \App\Model\Entity\Source newEntity($data = null, array $options = [])
  * @method \App\Model\Entity\Source[] newEntities(array $data, array $options = [])
@@ -41,12 +38,10 @@ class SourcesTable extends Table
 
         $this->addBehavior('Timestamp');
 
-        $this->hasMany('Leads', [
-            'foreignKey' => 'source_id'
-        ]);
-        $this->hasMany('SourceUsers', [
-            'foreignKey' => 'source_id'
-        ]);
+        $this->belongsTo('Allocations', [
+            'foreignKey' => 'allocation_id',
+            'joinType' => 'INNER'
+        ]);        
     }
 
     /**
@@ -66,12 +61,7 @@ class SourcesTable extends Table
             ->notEmpty('name');
 
         $validator
-            ->allowEmpty('emails');
-
-        $validator
-            ->integer('sort')
-            ->requirePresence('sort', 'create')
-            ->allowEmpty('sort');
+            ->allowEmpty('emails');             
 
         return $validator;
     }
