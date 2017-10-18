@@ -118,7 +118,7 @@ div.box-body{
                                 <td><?= h($user->group->name) ?></td>
                                 <td>
                                     <?php 
-                                        if($user->group_id == 1){
+                                        /*if($user->group_id == 1){
                                             if(count($user->allocation_users) > 0){
                                                 echo "<ul class='user-allocations'>";
                                                 foreach($user->allocation_users as $au){
@@ -138,7 +138,32 @@ div.box-body{
                                             }else{
                                                 echo "-";
                                             }
+                                        }*/
+
+                                        if($user->group_id == 1){
+                                            if(count($user->source_users) > 0){
+                                                echo "<ul class='user-allocations'>";
+                                                foreach($user->source_users as $au){
+                                                    echo "<li>" . $au->source->name . "</li>";
+                                                }
+                                                echo "</ul>";
+                                            }else{
+                                                echo "-";
+                                            }
+                                        }else{                                            
+                                            if(count($user->source_users) > 0){
+                                                echo "<ul class='user-allocations'>";
+                                                foreach($user->source_users as $au){
+                                                    echo "<li>" . $au->source->name . "</li>";
+                                                }
+                                                echo "</ul>";
+                                            }else{
+                                                echo "-";
+                                            }
                                         }
+                                           
+
+                                       
                                     ?>
                                 </td>                                                                                           
                             </tr>

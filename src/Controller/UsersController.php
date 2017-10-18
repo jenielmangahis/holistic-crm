@@ -109,7 +109,7 @@ class UsersController extends AppController
             }
 
             $users = $this->Users->find('all', ['order' => ['Users.sort' => 'ASC']])
-                                ->contain(['Groups','AllocationUsers' => ['Allocations']])
+                                ->contain(['Groups', 'SourceUsers' => ['Sources']])
                     ;
         } 
 
@@ -194,10 +194,12 @@ class UsersController extends AppController
         $session = $this->request->session();    
         $user_data = $session->read('User.data');
 
-        $allocationLeads = $this->AllocationUsers->find('all')
+        /*$allocationLeads = $this->AllocationUsers->find('all')
             ->contain(['Allocations' => ['Leads' => ['LastModifiedBy', 'Statuses', 'Sources', 'Allocations']]])
             ->where(['AllocationUsers.user_id' => $user_data->id])
-        ;
+        ;*/
+
+        $allocationLeads = array();
 
         $count_leads = 0;
         foreach ($allocationLeads as $allocationUser) {
