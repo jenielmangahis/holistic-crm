@@ -247,7 +247,7 @@ class UserLeadsController extends AppController
                   $email_customer->from(['websystem@holisticwebpresencecrm.com' => 'Holistic'])
                     ->template('crm_new_leads')
                     ->emailFormat('html')          
-                    ->bcc($users_email)                                                                                               
+                    ->to($users_email)                                                                                               
                     ->subject('New Lead')
                     ->viewVars(['new_lead' => $leadData->toArray()])
                     ->send();
@@ -364,7 +364,7 @@ class UserLeadsController extends AppController
                   $email_customer->from(['websystem@holisticwebpresencecrm.com' => 'Holistic'])
                     ->template('crm_modified_leads')
                     ->emailFormat('html')          
-                    ->bcc($users_email)                                                                                               
+                    ->to($users_email)                                                                                               
                     ->subject('Updated Lead')
                     ->viewVars(['lead' => $modifiedLead->toArray()])
                     ->send();

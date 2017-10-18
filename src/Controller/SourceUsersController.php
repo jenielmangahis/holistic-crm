@@ -142,7 +142,9 @@ class SourceUsersController extends AppController
         $sourceUser = $this->SourceUsers->newEntity();
         if ($this->request->is('post')) {
             $this->request->data['group_id'] = 2;
-            $user = $this->SourceUsers->Users->patchEntity($user, $this->request->data);
+            $data = $this->request->data;      
+            $data['other_email'] = str_replace(",", ";", $this->request->data['other_email']);             
+            $user = $this->SourceUsers->Users->patchEntity($user, $data);
             if ( $new_user = $this->SourceUsers->Users->save($user)) {
                 $source_user_data = [
                     'source_id' => $source->id,
@@ -162,6 +164,8 @@ class SourceUsersController extends AppController
                 }
             }            
         }
+
+        $this->set('enable_tags_input', true);
         $this->set(compact('sourceUser', 'source', 'user'));
         $this->set('_serialize', ['sourceUser']);
     }
@@ -220,7 +224,9 @@ class SourceUsersController extends AppController
         ]);
 
         if ($this->request->is(['patch', 'post', 'put'])) {
-            $user = $this->Users->patchEntity($user, $this->request->data);
+            $data = $this->request->data;      
+            $data['other_email'] = str_replace(",", ";", $this->request->data['other_email']);             
+            $user = $this->Users->patchEntity($user, $data);
             $result = $this->Users->save($user);
             if ($result) {
                 $this->Flash->success(__('User data has been updated.'));
@@ -233,6 +239,8 @@ class SourceUsersController extends AppController
                 $this->Flash->error(__('User data could not be saved. Please, try again.'));
             }
         }
+
+        $this->set('enable_tags_input', true);
         $this->set(compact('user', 'source'));
         $this->set('_serialize', ['user']);
     }

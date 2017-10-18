@@ -73,7 +73,7 @@ div.box-body{
                                 <th class="actions"></th>                                                                
                                 <th style=""><?= $this->Paginator->sort('username', __("Username") . "<i class='fa fa-sort pull-right'> </i>", array('escape' => false)) ?></th>
                                 <th><?= $this->Paginator->sort('group_id', __("Group Name") . "<i class='fa fa-sort pull-right'> </i>", array('escape' => false)) ?></th>
-                                <th><?= __('Clients') ?></th>                                                            
+                                <th><?= __('Sources') ?></th>                                                            
                             </tr>
                         </thead>
                         <tbody>
