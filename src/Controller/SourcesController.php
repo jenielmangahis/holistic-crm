@@ -112,7 +112,7 @@ class SourcesController extends AppController
         $source = $this->Sources->newEntity();
         if ($this->request->is('post')) {
             $data = $this->request->data;      
-            debug($data);exit;
+            //debug($data);
             $data['emails'] = str_replace(",", ";", $this->request->data['emails']);             
             $source = $this->Sources->patchEntity($source, $data);           
             if ($this->Sources->save($source)) {

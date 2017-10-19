@@ -236,22 +236,26 @@ class UsersController extends AppController
             $rids[] = $su->source_id;
         }
 
-        $userLeads = $this->Leads->find('all')
-            ->contain([])
-            ->where(['Leads.source_id IN' => $rids])
-        ;     
+        if( !empty($rids) ) {
+            $userLeads = $this->Leads->find('all')
+                ->contain([])
+                ->where(['Leads.source_id IN' => $rids])
+            ;
+        } else { $userLeads = ''; }
 
-        $count_leads = 0;
+        $count_leads          = 0;
+        $total_leads          = 0;
+        $new_leads            = array();
+        $followup_leads_today = array();
+        $total_leads_followup = 0;        
+
         foreach ($userLeads as $ul) {
             if(isset($ul->id) && $ul->id > 0 ) {
                 $count_leads++;
             }
         }
+        $total_leads          = $count_leads;
 
-        $total_leads = $count_leads;
-        $new_leads   = array();
-        $followup_leads_today = array();
-        $total_leads_followup = 0;
         foreach( $userLeads as $ul ){
                 
             if( date("Y-m-d",strtotime($ul->followup_date)) == date("Y-m-d") ){
@@ -263,7 +267,8 @@ class UsersController extends AppController
                 $new_leads[] = $ul;
             }
               
-        }        
+        } 
+
         $nav_selected = ["dashboard"];
 
         $this->set('nav_selected', $nav_selected);        
