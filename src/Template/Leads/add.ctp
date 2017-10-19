@@ -125,12 +125,12 @@
                                 <div class='col-sm-6'>";
                                  echo $this->Form->input('lead_type_id', ['class' => 'form-control', 'id' => 'lead_type_id', 'label' => false, 'options' => $leadTypes]);                 
                             echo " </div></div>";    
-                            echo "
+                            /*echo "
                             <div class='form-group'>
                                 <label for='allocation_date' class='col-sm-2 control-label'>" . __('Allocation Date') . "</label>
                                 <div class='col-sm-6'>";
                                 echo $this->Form->input('allocation_date', ['type' => 'text', 'value' => date("d F, Y"), 'class' => 'form-control allocation-datepicker', 'id' => 'lead-allocation-date', 'label' => false]);                
-                            echo " </div></div>";    
+                            echo " </div></div>"; */   
                             
                             echo "
                             <div class='form-group'>
@@ -181,7 +181,11 @@
                         <div class="col-sm-offset-2 col-sm-10">                            
                             <?= $this->Form->button('<i class="fa fa-save"></i> ' . __('Save'),['name' => 'save', 'value' => 'save', 'class' => 'btn btn-success', 'escape' => false]) ?>
                             <?= $this->Form->button('<i class="fa fa-edit"></i> ' . __('Save and Continue adding'),['name' => 'save', 'value' => 'edit', 'class' => 'btn btn-info', 'escape' => false]) ?>
-                            <?= $this->Html->link('<i class="fa fa-angle-left"> </i> ' . __('Back To list'), ['action' => 'index'],['class' => 'btn btn-warning', 'escape' => false]) ?>                            
+                            <?php if( empty($source_id) ) { ?>
+                                    <?= $this->Html->link('<i class="fa fa-angle-left"> </i> ' . __('Back To list'), ['action' => 'index'],['class' => 'btn btn-warning', 'escape' => false]) ?> 
+                            <?php } else { ?>
+                                    <?= $this->Html->link('<i class="fa fa-angle-left"> </i> ' . __('Back To list'), ['action' => 'from_source/'. $source_id],['class' => 'btn btn-warning', 'escape' => false]) ?>    
+                            <?php } ?>                                                         
                         </div>
                     </div>
                     <?= $this->Form->end() ?>

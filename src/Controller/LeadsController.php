@@ -54,6 +54,7 @@ class LeadsController extends AppController
             }
         }         
         
+        $this->enable_email_sending = false;
         $this->user = $user_data;
         $this->Auth->allow(['register']);
 
@@ -195,7 +196,7 @@ class LeadsController extends AppController
      *
      * @return void Redirects on successful add, renders view otherwise.
      */
-    public function add()
+    public function add($source_id = '')
     {
         $this->SourceUsers = TableRegistry::get('SourceUsers');
 
@@ -252,30 +253,46 @@ class LeadsController extends AppController
                 if( !empty($users_email) ){
 
                   //Send email notification  
-                  $leadData = $this->Leads->get($newLead->id, [
-                      'contain' => ['Statuses', 'Sources', 'LastModifiedBy','LeadTypes','InterestTypes']
-                  ]);                                   
-                  $email_customer = new Email('default'); //default or cake_smtp (for testing in local)
-                  $email_customer->from(['websystem@holisticwebpresencecrm.com' => 'Holistic'])
-                    ->template('crm_new_leads')
-                    ->emailFormat('html')          
-                    ->to($users_email)                                                                                               
-                    ->subject('New Lead')
-                    ->viewVars(['lead' => $leadData->toArray()])
-                    ->send();
+                  if($this->enable_email_sending) {
+
+                    $leadData = $this->Leads->get($newLead->id, [
+                        'contain' => ['Statuses', 'Sources', 'LastModifiedBy','LeadTypes','InterestTypes']
+                    ]);                                   
+                    $email_customer = new Email('default'); //default or cake_smtp (for testing in local)
+                    $email_customer->from(['websystem@holisticwebpresencecrm.com' => 'Holistic'])
+                      ->template('crm_new_leads')
+                      ->emailFormat('html')          
+                      ->to($users_email)                                                                                               
+                      ->subject('New Lead')
+                      ->viewVars(['lead' => $leadData->toArray()])
+                      ->send();
+
+                  }
+
                 }
 
                 $this->Flash->success(__('The lead has been saved.'));
                 $action = $this->request->data['save'];
                 if( $action == 'save' ){
-                    return $this->redirect(['action' => 'index']);
+                    if( empty($source_id) || $source_id == '' ) {
+                      return $this->redirect(['action' => 'index']);
+                    } else {
+                      return $this->redirect(array('controller' => 'leads', 'action' => 'from_source', $source_id));
+                    }
+                    
                 }else{
-                    return $this->redirect(['action' => 'add']);
+                    if( empty($source_id) || $source_id == '' ) {
+                      return $this->redirect(['action' => 'add']);
+                    } else {
+                      return $this->redirect(['action' => 'add', $source_id]);
+                    }                    
                 }                    
             } else {
                 $this->Flash->error(__('The lead could not be saved. Please, try again.'));
             }
         }
+
+        $this->set('source_id', $source_id);
         $statuses = $this->Leads->Statuses->find('list', ['order' => ['Statuses.sort' => 'ASC']]);
         $sources  = $this->Leads->Sources->find('list', ['order' => ['Sources.sort' => 'ASC']]);        
         $interestTypes = $this->Leads->InterestTypes->find('list', ['order' => ['InterestTypes.sort' => 'ASC']]);
@@ -372,20 +389,26 @@ class LeadsController extends AppController
                 }    
                 //add other emails to be sent - end                 
 
-                /*if( !empty($users_email) ){                                                      
-                  $modifiedLead = $this->Leads->get($id, [
-                      'contain' => ['Statuses', 'Sources', 'LastModifiedBy','LeadTypes','InterestTypes']
-                  ]); 
-                
-                  $email_customer = new Email('default'); //default or cake_smtp (for testing in local)
-                  $email_customer->from(['websystem@holisticwebpresencecrm.com' => 'Holistic'])
-                    ->template('crm_modified_leads')
-                    ->emailFormat('html')          
-                    ->to($users_email)                                                                                               
-                    ->subject('Updated Lead')
-                    ->viewVars(['lead' => $modifiedLead->toArray()])
-                    ->send();
-                }*/     
+                if( !empty($users_email) ){ 
+
+                  if($this->enable_email_sending) {
+
+                    $modifiedLead = $this->Leads->get($id, [
+                        'contain' => ['Statuses', 'Sources', 'LastModifiedBy','LeadTypes','InterestTypes']
+                    ]); 
+                  
+                    $email_customer = new Email('default'); //default or cake_smtp (for testing in local)
+                    $email_customer->from(['websystem@holisticwebpresencecrm.com' => 'Holistic'])
+                      ->template('crm_modified_leads')
+                      ->emailFormat('html')          
+                      ->to($users_email)                                                                                               
+                      ->subject('Updated Lead')
+                      ->viewVars(['lead' => $modifiedLead->toArray()])
+                      ->send();
+
+                  }
+
+                }     
 
                 $this->Flash->success(__('The lead has been saved.'));
                 $action = $this->request->data['save'];
@@ -407,6 +430,8 @@ class LeadsController extends AppController
                 }else{
                     if($redir == 'from_source'){
                       return $this->redirect(['action' => 'edit', $id, 'from_source', $source_id]);
+                    }elseif($redir == 'dashboard') {
+                       return $this->redirect(array('controller' => 'users', 'action' => 'dashboard'));
                     } else {
                       return $this->redirect(['action' => 'edit', $id]);  
                     }
@@ -417,6 +442,8 @@ class LeadsController extends AppController
             }
         }
 
+
+        $this->set('redir', $redir);
         $this->set('source_id', $source_id);
         $statuses = $this->Leads->Statuses->find('list', ['order' => ['Statuses.sort' => 'ASC']]);
         $sources = $this->Leads->Sources->find('list', ['order' => ['Sources.sort' => 'ASC']]);        

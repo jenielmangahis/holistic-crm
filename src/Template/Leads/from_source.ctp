@@ -30,7 +30,7 @@
                     </div>
 
                     <div class="box-tools" style="top:9px;">                         
-                        <?= $this->Html->link('<i class="fa fa-plus"></i> Add New', ['action' => 'add'],['class' => 'btn btn-box-tool', 'escape' => false]) ?>
+                        <?= $this->Html->link('<i class="fa fa-plus"></i> Add New', ['action' => 'add', $source_id],['class' => 'btn btn-box-tool', 'escape' => false]) ?>
                         <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>                        
                     </div>                    
                     
