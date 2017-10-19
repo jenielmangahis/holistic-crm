@@ -55,6 +55,10 @@ class UsersTable extends Table
             ->notEmpty('username', 'A username is required')
             ->notEmpty('password', 'A password is required')
             ->notEmpty('role', 'A role is required')
+            ->add('username','custom',[
+                'rule' => array('custom', '/^[a-z0-9]{3,}$/i'),
+                'message' => 'Only letters and integers, min 3 characters'
+            ])
             ->add('role', 'inList', [
                 'rule' => ['inList', ['administrator']],
                 'message' => 'Please enter a valid role'
