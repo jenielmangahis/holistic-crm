@@ -54,7 +54,7 @@ class LeadsController extends AppController
             }
         }         
         
-        $this->enable_email_sending = false;
+        $this->enable_email_sending = true;
         $this->user = $user_data;
         $this->Auth->allow(['register']);
 
