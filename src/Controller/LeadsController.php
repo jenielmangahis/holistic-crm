@@ -149,7 +149,8 @@ class LeadsController extends AppController
               ->where(['Leads.source_id ' => $source_id]) 
           ;
       }
-        
+       
+      $this->set('source_id', $source_id);
       $this->set('is_admin_user', $this->user->group_id);
       $this->set('source_name', $source->name);
       $this->set('leads', $this->paginate($leads));
@@ -175,6 +176,19 @@ class LeadsController extends AppController
         $this->set('lead', $lead);
         $this->set('_serialize', ['lead']);
     }
+
+    public function viewfs($id = null, $source_id = null)
+    {
+        $lead = $this->Leads->find()
+           ->contain(['Statuses', 'Sources', 'LastModifiedBy'])
+           ->where(['Leads.id' => $id])
+           ->first()
+        ;       
+
+        $this->set('source_id', $source_id);
+        $this->set('lead', $lead);
+        $this->set('_serialize', ['lead']);
+    }    
 
     /**
      * Add method
@@ -277,7 +291,7 @@ class LeadsController extends AppController
      * @return void Redirects on successful edit, renders view otherwise.
      * @throws \Cake\Network\Exception\NotFoundException When record not found.
      */
-    public function edit($id = null, $redir = null)
+    public function edit($id = null, $redir = null, $source_id = null)
     {
         $this->SourceUsers = TableRegistry::get('SourceUsers');
 
@@ -358,7 +372,7 @@ class LeadsController extends AppController
                 }    
                 //add other emails to be sent - end                 
 
-                if( !empty($users_email) ){                                                      
+                /*if( !empty($users_email) ){                                                      
                   $modifiedLead = $this->Leads->get($id, [
                       'contain' => ['Statuses', 'Sources', 'LastModifiedBy','LeadTypes','InterestTypes']
                   ]); 
@@ -371,7 +385,7 @@ class LeadsController extends AppController
                     ->subject('Updated Lead')
                     ->viewVars(['lead' => $modifiedLead->toArray()])
                     ->send();
-                }     
+                }*/     
 
                 $this->Flash->success(__('The lead has been saved.'));
                 $action = $this->request->data['save'];
@@ -384,17 +398,26 @@ class LeadsController extends AppController
 
                     if($redir == 'dashboard') {
                       return $this->redirect(array('controller' => 'users', 'action' => 'dashboard'));
+                    }elseif($redir == 'from_source'){
+                      return $this->redirect(array('controller' => 'leads', 'action' => 'from_source', $source_id));
                     } else {
                       return $this->redirect(['action' => 'index']);
                     }
                     
                 }else{
-                    return $this->redirect(['action' => 'edit', $id]);
+                    if($redir == 'from_source'){
+                      return $this->redirect(['action' => 'edit', $id, 'from_source', $source_id]);
+                    } else {
+                      return $this->redirect(['action' => 'edit', $id]);  
+                    }
+                    
                 }         
             } else {
                 $this->Flash->error(__('The lead could not be saved. Please, try again.'));
             }
         }
+
+        $this->set('source_id', $source_id);
         $statuses = $this->Leads->Statuses->find('list', ['order' => ['Statuses.sort' => 'ASC']]);
         $sources = $this->Leads->Sources->find('list', ['order' => ['Sources.sort' => 'ASC']]);        
         $interestTypes = $this->Leads->InterestTypes->find('list', ['order' => ['InterestTypes.sort' => 'ASC']]);
@@ -410,9 +433,8 @@ class LeadsController extends AppController
      * @return \Cake\Network\Response|null Redirects to index.
      * @throws \Cake\Network\Exception\NotFoundException When record not found.
      */
-    public function delete($id = null)
+    public function delete($id = null, $source_id = null)
     {
-
         $p = $this->default_group_actions;
         if( $p && $p['leads'] != 'View, Edit and Delete' ){
             return $this->redirect(['controller' => 'users', 'action' => 'no_access']);
@@ -443,7 +465,13 @@ class LeadsController extends AppController
 
         }
 
-        return $this->redirect(['action' => 'index']);
+        if( !empty($source_id) ) {
+          return $this->redirect(['action' => 'from_source/'. $source_id]);
+        } else {
+          return $this->redirect(['action' => 'index']);      
+        }
+
+        
     }
 
     /**

@@ -61,8 +61,8 @@
                                             Action <span class="caret"></span>
                                         </button>
                                         <ul class="dropdown-menu" role="menu" aria-labelledby="drpdwn">
-                                            <li role="presentation"><?= $this->Html->link('<i class="fa fa-eye"></i> View', ['action' => 'view', $lead->id],['escape' => false]) ?></li>
-                                            <li role="presentation"><?= $this->Html->link('<i class="fa fa-pencil"></i> Edit', ['action' => 'edit', $lead->id],['escape' => false]) ?></li>
+                                            <li role="presentation"><?= $this->Html->link('<i class="fa fa-eye"></i> View', ['action' => 'viewfs', $lead->id, $source_id],['escape' => false]) ?></li>
+                                            <li role="presentation"><?= $this->Html->link('<i class="fa fa-pencil"></i> Edit', ['action' => 'edit', $lead->id, 'from_source', $source_id],['escape' => false]) ?></li>
                                             <li role="presentation"><?= $this->Html->link('<i class="fa fa-trash"></i> Delete', '#modal-'.$lead->id,['data-toggle' => 'modal','escape' => false]) ?></li>
                                             <?php if($is_admin_user == 1 && $lead->is_lock == 1){ ?>
                                                     <li role="presentation"><?= $this->Html->link('<i class="fa fa-unlock"></i> Unlock', '#unlock-modal-'.$lead->id,['data-toggle' => 'modal','escape' => false]) ?></li>
@@ -85,7 +85,7 @@
                                                 <button type="button" data-dismiss="modal" class="btn btn-default">No</button>
                                                 <?= $this->Form->postLink(
                                                         'Yes',
-                                                        ['action' => 'delete', $lead->id],
+                                                        ['action' => 'delete', $lead->id, $source_id],
                                                         ['class' => 'btn btn-danger', 'escape' => false]
                                                     )
                                                 ?>
