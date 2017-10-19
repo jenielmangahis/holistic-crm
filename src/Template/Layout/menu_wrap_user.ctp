@@ -99,7 +99,8 @@
                 </span>
               </a>
               <ul class="treeview-menu">            
-                <li><?= $this->Html->link('<i class="fa fa-users"></i><span>' . __("Report 1") . "</span>",["controller" => "", "action" => ""],["escape" => false]) ?></li>
+                <li><a href="#">Report 1</a></li>
+                <!-- <?= $this->Html->link('<i class="fa fa-users"></i><span>' . __("Report 1") . "</span>",["controller" => "", "action" => ""],["escape" => false]) ?></li> -->
               </ul>
             </li>
 
@@ -174,7 +175,10 @@
                 </span>
               </a>
               <ul class="treeview-menu">            
-                <li><?= $this->Html->link('<i class="fa fa-users"></i><span>' . __("Report 1") . "</span>",["controller" => "", "action" => ""],["escape" => false]) ?></li>
+                <li>
+                  <a href="#">Report 1</a>
+                  <!-- <?= $this->Html->link('<i class="fa fa-users"></i><span>' . __("Report 1") . "</span>",["controller" => "", "action" => ""],["escape" => false]) ?>-->
+                </li>
               </ul>
             </li>
 
@@ -255,7 +259,10 @@
                 </span>
               </a>
               <ul class="treeview-menu">            
-                <li><?= $this->Html->link('<i class="fa fa-users"></i><span>' . __("Report 1") . "</span>",["controller" => "", "action" => ""],["escape" => false]) ?></li>
+                <li>
+                  <a href="#">Report 1</a>
+                  <!-- <?= $this->Html->link('<i class="fa fa-users"></i><span>' . __("Report 1") . "</span>",["controller" => "", "action" => ""],["escape" => false]) ?> -->
+                 </li>
               </ul>
             </li>
 

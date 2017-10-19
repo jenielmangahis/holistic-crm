@@ -243,7 +243,7 @@ class UserLeadsController extends AppController
                       'contain' => ['Statuses', 'Sources', 'LastModifiedBy','LeadTypes','InterestTypes']
                   ]);   
 
-                  $email_customer = new Email('default');
+                  $email_customer = new Email('default'); //default or cake_smtp (for testing in local)
                   $email_customer->from(['websystem@holisticwebpresencecrm.com' => 'Holistic'])
                     ->template('crm_new_leads')
                     ->emailFormat('html')          
@@ -268,7 +268,7 @@ class UserLeadsController extends AppController
         $sources  = $this->Leads->Sources->find('list');        
         $interestTypes = $this->Leads->InterestTypes->find('list');
         $leadTypes = $this->Leads->LeadTypes->find('list');
-        $this->set(compact('lead', 'statuses', 'sources', 'allocations', 'interestTypes', 'leadTypes'));
+        $this->set(compact('lead', 'statuses', 'sources', 'interestTypes', 'leadTypes'));
         $this->set('_serialize', ['lead']);
     }
 
@@ -357,10 +357,10 @@ class UserLeadsController extends AppController
 
                 if( !empty($users_email) ){                                                      
                   $modifiedLead = $this->Leads->get($id, [
-                      'contain' => ['Statuses', 'Sources', 'Allocations', 'LastModifiedBy','LeadTypes','InterestTypes']
+                      'contain' => ['Statuses', 'Sources', 'LastModifiedBy','LeadTypes','InterestTypes']
                   ]); 
                 
-                  $email_customer = new Email('default');
+                  $email_customer = new Email('default');  //default or cake_smtp (for testing in local)
                   $email_customer->from(['websystem@holisticwebpresencecrm.com' => 'Holistic'])
                     ->template('crm_modified_leads')
                     ->emailFormat('html')          
@@ -394,10 +394,10 @@ class UserLeadsController extends AppController
         }
         $statuses = $this->Leads->Statuses->find('list', ['limit' => 200]);
         $sources = $this->Leads->Sources->find('list', ['limit' => 200]);
-        $allocations = $this->Leads->Allocations->find('list', ['limit' => 200]);
+        //$allocations = $this->Leads->Allocations->find('list', ['limit' => 200]);
         $interestTypes = $this->Leads->InterestTypes->find('list',['limit' => 200]);
         $leadTypes = $this->Leads->LeadTypes->find('list',['limit' => 200]);
-        $this->set(compact('lead', 'statuses', 'sources', 'allocations', 'interestTypes', 'leadTypes'));
+        $this->set(compact('lead', 'statuses', 'sources', 'interestTypes', 'leadTypes'));
         $this->set('_serialize', ['lead']);
     }
 
@@ -462,7 +462,7 @@ class UserLeadsController extends AppController
 
                 //Send email notification to admin
                 $admin_email = 'bryan.yobi@gmail.com';
-                $email_customer = new Email('cake_smtp');
+                $email_customer = new Email('default');  //default or cake_smtp (for testing in local)
                 $email_customer->from(['websystem@holisticwebpresencecrm.com' => 'Holistic'])
                   ->template('leads_registration')
                   ->emailFormat('html')

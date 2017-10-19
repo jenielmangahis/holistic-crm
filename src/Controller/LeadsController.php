@@ -363,7 +363,7 @@ class LeadsController extends AppController
                       'contain' => ['Statuses', 'Sources', 'LastModifiedBy','LeadTypes','InterestTypes']
                   ]); 
                 
-                  $email_customer = new Email('cake_smtp'); //default or cake_smtp (for testing in local)
+                  $email_customer = new Email('default'); //default or cake_smtp (for testing in local)
                   $email_customer->from(['websystem@holisticwebpresencecrm.com' => 'Holistic'])
                     ->template('crm_modified_leads')
                     ->emailFormat('html')          
@@ -465,7 +465,7 @@ class LeadsController extends AppController
 
                 //Send email notification to admin
                 $admin_email = 'bryan.yobi@gmail.com';
-                $email_customer = new Email('cake_smtp');
+                $email_customer = new Email('default'); //default or cake_smtp (for testing in local)
                 $email_customer->from(['websystem@holisticwebpresencecrm.com' => 'Holistic'])
                   ->template('leads_registration')
                   ->emailFormat('html')

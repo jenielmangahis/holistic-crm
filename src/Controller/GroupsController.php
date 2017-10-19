@@ -66,7 +66,6 @@ class GroupsController extends AppController
                 ->where(['Groups.name LIKE' => '%' . $query . '%'])                                
             ;
         }else{
-
             $sort_direction = !empty($this->request->query['direction']) ? $this->request->query['direction'] : 'ASC';
             $sort_field     = !empty($this->request->query['sort']) ? $this->request->query['sort'] : 'ASC';            
 
