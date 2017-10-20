@@ -68,6 +68,9 @@ class LeadsController extends AppController
      */
     public function index()
     {
+      $this->paginate = [
+        'order' => ['Leads.firstname' => 'ASC']
+      ];
       if(isset($this->request->query['unlock']) && isset($this->request->query['lead_id']) ) {
         $lead_id = $this->request->query['lead_id'];
         if($this->request->query['unlock'] == 1) {
@@ -220,7 +223,7 @@ class LeadsController extends AppController
      */
     public function add($source_id = '')
     {
-        $this->SourceUsers = TableRegistry::get('SourceUsers');
+        $this->SourceUsers = TableRegistry::get('SourceUsers');        
 
         $p = $this->default_group_actions;
         if( $p && $p['leads'] == 'View Only' ){
