@@ -68,9 +68,7 @@ class LeadsController extends AppController
      */
     public function index()
     {
-      $this->paginate = [
-        'order' => ['Leads.firstname' => 'ASC']
-      ];
+
       if(isset($this->request->query['unlock']) && isset($this->request->query['lead_id']) ) {
         $lead_id = $this->request->query['lead_id'];
         if($this->request->query['unlock'] == 1) {
@@ -122,10 +120,18 @@ class LeadsController extends AppController
           } else {
             $this->paginate = ['order' => ['Leads.allocation_date' => 'DESC']];
           }*/
-
-          $leads = $this->Leads->find('all')
-              ->contain(['Statuses', 'Sources', 'LastModifiedBy'])
-          ;
+          
+          if( !isset($this->request->query['sort']) ){
+            $leads = $this->Leads->find('all')
+                ->contain(['Statuses', 'Sources', 'LastModifiedBy'])
+                ->order(['Sources.name' => 'ASC'])
+            ;
+          }else{
+            $leads = $this->Leads->find('all')
+                ->contain(['Statuses', 'Sources', 'LastModifiedBy'])
+            ;  
+          }
+          
       }
 
       /*$this->paginate = [
