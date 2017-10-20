@@ -98,7 +98,7 @@
                             <div class='form-group'>
                                 <label for='source_id' class='col-sm-2 control-label'>" . __('Source') . "</label>
                                 <div class='col-sm-6'>";
-                                echo '<input type="text" id="source_id" class="form-control" name="source_id" value="' . $lead->status->name . '" readonly="readonly" />';
+                                echo '<input type="text" id="source_id" class="form-control" name="source_id" value="' . $lead->source->name . '" readonly="readonly" />';
                             echo " </div></div>";    
 
                             echo "
@@ -174,7 +174,7 @@
                     </fieldset>
                     <div class="form-group" style="margin-top: 80px;">
                         <div class="col-sm-offset-2 col-sm-10">                            
-                            <?= $this->Html->link('<i class="fa fa-angle-left"> </i> ' . __('Back To list'), ['action' => 'from_source/'. $source_id],['class' => 'btn btn-warning', 'escape' => false]) ?>                            
+                            <?= $this->Html->link('<i class="fa fa-angle-left"> </i> ' . __('Back To list'), ['action' => 'from_source/'. $lead->source->id],['class' => 'btn btn-warning', 'escape' => false]) ?>                            
                         </div>
                     </div>
                     <?= $this->Form->end() ?>

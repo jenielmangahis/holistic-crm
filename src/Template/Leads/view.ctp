@@ -98,7 +98,7 @@
                             <div class='form-group'>
                                 <label for='source_id' class='col-sm-2 control-label'>" . __('Source') . "</label>
                                 <div class='col-sm-6'>";
-                                echo '<input type="text" id="source_id" class="form-control" name="source_id" value="' . $lead->status->name . '" readonly="readonly" />';
+                                echo '<input type="text" id="source_id" class="form-control" name="source_id" value="' . $lead->source->name . '" readonly="readonly" />';
                             echo " </div></div>";    
 
                             echo "
