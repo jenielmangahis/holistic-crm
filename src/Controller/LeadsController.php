@@ -97,7 +97,7 @@ class LeadsController extends AppController
           ;
       }else{
 
-          $sort_direction = !empty($this->request->query['direction']) ? $this->request->query['direction'] : '';
+          /*$sort_direction = !empty($this->request->query['direction']) ? $this->request->query['direction'] : '';
           $sort_field     = !empty($this->request->query['sort']) ? $this->request->query['sort'] : '';            
 
           if( !empty($this->request->query['direction']) && !empty($this->request->query['sort']) ) {
@@ -118,7 +118,7 @@ class LeadsController extends AppController
             $this->paginate = ['order' => ['Leads.sort' => 'ASC']];  
           } else {
             $this->paginate = ['order' => ['Leads.allocation_date' => 'DESC']];
-          }
+          }*/
 
           $leads = $this->Leads->find('all')
               ->contain(['Statuses', 'Sources', 'LastModifiedBy'])
