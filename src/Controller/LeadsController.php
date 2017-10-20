@@ -68,8 +68,6 @@ class LeadsController extends AppController
      */
     public function index()
     {
-      $this->paginate = ['order' => ['Leads.allocation_date' => 'DESC']];
-
       if(isset($this->request->query['unlock']) && isset($this->request->query['lead_id']) ) {
         $lead_id = $this->request->query['lead_id'];
         if($this->request->query['unlock'] == 1) {
@@ -98,13 +96,37 @@ class LeadsController extends AppController
               ->orWhere(['Leads.email LIKE' => '%' . $query . '%'])       
           ;
       }else{
+
+          $sort_direction = !empty($this->request->query['direction']) ? $this->request->query['direction'] : '';
+          $sort_field     = !empty($this->request->query['sort']) ? $this->request->query['sort'] : '';            
+
+          if( !empty($this->request->query['direction']) && !empty($this->request->query['sort']) ) {
+              $leads_to_sort  = $this->Leads->find('all', ['order' => ['Leads.'.$sort_field => $sort_direction]]);
+              $sort = 1;
+              foreach($leads_to_sort as $skey => $sd) {
+
+                  $a_data = $this->Leads->get($sd->id, []);
+                  $data_sort['sort'] = $sort;
+                  $a_data = $this->Leads->patchEntity($a_data, $data_sort);
+                  if ( !$this->Leads->save($a_data) ) { echo "error unlocking lead"; }                    
+
+              $sort++;
+              }
+          }
+
+          if(!empty($sort_direction) && !empty($sort_field)) {
+            $this->paginate = ['order' => ['Leads.sort' => 'ASC']];  
+          } else {
+            $this->paginate = ['order' => ['Leads.allocation_date' => 'DESC']];
+          }
+
           $leads = $this->Leads->find('all')
               ->contain(['Statuses', 'Sources', 'LastModifiedBy'])
           ;
       }
 
       /*$this->paginate = [
-          'contain' => ['Statuses', 'Sources', 'Allocations']
+          'contain' => ['Statuses', 'Sources']
       ];*/
         
       $this->set('is_admin_user', $this->user->group_id);

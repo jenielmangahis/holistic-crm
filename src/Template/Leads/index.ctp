@@ -44,7 +44,7 @@
                     <table id="dt-users-list" class="table table-hover table-striped">
                         <thead class="thead-inverse">
                             <tr>
-                                <th class="actions"></th>                                
+                                <th class="actions"></th>
                                 <th><?= $this->Paginator->sort('status_id', __("Status") . "<i class='fa fa-sort pull-right'> </i>", array('escape' => false)) ?></th>
                                 <th><?= $this->Paginator->sort('source_id', __("Source") . "<i class='fa fa-sort pull-right'> </i>", array('escape' => false)) ?></th>                                
                                 <th><?= $this->Paginator->sort('allocation_date', __("Allocation Date") . "<i class='fa fa-sort pull-right'> </i>", array('escape' => false)) ?></th>
