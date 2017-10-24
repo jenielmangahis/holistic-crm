@@ -98,11 +98,14 @@ class LeadsController extends AppController
           ;
       }else{
 
-          /*$sort_direction = !empty($this->request->query['direction']) ? $this->request->query['direction'] : '';
-          $sort_field     = !empty($this->request->query['sort']) ? $this->request->query['sort'] : '';            
-
-          if( !empty($this->request->query['direction']) && !empty($this->request->query['sort']) ) {
-              $leads_to_sort  = $this->Leads->find('all', ['order' => ['Leads.'.$sort_field => $sort_direction]]);
+          $sort_direction = !empty($this->request->query['direction']) ? $this->request->query['direction'] : '';
+          $sort_field     = !empty($this->request->query['sort']) ? $this->request->query['sort'] : '';
+          
+          /*if( !empty($this->request->query['direction']) && !empty($this->request->query['sort']) ) {
+              $leads_to_sort  = $this->Leads->find('all')
+                                  ->contain(['Statuses', 'Sources', 'LastModifiedBy'])
+                                  ->order([$sort_field => $sort_direction])
+                                  ;
               $sort = 1;
               foreach($leads_to_sort as $skey => $sd) {
 
@@ -113,26 +116,35 @@ class LeadsController extends AppController
 
               $sort++;
               }
-          }
-
-          if(!empty($sort_direction) && !empty($sort_field)) {
+          }*/
+          
+          /*if(!empty($sort_direction) && !empty($sort_field)) {
             $this->paginate = ['order' => ['Leads.sort' => 'ASC']];  
           } else {
             $this->paginate = ['order' => ['Leads.allocation_date' => 'DESC']];
           }*/
           
+          
           if( !isset($this->request->query['sort']) ){
+            $this->paginate = ['order' => ['Leads.allocation_date' => 'DESC']];
             $leads = $this->Leads->find('all')
                 ->contain(['Statuses', 'Sources', 'LastModifiedBy'])
-                ->order(['Sources.name' => 'ASC'])
+                
             ;
           }else{
+
+            if($sort_field == 'source_id' || $sort_field == 'Leads.source_id') {
+              $this->paginate = ['order' => ['Sources.name' => $sort_direction]];
+            }
+            
             $leads = $this->Leads->find('all')
                 ->contain(['Statuses', 'Sources', 'LastModifiedBy'])
+                //->order(['Sources.name' => 'ASC'])
             ;  
           }
           
       }
+
 
       /*$this->paginate = [
           'contain' => ['Statuses', 'Sources']

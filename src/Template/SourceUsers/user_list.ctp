@@ -32,8 +32,8 @@ div.box-body{
     <h1><?= __('Source Users') . " : " . $source->name ?></h1>
     <ol class="breadcrumb">
         <li><a href="<?php echo $base_url; ?>"><i class="fa fa-dashboard"></i> Home</a></li>
-        <li><a href="<?php echo $base_url; ?>"><i class="fa fa-gear"></i> System Settings</a></li>
-        <li><a href="<?php echo $base_url; ?>"><i class="fa fa-gear"></i> Sources</a></li>
+        <li><a href="<?php echo $base_url . 'sources'; ?>"><i class="fa fa-gear"></i> System Settings</a></li>
+        <li><a href="<?php echo $base_url . 'sources' ; ?>"><i class="fa fa-gear"></i> Sources</a></li>
         <li class="active"><?= __('Users') ?></li>
     </ol>
 </section>

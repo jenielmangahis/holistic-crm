@@ -168,7 +168,7 @@ class UsersController extends AppController
         $this->set('total_leads', $total_leads);
         $this->set('total_leads_followup', $total_leads_followup);
         $this->set('new_leads', $new_leads);
-        $this->set('sources', $sources);
+        $this->set('sources',  $this->paginate($sources, ['limit' => 1000]) );
         $this->set('statuses', $statuses);
         $this->set('lead_registry', $this->Leads);
         $this->set('followup_leads_today', $followup_leads_today);
