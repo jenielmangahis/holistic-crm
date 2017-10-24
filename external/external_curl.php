@@ -8,6 +8,9 @@ $post_fields = array();
 foreach( $_POST as $key => $value ){
 	$post_fields[$key] = $value
 }
+$post_fields = [
+	'lead-firstname' => 'TEST'
+];
 
 $ch  = curl_init();
 $url = 'http://holisticwebpresencecrm.com/external_requests/ajax_register_leads';

@@ -26,6 +26,7 @@ class ExternalRequestsController extends AppController
         // Allow full access to this controller
         $this->Auth->allow();
     }
+
     /**
      * Frontend : Ajax register method
      *
@@ -33,7 +34,7 @@ class ExternalRequestsController extends AppController
      */
     public function ajax_register_leads()
     {
-      $this->SourceUsers = TableRegistry::get('SourceUsers');
+      $this->AllocationUsers = TableRegistry::get('AllocationUsers');
 
       $data = $this->request->query;
       $json['is_success'] = false;      
@@ -60,10 +61,11 @@ class ExternalRequestsController extends AppController
           'state' => $data['lead-state'],
           'source_id' => $data['lead-source-id'],
           'lead_action' => $lead_action,
-          'source_url' => $source_url,
           'status_id' => 2,
           'lead_type_id' => 1,
-          'interest_type_id' => 6,          
+          'source_url' => $source_url,
+          'interest_type_id' => 6,
+          'allocation_id' => $data['lead-allocation-id'],
           'allocation_date' => date("Y-m-d"),
           'followup_date' => date("Y-m-d"),
           'followup_action_reminder_date' => date("Y-m-d")
@@ -71,18 +73,18 @@ class ExternalRequestsController extends AppController
         $lead = $this->Leads->patchEntity($lead, $data_leads);        
         if ($new_lead = $this->Leads->save($lead)) {
 
-            $source_users = $this->SourceUsers->find('all')
+            $allocation_users = $this->AllocationUsers->find('all')
                 ->contain(['Users'])
-                ->where(['SourceUsers.source_id' => $data['lead-source-id']])
+                ->where(['AllocationUsers.allocation_id' => $data['lead-allocation-id']])
             ;
 
             $users_email = array();
-            foreach($source_users as $users){            
+            foreach($allocation_users as $users){            
                 $users_email[$users->user->email] = $users->user->email;            
             }    
 
             //add other emails to be sent - start
-              foreach($source_users as $users){            
+              foreach($allocation_users as $users){            
                   $other_email_to_explode = $users->user->other_email;
 
                   if( !empty($other_email_to_explode) || $other_email_to_explode != '' ) {
@@ -105,13 +107,13 @@ class ExternalRequestsController extends AppController
             if( !empty($users_email) ){
               //Send email notification
               $leadData = $this->Leads->get($new_lead->id, [
-                  'contain' => ['Statuses', 'Sources', 'LeadTypes','InterestTypes']
+                  'contain' => ['Statuses', 'Sources', 'Allocations', 'LeadTypes','InterestTypes']
               ]);  
               $email_customer = new Email('default'); //default or cake_smtp (for testing in local)
               $email_customer->from(['websystem@holisticwebpresencecrm.com' => 'Holistic'])
                 ->template('external_leads_registration')
                 ->emailFormat('html')          
-                ->to($users_email)                                                                                               
+                ->bcc($users_email)                                                                                               
                 ->subject('New Lead')
                 ->viewVars(['new_lead' => $leadData->toArray()])
                 ->send();
@@ -127,15 +129,15 @@ class ExternalRequestsController extends AppController
     } 
 
     /**
-     * Frontend : Ajax register method
+     * Frontend : Post register method
      *
      * @return void Redirects on successful add, renders view otherwise.
      */
-    public function ajax_get_register_leads()
+    public function ajax_post_register_leads()
     {
-      $this->SourceUsers = TableRegistry::get('SourceUsers');
+      $this->AllocationUsers = TableRegistry::get('AllocationUsers');
 
-      $data = $this->request->query;
+      $data = $this->request->data;
       $json['is_success'] = false;      
 
       if( $data ){
@@ -160,10 +162,11 @@ class ExternalRequestsController extends AppController
           'state' => $data['lead-state'],
           'source_id' => $data['lead-source-id'],
           'lead_action' => $lead_action,
-          'source_url' => $source_url,
           'status_id' => 2,
           'lead_type_id' => 1,
-          'interest_type_id' => 6,          
+          'source_url' => $source_url,
+          'interest_type_id' => 6,
+          'allocation_id' => $data['lead-allocation-id'],
           'allocation_date' => date("Y-m-d"),
           'followup_date' => date("Y-m-d"),
           'followup_action_reminder_date' => date("Y-m-d")
@@ -171,18 +174,18 @@ class ExternalRequestsController extends AppController
         $lead = $this->Leads->patchEntity($lead, $data_leads);        
         if ($new_lead = $this->Leads->save($lead)) {
 
-            $source_users = $this->SourceUsers->find('all')
+            $allocation_users = $this->AllocationUsers->find('all')
                 ->contain(['Users'])
-                ->where(['SourceUsers.source_id' => $data['lead-source-id']])
+                ->where(['AllocationUsers.allocation_id' => $data['lead-allocation-id']])
             ;
 
             $users_email = array();
-            foreach($source_users as $users){            
+            foreach($allocation_users as $users){            
                 $users_email[$users->user->email] = $users->user->email;            
             }    
 
             //add other emails to be sent - start
-              foreach($source_users as $users){            
+              foreach($allocation_users as $users){            
                   $other_email_to_explode = $users->user->other_email;
 
                   if( !empty($other_email_to_explode) || $other_email_to_explode != '' ) {
@@ -205,13 +208,13 @@ class ExternalRequestsController extends AppController
             if( !empty($users_email) ){
               //Send email notification
               $leadData = $this->Leads->get($new_lead->id, [
-                  'contain' => ['Statuses', 'Sources', 'LeadTypes','InterestTypes']
+                  'contain' => ['Statuses', 'Sources', 'Allocations', 'LeadTypes','InterestTypes']
               ]);  
               $email_customer = new Email('default'); //default or cake_smtp (for testing in local)
               $email_customer->from(['websystem@holisticwebpresencecrm.com' => 'Holistic'])
                 ->template('external_leads_registration')
                 ->emailFormat('html')          
-                ->to($users_email)                                                                                               
+                ->bcc($users_email)                                                                                               
                 ->subject('New Lead')
                 ->viewVars(['new_lead' => $leadData->toArray()])
                 ->send();
