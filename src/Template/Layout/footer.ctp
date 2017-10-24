@@ -173,6 +173,11 @@
     echo $this->Html->css('tagsinput/bootstrap-tagsinput.css');
     echo $this->Html->script('tagsinput/bootstrap-tagsinput.js');     
   }
+  
+  if( isset($enable_jscript_datatable) ){
+    echo $this->Html->script('jquery.dataTables.min.js');
+    echo $this->Html->css('jquery.dataTables.min.css');
+  }
  
   /*echo $this->Html->script('dist/js/demo.js');    
   echo $this->Html->script('plugins/input-mask/jquery.inputmask.js');
@@ -183,7 +188,14 @@
   echo $this->Html->script('validator.min.js');   
 ?>
 
-<script type="text/javascript">  
+<script type="text/javascript"> 
+
+$(document).ready(function() {
+    $('#example_datatable').DataTable({
+      "iDisplayLength": 100
+    });
+} );  
+
 var base_url = "<?= $base_url; ?>";
 $(function(){
   var date = new Date(<?php echo time() * 1000 ?>);  
