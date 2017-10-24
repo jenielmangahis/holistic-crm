@@ -15,10 +15,6 @@
             <td><?= h($source->name) ?></td>
         </tr>
         <tr>
-            <th><?= __('Allocated to') ?></th>
-            <td><?= h($source->allocation->name) ?></td>
-        </tr>        
-        <tr>
             <th><?= __('Created') ?></th>
             <td><?= h($source->created) ?></td>
         </tr>
