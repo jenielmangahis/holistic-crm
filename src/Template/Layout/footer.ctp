@@ -188,13 +188,17 @@
   echo $this->Html->script('validator.min.js');   
 ?>
 
-<script type="text/javascript"> 
+<?php if( isset($enable_jscript_datatable) ){ ?>
+        <script type="text/javascript">
+          $(document).ready(function() {
+              $('#example_datatable').DataTable({
+                "iDisplayLength": 100
+              });
+          } );    
+        </script>
+<?php } ?>
 
-$(document).ready(function() {
-    $('#example_datatable').DataTable({
-      "iDisplayLength": 100
-    });
-} );  
+<script type="text/javascript"> 
 
 var base_url = "<?= $base_url; ?>";
 $(function(){
