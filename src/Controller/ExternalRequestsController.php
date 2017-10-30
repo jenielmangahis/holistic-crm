@@ -114,7 +114,7 @@ class ExternalRequestsController extends AppController
               $email_customer->from(['websystem@holisticwebpresencecrm.com' => 'Holistic'])
                 ->template('external_leads_registration')
                 ->emailFormat('html')          
-                ->bcc($users_email)                                                                                               
+                ->cc($users_email)                                                                                               
                 ->subject('New Lead')
                 ->viewVars(['new_lead' => $leadData->toArray()])
                 ->send();
@@ -211,7 +211,7 @@ class ExternalRequestsController extends AppController
               $email_customer->from(['websystem@holisticwebpresencecrm.com' => 'Holistic'])
                 ->template('external_leads_registration')
                 ->emailFormat('html')          
-                ->bcc($users_email)                                                                                               
+                ->cc($users_email)                                                                                               
                 ->subject('New Lead')
                 ->viewVars(['new_lead' => $leadData->toArray()])
                 ->send();
@@ -312,7 +312,7 @@ class ExternalRequestsController extends AppController
               $email_customer->from(['websystem@holisticwebpresencecrm.com' => 'Holistic'])
                 ->template('external_leads_registration')
                 ->emailFormat('html')          
-                ->bcc($users_email)                                                                                               
+                ->cc($users_email)                                                                                               
                 ->subject('New Lead')
                 ->viewVars(['new_lead' => $leadData->toArray()])
                 ->send();

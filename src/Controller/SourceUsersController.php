@@ -255,13 +255,22 @@ class SourceUsersController extends AppController
     public function delete($id = null)
     {
         $this->request->allowMethod(['post', 'delete']);
-        $sourceUser = $this->SourceUsers->get($id);
-        $source_id  = $sourceUser->source_id;
-        if ($this->SourceUsers->delete($sourceUser)) {
-            $this->Flash->success(__('The source user has been deleted.'));
+
+        $source_user = $this->SourceUsers->exists(['id' => $id]);
+        if($source_user) {
+            
+            $sourceUser = $this->SourceUsers->get($id);
+            $source_id  = $sourceUser->source_id;
+            if ($this->SourceUsers->delete($sourceUser)) {
+                $this->Flash->success(__('The source user has been deleted.'));
+            } else {
+                $this->Flash->error(__('The source user could not be deleted. Please, try again.'));
+            }
+
         } else {
-            $this->Flash->error(__('The source user could not be deleted. Please, try again.'));
+            $this->Flash->error(__('Assigned user not be found. Please try again.'));
         }
+
         return $this->redirect(['action' => 'user_list', $source_id]);
     }
 

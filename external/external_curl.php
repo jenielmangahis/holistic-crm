@@ -21,7 +21,6 @@ $server_output = curl_exec ($ch);
 
 curl_close($ch);
 
-
 if ($server_output == "OK") { 
 	$json_return['is_success'] = true;
 }

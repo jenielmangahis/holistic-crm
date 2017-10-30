@@ -540,7 +540,6 @@ class LeadsController extends AppController
         } else {
           return $this->redirect(['action' => 'index']);      
         }
-
         
     }
 
