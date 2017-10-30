@@ -252,7 +252,7 @@ class SourceUsersController extends AppController
      * @return \Cake\Network\Response|null Redirects to index.
      * @throws \Cake\Network\Exception\NotFoundException When record not found.
      */
-    public function delete($id = null)
+    public function delete($id = null, $source_id = null)
     {
         $this->request->allowMethod(['post', 'delete']);
 

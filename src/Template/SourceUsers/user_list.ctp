@@ -96,7 +96,7 @@ div.box-body{
                                                 <button type="button" data-dismiss="modal" class="btn btn-default">No</button>
                                                 <?= $this->Form->postLink(
                                                         'Yes',
-                                                        ['action' => 'delete', $sourceUser->id],
+                                                        ['action' => 'delete', $sourceUser->id, $source->id],
                                                         ['class' => 'btn btn-danger', 'escape' => false]
                                                     )
                                                 ?>
