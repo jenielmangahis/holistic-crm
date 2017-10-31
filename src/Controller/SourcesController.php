@@ -97,7 +97,7 @@ class SourcesController extends AppController
     public function view($id = null)
     {
         $source = $this->Sources->get($id, [
-            'contain' => ['Allocations']
+            'contain' => []
         ]);
         $this->set('source', $source);
         $this->set('_serialize', ['source']);

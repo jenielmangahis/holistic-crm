@@ -13,6 +13,9 @@
 }
 
 </style>
+
+<!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script> -->
+
 <script>
 var BASE_URL = "<?php echo $base_url; ?>";
 </script><!-- Main content -->
@@ -181,6 +184,7 @@ var BASE_URL = "<?php echo $base_url; ?>";
   <!-- End Leads -->
 
   <!-- Sources List -->
+    <!-- 
     <div class="col-md-12">
       <div class="box box-primary box-solid"> 
         <div class="box-header with-border">  
@@ -222,9 +226,50 @@ var BASE_URL = "<?php echo $base_url; ?>";
 
       </div>
     </div>
-  <!-- Sources List - End -->
+    -->
+  
+    <div class="col-md-12">
+      <div class="box box-primary box-solid"> 
+        <div class="box-header with-border">  
+            <div class="user-block"><h2><i class="fa fa-list-alt"></i> <?= __('Sources') ?></h2></div>            
+            <div class="box-tools" style="top:9px;">                                         
+                <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>                        
+            </div>         
+        </div>     
+        <div class="box-body box-links">
+            <table id="example_datatable" class="table table-hover table-striped table-scroll-body">
+                <thead class="thead-inverse">
+                    <tr>
+                        <th style="">Name</th>
+                        <?php foreach($statuses as $status) { ?>
+                                <th style=""><?= $status->name ?></th>
+                        <?php } ?>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php foreach($sourcesd as $s) { ?>
+                            <tr>
+                                <td><?= $this->Html->link($s->name, ['controller' => 'leads', 'action' => 'from_source', $s->id],['escape' => false, 'target' => '_blank']) ?></td>
+                                <?php foreach($statuses as $status) { ?>
+                                        <?php 
+                                            $total_leads_per_source_status = $lead_registry->find('all')        
+                                                ->contain(['LastModifiedBy'])        
+                                                ->where(['Leads.source_id' => $s->id])
+                                                ->andWhere(['Leads.status_id' => $status->id])
+                                                ->count()
+                                            ;                                          
+                                        ?>
+                                        <td><?php echo $total_leads_per_source_status; ?></td>
+                                <?php } ?>                                
+                            </tr>
+                    <?php } ?>
+                </tbody>
+            </table>                               
+        </div>
 
- 
+      </div>
+    </div>  
+    <!-- Sources List - End -->
 
 </section>
 <!-- /.content -->
