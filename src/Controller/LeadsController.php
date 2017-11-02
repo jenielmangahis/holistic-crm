@@ -242,6 +242,7 @@ class LeadsController extends AppController
     public function add($source_id = '')
     {
         $this->SourceUsers = TableRegistry::get('SourceUsers');        
+        $this->Sources     = TableRegistry::get('Sources');
 
         $p = $this->default_group_actions;
         if( $p && $p['leads'] == 'View Only' ){
@@ -291,7 +292,23 @@ class LeadsController extends AppController
                       
                     }
                 }    
-                //add other emails to be sent - end                 
+                //add other emails to be sent - end 
+
+                //add other emails from sources - start
+                $source = $this->Sources->get($data['source_id']);        
+                if( !empty($source->emails) || $source->emails != '' ) {
+                  $other_source_email = explode(";", $source->emails);
+                  foreach($other_source_email as $oekey => $emr) {
+
+                    if (trim($emr) != '') {
+                        $other_email_to_add_sources = $emr; //ltrim($em);
+                        $users_email[$other_email_to_add_sources] = $other_email_to_add_sources;  
+                    }
+
+                  }
+                  
+                }                
+                //add other emails from sources - end                                
 
                 if( !empty($users_email) ){
 
@@ -354,6 +371,7 @@ class LeadsController extends AppController
     public function edit($id = null, $redir = null, $source_id = null)
     {
         $this->SourceUsers = TableRegistry::get('SourceUsers');
+        $this->Sources     = TableRegistry::get('Sources');
 
         $p = $this->default_group_actions;
         if( $p && $p['leads'] == 'View Only' ){
@@ -430,7 +448,23 @@ class LeadsController extends AppController
                       
                     }
                 }    
-                //add other emails to be sent - end                 
+                //add other emails to be sent - end  
+
+                //add other emails from sources - start
+                $source = $this->Sources->get($data['source_id']);        
+                if( !empty($source->emails) || $source->emails != '' ) {
+                  $other_source_email = explode(";", $source->emails);
+                  foreach($other_source_email as $oekey => $emr) {
+
+                    if (trim($emr) != '') {
+                        $other_email_to_add_sources = $emr; //ltrim($em);
+                        $users_email[$other_email_to_add_sources] = $other_email_to_add_sources;  
+                    }
+
+                  }
+                  
+                }                
+                //add other emails from sources - end
 
                 if( !empty($users_email) ){ 
 

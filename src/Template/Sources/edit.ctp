@@ -26,12 +26,12 @@
                                         <div class='col-sm-6'>";
                                         echo $this->Form->input('name', ['class' => 'form-control', 'id' => 'name', 'label' => false]);                
                                     echo " </div></div>";    
-
+                            $source_emails = str_replace(";", ",", $source->emails);
                             echo "
                                     <div class='form-group'>
                                         <label for='email' class='col-sm-2 control-label'>" . __('Emails') . "</label>
                                         <div class='col-sm-6'>";
-                                        echo $this->Form->input('other_email', ['class' => 'form-control tags-emails', 'data-role' => 'tagsinput', 'label' => false, 'default' => ' ']);  
+                                        echo $this->Form->input('emails', ['class' => 'form-control tags-emails', 'data-role' => 'tagsinput', 'value' => $source_emails, 'label' => false, 'default' => ' ']);  
                                     echo " </div></div>"; 
                                     
                         ?>
