@@ -4,8 +4,11 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
-
-    <title>Holistic</title>
+    <?php 
+        $module_name = $this->request->params['controller']; 
+        $action_name = $this->request->params['action']; 
+    ?>
+    <title>Holistic - <?php echo $module_name . " | " . $action_name; ?></title>
  
     <?php
             echo $this->Html->meta('icon');

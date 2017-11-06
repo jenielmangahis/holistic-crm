@@ -35,6 +35,7 @@ class ExternalRequestsController extends AppController
     public function ajax_register_leads()
     {
       $this->SourceUsers = TableRegistry::get('SourceUsers');
+      $this->Sources     = TableRegistry::get('Sources');     
 
       $data = $this->request->query;
       $json['is_success'] = false;      
@@ -108,12 +109,19 @@ class ExternalRequestsController extends AppController
               $leadData = $this->Leads->get($new_lead->id, [
                   'contain' => ['Statuses', 'Sources', 'LeadTypes','InterestTypes']
               ]);  
+
+              $source           = $this->Sources->get($data['lead-source-id']); 
+              $source_name      = !empty($source->name) ? $source->name : "";
+              $surname          = $leadData->surname != "" ? $leadData->surname : "Not Specified";
+              $lead_client_name = $leadData->firstname . " " . $surname;
+              $subject          = "New Lead - " . $source_name . " - " . $lead_client_name; 
+
               $email_customer = new Email('default'); //default or cake_smtp (for testing in local)
               $email_customer->from(['websystem@holisticwebpresencecrm.com' => 'Holistic'])
                 ->template('external_leads_registration')
                 ->emailFormat('html')          
                 ->cc($users_email)                                                                                               
-                ->subject('New Lead')
+                ->subject($subject) //New Lead
                 ->viewVars(['new_lead' => $leadData->toArray()])
                 ->send();
             }
@@ -130,6 +138,7 @@ class ExternalRequestsController extends AppController
     public function ajax_register_leads_arctic()
     {
       $this->AllocationUsers = TableRegistry::get('AllocationUsers');
+      $this->Sources     = TableRegistry::get('Sources');  
 
       $data = $this->request->query;
 
@@ -205,12 +214,19 @@ class ExternalRequestsController extends AppController
               $leadData = $this->Leads->get($new_lead->id, [
                   'contain' => ['Statuses', 'Sources', 'Allocations', 'LeadTypes','InterestTypes']
               ]);  
+
+              $source           = $this->Sources->get($data['lead-source-id']); 
+              $source_name      = !empty($source->name) ? $source->name : "";
+              $surname          = $leadData->surname != "" ? $leadData->surname : "Not Specified";
+              $lead_client_name = $leadData->firstname . " " . $surname;
+              $subject          = "New Lead - " . $source_name . " - " . $lead_client_name; 
+
               $email_customer = new Email('default'); //default or cake_smtp (for testing in local)
               $email_customer->from(['websystem@holisticwebpresencecrm.com' => 'Holistic'])
                 ->template('external_leads_registration')
                 ->emailFormat('html')          
                 ->cc($users_email)                                                                                               
-                ->subject('New Lead')
+                ->subject($subject) //New Lead
                 ->viewVars(['new_lead' => $leadData->toArray()])
                 ->send();
             }
@@ -232,6 +248,7 @@ class ExternalRequestsController extends AppController
     public function ajax_post_register_leads()
     {
       $this->AllocationUsers = TableRegistry::get('AllocationUsers');
+      $this->Sources     = TableRegistry::get('Sources');  
 
       $data = $this->request->data;
       $json['is_success'] = false;      
@@ -306,12 +323,19 @@ class ExternalRequestsController extends AppController
               $leadData = $this->Leads->get($new_lead->id, [
                   'contain' => ['Statuses', 'Sources', 'Allocations', 'LeadTypes','InterestTypes']
               ]);  
+
+              $source           = $this->Sources->get($data['lead-source-id']); 
+              $source_name      = !empty($source->name) ? $source->name : "";
+              $surname          = $leadData->surname != "" ? $leadData->surname : "Not Specified";
+              $lead_client_name = $leadData->firstname . " " . $surname;
+              $subject          = "New Lead - " . $source_name . " - " . $lead_client_name; 
+
               $email_customer = new Email('default'); //default or cake_smtp (for testing in local)
               $email_customer->from(['websystem@holisticwebpresencecrm.com' => 'Holistic'])
                 ->template('external_leads_registration')
                 ->emailFormat('html')          
                 ->cc($users_email)                                                                                               
-                ->subject('New Lead')
+                ->subject($subject)
                 ->viewVars(['new_lead' => $leadData->toArray()])
                 ->send();
             }
