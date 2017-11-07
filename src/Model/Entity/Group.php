@@ -17,6 +17,7 @@ class Group extends Entity
     protected $_accessible = [
         'name' => true,
         'users' => true,
+        'sort' => true
     ];
 
     public function parentNode()

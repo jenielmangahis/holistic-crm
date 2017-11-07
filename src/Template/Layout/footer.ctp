@@ -259,6 +259,12 @@ $(function(){
   });
   */
 
+  //Users
+  $(".btn-show-more-sources").click(function(){   
+    var data_id = 'source-item-' + $(this).attr('data-id');    
+    $("." + data_id).removeClass("hidden");        
+  });
+
   //Date picker       
   $('.default-datepicker').datepicker({
     format: 'yyyy-mm-dd',

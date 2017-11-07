@@ -333,10 +333,12 @@ class UsersController extends AppController
 
         $this->set('user_group', $this->user->group_id);
         if($this->user->group_id == 1) {
-            $groups = $this->Users->Groups->find('list', ['limit' => 200]);
+            $groups = $this->Users->Groups->find('list', ['limit' => 200, 'order' => ['Groups.sort' => 'ASC']]);
         } else {
             $groups = $this->Users->Groups->find('list')
-                ->where(['Groups.id !=' => 1]);
+                ->where(['Groups.id !=' => 1])
+                ->order(['Groups.sort' => 'ASC'])
+            ;
         }
         
         $this->set('enable_tags_input', true);
