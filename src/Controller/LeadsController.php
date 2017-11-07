@@ -318,13 +318,19 @@ class LeadsController extends AppController
 
                     $leadData = $this->Leads->get($newLead->id, [
                         'contain' => ['Statuses', 'Sources', 'LastModifiedBy','LeadTypes','InterestTypes']
-                    ]);                                   
+                    ]);                           
+
+                    $source_name      = !empty($source->name) ? $source->name : "";
+                    $surname          = $leadData->surname != "" ? $leadData->surname : "Not Specified";
+                    $lead_client_name = $leadData->firstname . " " . $surname;
+                    $subject          = "New Lead - " . $source_name . " - " . $lead_client_name;                     
+
                     $email_customer = new Email('default'); //default or cake_smtp (for testing in local)
                     $email_customer->from(['websystem@holisticwebpresencecrm.com' => 'Holistic'])
                       ->template('crm_new_leads')
                       ->emailFormat('html')          
                       ->to($users_email)                                                                                               
-                      ->subject('New Lead')
+                      ->subject($subject)
                       ->viewVars(['lead' => $leadData->toArray()])
                       ->send();
 
@@ -474,13 +480,18 @@ class LeadsController extends AppController
                     $modifiedLead = $this->Leads->get($id, [
                         'contain' => ['Statuses', 'Sources', 'LastModifiedBy','LeadTypes','InterestTypes']
                     ]); 
+
+                    $source_name      = !empty($source->name) ? $source->name : "";
+                    $surname          = $modifiedLead->surname != "" ? $modifiedLead->surname : "Not Specified";
+                    $lead_client_name = $modifiedLead->firstname . " " . $surname;
+                    $subject          = "Updated Lead - " . $source_name . " - " . $lead_client_name;              
                   
                     $email_customer = new Email('default'); //default or cake_smtp (for testing in local)
                     $email_customer->from(['websystem@holisticwebpresencecrm.com' => 'Holistic'])
                       ->template('crm_modified_leads')
                       ->emailFormat('html')          
                       ->to($users_email)                                                                                               
-                      ->subject('Updated Lead')
+                      ->subject($subject)
                       ->viewVars(['lead' => $modifiedLead->toArray()])
                       ->send();
 

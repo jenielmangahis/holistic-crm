@@ -63,7 +63,8 @@ class GroupsController extends AppController
         if( isset($this->request->query['query']) ){
             $query  = $this->request->query['query'];
             $groups = $this->Groups->find('all')
-                ->where(['Groups.name LIKE' => '%' . $query . '%'])                                
+                ->where(['Groups.name LIKE' => '%' . $query . '%']) 
+                ->order(['Groups.sort' => 'ASC'])                               
             ;
         }else{
             $sort_direction = !empty($this->request->query['direction']) ? $this->request->query['direction'] : 'ASC';
@@ -82,7 +83,9 @@ class GroupsController extends AppController
                 }
             }
 
-            $groups = $this->Groups->find('all');
+            $groups = $this->Groups->find('all')
+                ->order(['Groups.sort' => 'ASC'])
+            ;
         }      
         
         $this->set('user_group', $this->user->group_id);
@@ -120,8 +123,8 @@ class GroupsController extends AppController
 
         if ($this->request->is('post')) {
 
-            //Insert Group
-            $group = $this->Groups->patchEntity($group, $this->request->data);
+            //Insert Group         
+            $group = $this->Groups->patchEntity($group, $this->request->data);            
             if ($this->Groups->save($group)) {
                 $this->Flash->success(__('The group has been saved.'));
                 $action = $this->request->data['save'];

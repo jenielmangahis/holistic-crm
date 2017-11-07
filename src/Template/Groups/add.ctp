@@ -24,18 +24,25 @@
 
                 </div>
                 <div class="box-body">
-                    <?= $this->Form->create(null,['url' => '/groups/add', 'id' => 'frm-user-add', 'data-toggle' => 'validator', 'role' => 'form']) ?>
+                    <?= $this->Form->create(null,['url' => '/groups/add', 'id' => 'frm-user-add', 'data-toggle' => 'validator', 'role' => 'form', 'class' => 'form-horizontal']) ?>
                     <fieldset>        
                         <div class="row">
                         <?php                                        
-                            echo "<div class='form-group'>";
-                                echo "<div class='col-sm-12 form-label'>";
-                                    echo __("Name");
-                                echo "</div>";
-                                echo "<div class='col-sm-12'>";
-                                    echo $this->Form->input('name',['class' => 'form-control', 'id' => 'name', 'label' => false]);    
-                                echo "<div class='help-block with-errors'></div> </div>";                
-                            echo " </div>"; 
+                            echo "
+                            <div class='form-group'>
+                                <label for='name' class='col-sm-2 control-label'>" . __('Name') . "</label>
+                                <div class='col-sm-6'>";
+                                echo $this->Form->input('name', ['class' => 'form-control', 'id' => 'name', 'label' => false]);                
+                                echo " </div>";    
+                            echo "</div>";
+
+                            echo "
+                            <div class='form-group'>
+                                <label for='name' class='col-sm-2 control-label'>" . __('Sort') . "</label>
+                                <div class='col-sm-6'>";
+                                echo $this->Form->input('sort', ['class' => 'form-control', 'id' => 'sort', 'label' => false]);                
+                                echo " </div>";    
+                            echo "</div>";
                         ?>
                         </div>
                         <h3 class="form-hdr">Module Permision</h3>
