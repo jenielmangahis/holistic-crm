@@ -185,6 +185,7 @@ class UserLeadsController extends AppController
     public function add()
     {
         $this->SourceUsers = TableRegistry::get('SourceUsers');
+        $this->Sources     = TableRegistry::get('Sources');
 
         $p = $this->default_group_actions;
         if( $p && $p['leads'] == 'View Only' ){
@@ -199,7 +200,7 @@ class UserLeadsController extends AppController
 
         $lead = $this->Leads->newEntity();
         if ($this->request->is('post')) {
-            $data = $this->request->data;           
+            $data = $this->request->data;        
             
             $lead = $this->Leads->patchEntity($lead, $data);
             if ($newLead = $this->Leads->save($lead)) {
@@ -236,6 +237,24 @@ class UserLeadsController extends AppController
                 }    
                 //add other emails to be sent - end            
 
+                //add other emails from sources - start
+                
+                $source = $this->Sources->get($data['source_id']);        
+                if( !empty($source->emails) || $source->emails != '' ) {
+                  $other_source_email = explode(";", $source->emails);
+                  foreach($other_source_email as $oekey => $emr) {
+
+                    if (trim($emr) != '') {
+                        $other_email_to_add_sources = $emr;
+                        $users_email[$other_email_to_add_sources] = $other_email_to_add_sources;  
+                    }
+
+                  }
+                  
+                }
+                        
+                //add other emails from sources - end                 
+
                 if( !empty($users_email) ){
 
                   //Send email notification                  
@@ -243,13 +262,19 @@ class UserLeadsController extends AppController
                       'contain' => ['Statuses', 'Sources', 'LastModifiedBy','LeadTypes','InterestTypes']
                   ]);   
 
+                  $source           = $this->Sources->get($data['source_id']);   
+                  $source_name      = !empty($source->name) ? $source->name : "";
+                  $surname          = $leadData->surname != "" ? $leadData->surname : "Not Specified";
+                  $lead_client_name = $leadData->firstname . " " . $surname;
+                  $subject          = "New Lead - " . $source_name . " - " . $lead_client_name;                   
+
                   $email_customer = new Email('default'); //default or cake_smtp (for testing in local)
                   $email_customer->from(['websystem@holisticwebpresencecrm.com' => 'Holistic'])
                     ->template('crm_new_leads')
                     ->emailFormat('html')          
                     ->to($users_email)                                                                                               
-                    ->subject('New Lead')
-                    ->viewVars(['new_lead' => $leadData->toArray()])
+                    ->subject($subject)
+                    ->viewVars(['lead' => $leadData->toArray()])
                     ->send();
                 }
 
@@ -282,6 +307,7 @@ class UserLeadsController extends AppController
     public function edit($id = null, $redir = null)
     {
         $this->SourceUsers = TableRegistry::get('SourceUsers');
+        $this->Sources     = TableRegistry::get('Sources');
 
         $p = $this->default_group_actions;
 
@@ -353,19 +379,43 @@ class UserLeadsController extends AppController
                       
                     }
                 }    
-                //add other emails to be sent - end                
+                //add other emails to be sent - end   
+
+                //add other emails from sources - start
+                
+                $source = $this->Sources->get($data['source_id']);        
+                if( !empty($source->emails) || $source->emails != '' ) {
+                  $other_source_email = explode(";", $source->emails);
+                  foreach($other_source_email as $oekey => $emr) {
+
+                    if (trim($emr) != '') {
+                        $other_email_to_add_sources = $emr; //ltrim($em);
+                        $users_email[$other_email_to_add_sources] = $other_email_to_add_sources;  
+                    }
+
+                  }
+                  
+                }
+                                
+                //add other emails from sources - end                             
 
                 if( !empty($users_email) ){                                                      
                   $modifiedLead = $this->Leads->get($id, [
                       'contain' => ['Statuses', 'Sources', 'LastModifiedBy','LeadTypes','InterestTypes']
                   ]); 
+
+                  $source           = $this->Sources->get($data['source_id']);        
+                  $source_name      = !empty($source->name) ? $source->name : "";
+                  $surname          = $modifiedLead->surname != "" ? $modifiedLead->surname : "Not Specified";
+                  $lead_client_name = $modifiedLead->firstname . " " . $surname;
+                  $subject          = "Updated Lead - " . $source_name . " - " . $lead_client_name;                    
                 
                   $email_customer = new Email('default');  //default or cake_smtp (for testing in local)
                   $email_customer->from(['websystem@holisticwebpresencecrm.com' => 'Holistic'])
                     ->template('crm_modified_leads')
                     ->emailFormat('html')          
                     ->to($users_email)                                                                                               
-                    ->subject('Updated Lead')
+                    ->subject($subject)
                     ->viewVars(['lead' => $modifiedLead->toArray()])
                     ->send();
                 }  
