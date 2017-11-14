@@ -64,7 +64,7 @@ div.box-body{
                         <thead class="thead-inverse">
                             <tr>
                                 <th class="actions"></th>                                
-                                <th style="width:70%;"><?= $this->Paginator->sort('user_id', __("Name") . "<i class='fa fa-sort pull-right'> </i>", array('escape' => false)) ?></th>
+                                <th style="width:70%;">Name</th>
                                 <th><?= $this->Paginator->sort('created', __("Created") . "<i class='fa fa-sort pull-right'> </i>", array('escape' => false)) ?></th>
                             </tr>
                         </thead>

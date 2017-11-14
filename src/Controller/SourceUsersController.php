@@ -76,12 +76,19 @@ class SourceUsersController extends AppController
     public function user_list( $id = null )
     {
         $source = $this->SourceUsers->Sources->get($id);
-        $this->paginate = [
-            'contain' => ['Sources', 'Users'],
-            'conditions' => ['SourceUsers.source_id' => $id]
+        
+        $this->paginate = [                        
+            'sortWhiteList' => ['Users.firstname']           
         ];
+
+        $sourceUsers = $this->SourceUsers->find('all')
+            ->contain(['Sources', 'Users']) 
+            ->where(['SourceUsers.source_id' => $id])
+            ->order(['Users.firstname' => 'ASC'])           
+        ;
+
         $this->set('source', $source);
-        $this->set('sourceUsers', $this->paginate($this->SourceUsers));
+        $this->set('sourceUsers', $this->paginate($sourceUsers));
         $this->set('_serialize', ['sourceUsers']);
     }
 
@@ -317,11 +324,13 @@ class SourceUsersController extends AppController
             $users = $this->SourceUsers->Users->find('all')
                 //->where(['Users.group_id' => 2, 'Users.id NOT IN' => $a_source_users])
                 ->where(['Users.id NOT IN' => $a_source_users])
+                ->order(['Users.firstname' => 'ASC'])
                 ->toArray()
             ;    
         }else{
             $users = $this->SourceUsers->Users->find('all')
                 //->where(['Users.group_id' => 2])
+                ->order(['Users.firstname' => 'ASC'])
                 ->toArray()
             ;    
         }
