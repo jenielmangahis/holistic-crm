@@ -99,8 +99,8 @@
                 </span>
               </a>
               <ul class="treeview-menu">            
-                <li><a href="#">Report 1</a></li>
-                <!-- <?= $this->Html->link('<i class="fa fa-users"></i><span>' . __("Report 1") . "</span>",["controller" => "", "action" => ""],["escape" => false]) ?></li> -->
+                <li>
+                  <?= $this->Html->link('<i class="fa fa-users"></i><span>' . __("Leads") . "</span>",["controller" => "reports", "action" => "leads"],["escape" => false]) ?></li>
               </ul>
             </li>
 
