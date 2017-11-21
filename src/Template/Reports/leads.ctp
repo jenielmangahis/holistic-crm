@@ -28,7 +28,7 @@ td.field-chkbox{
 
                 </div>
                 <?= $this->Form->create(null,[                
-                  'url' => ['action' => 'search_result'],
+                  'url' => ['action' => 'generate_report'],
                   'class' => 'form-horizontal',
                   'type' => 'POST'
                 ]) ?> 
