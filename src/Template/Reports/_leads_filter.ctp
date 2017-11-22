@@ -48,7 +48,7 @@
             <td><input type="text" class="form-control frm-search-grp-1" name="search[surname][value]" id="surname" disabled="" /></td>
         </tr>
         <tr>                            
-            <td class="field-name">Email</td>
+            <td class="field-name">Phone</td>
             <td style="width:11%;">
                 <select class="form-control frm-search-grp-1" name="search[email][operator]" disabled="">                    
                     <?php foreach($option_logical_operators as $o){ ?>
@@ -58,6 +58,45 @@
             </td>
             <td>
                 <input type="text" class="form-control frm-search-grp-1" name="search[email][value]" id="email" disabled="" />
+            </td>
+        </tr>
+        <tr>                            
+            <td class="field-name">Email</td>
+            <td style="width:11%;">
+                <select class="form-control frm-search-grp-1" name="search[phone][operator]" disabled="">                    
+                    <?php foreach($option_logical_operators as $o){ ?>
+                        <option value="<?php echo $o; ?>"><?php echo $o; ?></option>
+                    <?php } ?>
+                </select>
+            </td>
+            <td>
+                <input type="text" class="form-control frm-search-grp-1" name="search[phone][value]" id="phone" disabled="" />
+            </td>
+        </tr>
+        <tr>                            
+            <td class="field-name">City</td>
+            <td style="width:11%;">
+                <select class="form-control frm-search-grp-1" name="search[city][operator]" disabled="">                    
+                    <?php foreach($option_logical_operators as $o){ ?>
+                        <option value="<?php echo $o; ?>"><?php echo $o; ?></option>
+                    <?php } ?>
+                </select>
+            </td>
+            <td>
+                <input type="text" class="form-control frm-search-grp-1" name="search[city][value]" id="city" disabled="" />
+            </td>
+        </tr>
+        <tr>                            
+            <td class="field-name">State</td>
+            <td style="width:11%;">
+                <select class="form-control frm-search-grp-1" name="search[state][operator]" disabled="">                    
+                    <?php foreach($option_logical_operators as $o){ ?>
+                        <option value="<?php echo $o; ?>"><?php echo $o; ?></option>
+                    <?php } ?>
+                </select>
+            </td>
+            <td>
+                <input type="text" class="form-control frm-search-grp-1" name="search[state][value]" id="state" disabled="" />
             </td>
         </tr>
         <tr>                            
