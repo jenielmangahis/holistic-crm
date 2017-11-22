@@ -79,7 +79,7 @@ class ReportsController extends AppController
       }
 
       $option_logical_operators = ['=', '!=', 'LIKE'];
-      $fields = ['firstname' => 'First Name', 'surname' => 'Surname', 'source_id' => 'Source', 'email' => 'Email', 'phone' => 'Phone', 'city' => 'City', 'state' => 'State' , 'allocation_date' => 'Allocation Date'];
+      $fields = ['firstname' => 'First Name', 'surname' => 'Surname', 'source_id' => 'Source', 'email' => 'Email', 'phone' => 'Phone', 'address' => 'Adddress', 'lead_action' => 'Lead Action', 'city' => 'City', 'state' => 'State' , 'allocation_date' => 'Allocation Date'];
       $this->set([
           'option_logical_operators' => $option_logical_operators,
           'fields' => $fields,
@@ -110,8 +110,8 @@ class ReportsController extends AppController
               $query_builder = array();
               $or_query_builder = array();              
               foreach( $data['search'] as $key => $value ){
-                  $operator    = $value['operator'];
-                  $query_value = $value['value'];
+                  $operator    = trim($value['operator']);
+                  $query_value = trim($value['value']);
                   if($operator != '' && $query_value != ''){           
                       switch ($key) {
                           case 'source':                                                                    

@@ -34,7 +34,7 @@
                     <?php } ?>
                 </select>
             </td>
-            <td><input type="text" class="form-control frm-search-grp-1" name="search[firstname][value]" id="first_name" /></td>
+            <td><input type="text" class="form-control frm-search-grp-1" name="search[firstname][value]" id="first_name" disabled="" /></td>
         </tr>
         <tr>                            
             <td class="field-name">Surname</td>
@@ -46,6 +46,19 @@
                 </select>
             </td>
             <td><input type="text" class="form-control frm-search-grp-1" name="search[surname][value]" id="surname" disabled="" /></td>
+        </tr>
+        <tr>                            
+            <td class="field-name">Email</td>
+            <td style="width:11%;">
+                <select class="form-control frm-search-grp-1" name="search[email][operator]" disabled="">                    
+                    <?php foreach($option_logical_operators as $o){ ?>
+                        <option value="<?php echo $o; ?>"><?php echo $o; ?></option>
+                    <?php } ?>
+                </select>
+            </td>
+            <td>
+                <input type="text" class="form-control frm-search-grp-1" name="search[email][value]" id="email" disabled="" />
+            </td>
         </tr>
         <tr>                            
             <td class="field-name">Source</td>
