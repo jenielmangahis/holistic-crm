@@ -1,3 +1,4 @@
+<?php ?>
 <style>
 ul.token-input-list-facebook {
     min-height: 33px;

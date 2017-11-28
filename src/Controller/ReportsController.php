@@ -71,7 +71,8 @@ class ReportsController extends AppController
     { 
       $this->Sources = TableRegistry::get('Sources');
 
-      $sources = $this->Sources->find('all');
+      //$sources = $this->Sources->find('all');
+      $sources = $this->Sources->find('all', ['order' => ['Sources.sort' => 'ASC']]);
       $optionSources = array();
 
       foreach($sources as $s){
@@ -79,7 +80,7 @@ class ReportsController extends AppController
       }
 
       $option_logical_operators = ['=', '!=', 'LIKE'];
-      $fields = ['firstname' => 'First Name', 'surname' => 'Surname', 'source_id' => 'Source', 'email' => 'Email', 'phone' => 'Phone', 'address' => 'Adddress', 'lead_action' => 'Lead Action', 'city' => 'City', 'state' => 'State' , 'allocation_date' => 'Allocation Date'];
+      $fields = ['firstname' => 'First Name', 'surname' => 'Surname', 'source_id' => 'Source', 'email' => 'Email', 'phone' => 'Phone', 'address' => 'Adddress', 'status_id' => 'Status', 'city' => 'City', 'state' => 'State' , 'allocation_date' => 'Allocation Date', 'lead_action' => 'Lead Action'];
       $this->set([
           'option_logical_operators' => $option_logical_operators,
           'fields' => $fields,
@@ -148,7 +149,7 @@ class ReportsController extends AppController
           //Fields          
           $fields = $data['fields'];
           $total_fields = count($fields) + 2;
-          $eColumns = [1 => 'A', 2 => 'B', 3 => 'C', 4 => 'D', 5 => 'E', 6 => 'F', 7 => 'G', 8 => 'H', 9 => 'I', 10 => 'J'];
+          $eColumns = [1 => 'A', 2 => 'B', 3 => 'C', 4 => 'D', 5 => 'E', 6 => 'F', 7 => 'G', 8 => 'H', 9 => 'I', 10 => 'J', 11 => 'K'];
 
           $excel_cell_values = array();          
           foreach( $leads as $l ){            
@@ -156,6 +157,8 @@ class ReportsController extends AppController
             foreach( $fields as $key => $value ){              
               if( $key == 'source_id' ){
                 $excelFields[] = $l->source->name;
+              }elseif($key == 'status_id') {
+                $excelFields[] = $l->status->name;
               }else{                
                 $excelFields[] = $l->{$key};
               }              
@@ -238,5 +241,19 @@ class ReportsController extends AppController
       exit;
     }
 
+    public function view_leads_report()
+    {
+        $leads = $this->Leads->find('all')                
+            ->contain(['Statuses', 'Sources'])                
+            ->order(['Leads.firstname' => 'ASC'])                                 
+        ;
+
+        $this->set([
+            'leads' => $leads,
+            'load_reports_js' => false,
+            'load_advance_search_script' => false,
+            'enable_jscript_datatable', true
+        ]);        
+    }
 
 }
