@@ -243,10 +243,62 @@ class ReportsController extends AppController
 
     public function view_leads_report()
     {
-        $leads = $this->Leads->find('all')                
+      $query = "";
+      $artikel = array();        
+      if( isset($this->request->data) ){
+          $sql_fields = array();
+          $data = $this->request->data;   
+
+          foreach($data['fields'] as $key => $value){
+            $sql_fields[] = $key;
+          }
+
+          if( isset($data['filter-leads-report']) ){
+              $query_builder = array();
+              $or_query_builder = array();              
+              foreach( $data['search'] as $key => $value ){
+                  $operator    = trim($value['operator']);
+                  $query_value = trim($value['value']);
+                  if($operator != '' && $query_value != ''){           
+                      switch ($key) {
+                          case 'source':                                                                    
+                            if( $operator == 'LIKE' ){                                
+                                $query_builder[] = ['Source.name ' . $operator . " '%" . $query_value . "%'"];
+                            }else{
+                                $query_builder[] = ['Leads.source_id ' . $operator => $query_value];
+                            }                            
+                            break;                       
+                          default:
+                            if( $operator == 'LIKE' ){                                
+                                $query_builder[] = ['Leads.' . $key . " " . $operator . " '%" . $query_value . "%'"];
+                            }else{
+                                $query_builder[] = ['Leads.' . $key . " " . $operator => $query_value];
+                            }                            
+                            break;     
+                      }
+                  }
+              }
+
+              $leads = $this->Leads->find('all')                  
+                  ->contain(['Statuses', 'Sources'])
+                  ->where($query_builder)                   
+                  ->order(['Leads.firstname' => 'ASC'])                               
+              ;
+          }else{
+            //Select all
+            $leads = $this->Leads->find('all')                
+                ->contain(['Statuses', 'Sources'])                
+                ->order(['Leads.firstname' => 'ASC'])                            
+            ;
+          }
+        }
+
+
+          ////////////////      
+        /*$leads = $this->Leads->find('all')                
             ->contain(['Statuses', 'Sources'])                
             ->order(['Leads.firstname' => 'ASC'])                                 
-        ;
+        ;*/
 
         $this->set([
             'leads' => $leads,
