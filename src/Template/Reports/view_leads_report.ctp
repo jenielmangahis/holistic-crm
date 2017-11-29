@@ -18,7 +18,7 @@
 	        <div class="box-header with-border">  
 	            <div class="user-block"><i class="fa fa-list-alt"></i> <?= __('Results') ?></div>                  
 	        </div>     
-	        <div class="box-body box-links" style="overflow-x:auto !important; overflow-y:auto !important; height: 580px;">
+	        <div class="box-body box-links" style="overflow-x:auto !important; overflow-y:auto !important; height: 500px;">
 	            <table id="example_datatable" class="table table-hover table-striped table-scroll-body">
 	                <thead class="thead-inverse">
 	                    <tr>

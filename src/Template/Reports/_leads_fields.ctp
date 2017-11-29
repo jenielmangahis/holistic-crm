@@ -24,5 +24,20 @@
         <?php } ?>          
     </table>       
     </div>
+
+    <div class="col-sm-11">
+        <h2 class="form-header">Report Type</h2>
+        <table class="table table-striped table-bordered table-hover">
+            <tr>
+                <td style="width:20%;">Report Type: </td>
+                <td style="width:80%;">
+                    <select class="form-control frm-search-grp-1" name="report_type">                    
+                        <option value="view_report">View Report</option>
+                        <option value="excel_download">Excel Download</option>
+                    </select>
+                </td>
+            </tr>            
+        </table>
+    </div>
 </div>
 <?= $this->Form->end() ?>
