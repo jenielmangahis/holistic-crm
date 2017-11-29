@@ -10,10 +10,23 @@
 .checkbox label{
     padding-left: 28px;
 }
+.legend-container .label{
+    width:85px;
+    padding:5px;
+    font-size: 12px;
+    display: inline-block;
+    margin: 2px;
+}
 </style>               
 <div class="row">
     <div class="col-sm-11" id="leads-filter-grp">
-    <div><strong>Note: </strong> "<strong>=</strong> is equal, "<strong>!=</strong>" is not equal, "<strong>LIKE</strong>" is filter by search </div>
+    <div class="legend-container">
+        <span class="label label-success">NOTE</span><br/>
+        <span class="label label-info">=</span> : Is equal to value<br/>
+        <span class="label label-info">!=</span> : Is not equal to value<br/>
+        <span class="label label-info">LIKE</span> : Search for a specified pattern<br/>
+        <span class="label label-info">BETWEEN</span> : Between 2 dates (date range)<br/>
+    </div>    
     <div class="checkbox"><label class="form-header"><input type="checkbox" id="filter-leads-report" name="filter-leads-report" /> Filter</label></div>
     <table class="table table-striped table-bordered table-hover"> 
         <!-- <tr>                            
@@ -129,7 +142,19 @@
                 </select>
             </td>
             <td><input type="text" class="form-control frm-search-grp-1 default-datepicker" name="search[allocation_date][value]" id="allocation_date" disabled="" /></td>
-        </tr>        
+        </tr>  
+        <tr>                            
+            <td class="field-name">Date Created</td>
+            <td style="width:11%;">
+                <select class="form-control frm-search-grp-1" name="search[date_created][operator]" disabled="">                    
+                    <option value="BETWEEN">BETWEEN</option>
+                </select>
+            </td>
+            <td>
+                <input type="text" class="form-control frm-search-grp-1 default-datepicker" name="search[date_created][value][from]" id="date_created_from" disabled="" placeholder="Date From" style="margin-bottom:5px;" />
+                <input type="text" class="form-control frm-search-grp-1 default-datepicker" name="search[date_created][value][to]" id="date_created_to" disabled="" placeholder="Date To" />
+            </td>
+        </tr>      
     </table>
     </div>
 </div>

@@ -102,6 +102,7 @@ class ReportsController extends AppController
       if( isset($this->request->data) ){
           $sql_fields = array();
           $data = $this->request->data;    
+          debug($data);
 
           foreach($data['fields'] as $key => $value){
             $sql_fields[] = $key;
@@ -111,28 +112,31 @@ class ReportsController extends AppController
               $query_builder = array();
               $or_query_builder = array();              
               foreach( $data['search'] as $key => $value ){
+                if($key == 'date_created' ){                   
+                  $query_builder[] = ['DATE_FORMAT(Leads.created, "%Y-%m-%d") >=' => $value['value']['from'], 'DATE_FORMAT(Leads.created, "%Y-%m-%d") <=' => $value['value']['to']];
+                }else{
                   $operator    = trim($value['operator']);
                   $query_value = trim($value['value']);
                   if($operator != '' && $query_value != ''){           
                       switch ($key) {
-                          case 'source':                                                                    
-                            if( $operator == 'LIKE' ){                                
-                                $query_builder[] = ['Source.name ' . $operator . " '%" . $query_value . "%'"];
-                            }else{
-                                $query_builder[] = ['Leads.source_id ' . $operator => $query_value];
-                            }                            
-                            break;                       
-                          default:
-                            if( $operator == 'LIKE' ){                                
-                                $query_builder[] = ['Leads.' . $key . " " . $operator . " '%" . $query_value . "%'"];
-                            }else{
-                                $query_builder[] = ['Leads.' . $key . " " . $operator => $query_value];
-                            }                            
-                            break;     
+                        case 'source':                                                                    
+                          if( $operator == 'LIKE' ){                                
+                              $query_builder[] = ['Source.name ' . $operator . " '%" . $query_value . "%'"];
+                          }else{
+                              $query_builder[] = ['Leads.source_id ' . $operator => $query_value];
+                          }                            
+                          break;                                                                             
+                        default:
+                          if( $operator == 'LIKE' ){                                
+                              $query_builder[] = ['Leads.' . $key . " " . $operator . " '%" . $query_value . "%'"];
+                          }else{
+                              $query_builder[] = ['Leads.' . $key . " " . $operator => $query_value];
+                          }                            
+                          break;     
                       }
                   }
+                }                    
               }
-
               $leads = $this->Leads->find('all')                  
                   ->contain(['Statuses', 'Sources'])
                   ->where($query_builder)                   
