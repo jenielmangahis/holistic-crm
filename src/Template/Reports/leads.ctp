@@ -31,7 +31,8 @@ td.field-chkbox{
                 <?= $this->Form->create(null,[                
                   'url' => ['action' => 'generate_report'],
                   'class' => 'form-horizontal',
-                  'type' => 'POST'
+                  'type' => 'POST',
+                  'target' => '_blank'
                 ]) ?> 
                 <div class="box-body">
                     <?php include_once('_leads_filter.ctp'); ?>

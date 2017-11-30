@@ -32,7 +32,7 @@
                 <td style="width:20%;">Report Type: </td>
                 <td style="width:80%;">
                     <select class="form-control frm-search-grp-1" name="report_type">                    
-                        <option value="view_report">View Report</option>
+                        <option value="view_report">View In Other Tab</option>
                         <option value="excel_download">Excel Download</option>
                     </select>
                 </td>

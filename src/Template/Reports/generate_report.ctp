@@ -36,8 +36,14 @@
 	                                </td>
 	                                <?php
 	                                foreach( $fields as $key => $value ){  
+	                                	if($key == 'source_id') {
 	                                ?>
-	                                	<td><?php echo $s->{$key} ?></td>  
+	                                			<td><?php echo $s->source->name; ?></td>  
+	                                	<?php }elseif($key == 'status_id') { ?>
+	                                			<td><?php echo $s->status->name; ?></td> 
+	                                	<?php } else { ?>
+	                                			<td><?php echo $s->{$key} ?></td>
+	                                	<?php } ?>
 	                                <?php } ?>
 	                                
 	                            </tr>
@@ -48,6 +54,7 @@
 	        </div>
 
 	      </div>
+
 	    </div>
 
 		</div>
