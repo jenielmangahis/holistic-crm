@@ -96,7 +96,7 @@ class ReportsController extends AppController
       }
 
       $option_logical_operators = ['=', '!=', 'LIKE'];
-      $fields = ['firstname' => 'First Name', 'surname' => 'Surname', 'source_id' => 'Source', 'email' => 'Email', 'phone' => 'Phone', 'address' => 'Adddress', 'status_id' => 'Status', 'city' => 'City', 'state' => 'State' , 'allocation_date' => 'Allocation Date', 'lead_action' => 'Lead Action', 'status' => 'Status', 'interest_type' => 'Interest Type', 'followup_action_reminder_date' => 'Followup Action Reminder Date', 'followup_notes' => 'Followup Notes', 'notes' => 'Notes'];
+      $fields = ['firstname' => 'First Name', 'surname' => 'Surname', 'source_id' => 'Source', 'email' => 'Email', 'phone' => 'Phone', 'address' => 'Adddress', 'status_id' => 'Status', 'city' => 'City', 'state' => 'State' , 'allocation_date' => 'Allocation Date', 'lead_action' => 'Lead Action', 'interest_type_id' => 'Interest Type', 'followup_action_reminder_date' => 'Followup Action Reminder Date', 'followup_notes' => 'Followup Notes', 'notes' => 'Notes'];
       $this->set([
           'option_logical_operators' => $option_logical_operators,
           'fields' => $fields,
@@ -116,15 +116,13 @@ class ReportsController extends AppController
     public function generate_report()
     { 
       $data   = $this->request->data; 
-
+      //debug($data); exit;
       if($data['report_type'] == 'excel_download') {
         $query = "";
         $artikel = array();        
         if( isset($this->request->data) ){
-            $sql_fields = array();
-            //$data = $this->request->data;   
+            $sql_fields = array();   
             $fields = $data['fields']; 
-            //debug($data);
 
             foreach($data['fields'] as $key => $value){
               $sql_fields[] = $key;
@@ -136,7 +134,9 @@ class ReportsController extends AppController
                 foreach( $data['search'] as $key => $value ){
                   if($key == 'date_created' ){                   
                     //$query_builder[] = ['DATE_FORMAT(Leads.created, "%Y-%m-%d") >=' => $value['value']['from'], 'DATE_FORMAT(Leads.created, "%Y-%m-%d") <=' => $value['value']['to']];
-                    $query_builder[] = ['Leads.created >=' => $value['value']['from'], 'Leads.created <=' => $value['value']['to']];
+                    if( $value['value']['from'] != '' && $value['value']['to'] != '' ){
+                      $query_builder[] = ['Leads.created >=' => $value['value']['from'], 'Leads.created <=' => $value['value']['to']];
+                    }
                   }else{
                     $operator    = trim($value['operator']);
                     $query_value = trim($value['value']);
@@ -161,14 +161,14 @@ class ReportsController extends AppController
                   }                    
                 }
                 $leads = $this->Leads->find('all')                  
-                    ->contain(['Statuses', 'Sources'])
+                    ->contain(['Statuses', 'Sources', 'InterestTypes'])
                     ->where($query_builder)                   
                     ->order(['Leads.firstname' => 'ASC'])                                 
                 ;
             }else{
               //Select all
               $leads = $this->Leads->find('all')                
-                  ->contain(['Statuses', 'Sources'])                
+                  ->contain(['Statuses', 'Sources', 'InterestTypes'])                
                   ->order(['Leads.firstname' => 'ASC'])                                 
               ;
             }
@@ -176,7 +176,7 @@ class ReportsController extends AppController
             //Fields          
             $fields = $data['fields'];
             $total_fields = count($fields) + 2;
-            $eColumns = [1 => 'A', 2 => 'B', 3 => 'C', 4 => 'D', 5 => 'E', 6 => 'F', 7 => 'G', 8 => 'H', 9 => 'I', 10 => 'J', 11 => 'K'];
+            $eColumns = [1 => 'A', 2 => 'B', 3 => 'C', 4 => 'D', 5 => 'E', 6 => 'F', 7 => 'G', 8 => 'H', 9 => 'I', 10 => 'J', 11 => 'K', 12 => 'L', 13 => 'M'];
 
             $excel_cell_values = array();          
             foreach( $leads as $l ){            
@@ -249,7 +249,6 @@ class ReportsController extends AppController
                 )
             );
 
-            //debug($leads);exit;
             $ews->fromArray($excel_cell_values,'','A5');
 
             $fileName  = time() . "_" . rand(000000, 999999) . ".xlsx";
@@ -311,14 +310,14 @@ class ReportsController extends AppController
               }
 
               $leads = $this->Leads->find('all')                  
-                  ->contain(['Statuses', 'Sources'])
+                  ->contain(['Statuses', 'Sources', 'InterestTypes'])
                   ->where($query_builder)                   
                   ->order(['Leads.firstname' => 'ASC'])                                 
               ;
           }else{
             //Select all
             $leads = $this->Leads->find('all')                
-                ->contain(['Statuses', 'Sources'])                
+                ->contain(['Statuses', 'Sources', 'InterestTypes'])                
                 ->order(['Leads.firstname' => 'ASC'])                                 
             ;
           }

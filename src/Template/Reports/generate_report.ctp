@@ -41,6 +41,8 @@
 	                                			<td><?php echo $s->source->name; ?></td>  
 	                                	<?php }elseif($key == 'status_id') { ?>
 	                                			<td><?php echo $s->status->name; ?></td> 
+	                                	<?php }elseif($key == 'interest_type_id') { ?>
+	                                			<td><?php echo $s->interest_type->name; ?></td> 
 	                                	<?php } else { ?>
 	                                			<td><?php echo $s->{$key} ?></td>
 	                                	<?php } ?>
@@ -59,5 +61,4 @@
 
 		</div>
 	</div>
-
 </section>
