@@ -133,6 +133,42 @@
             </td>
         </tr>
         <tr>                            
+            <td class="field-name">Interest Types</td>
+            <td style="width:11%;">
+                <select class="form-control frm-search-grp-1" name="search[interest_type_id][operator]" disabled="">                    
+                    <?php foreach($option_logical_operators as $o){ ?>
+                        <option value="<?php echo $o; ?>"><?php echo $o; ?></option>
+                    <?php } ?>
+                </select>
+            </td>
+            <td>
+                <select class="form-control frm-search-grp-1" name="search[interest_type_id][value]" disabled="">
+                    <option value="">-- All Interest Type --</option>
+                    <?php foreach($optionInterestTypes as $key => $value){ ?>
+                        <option value="<?php echo $key; ?>"><?php echo $value; ?></option>
+                    <?php } ?>
+                </select>
+            </td>
+        </tr>
+        <tr>                            
+            <td class="field-name">Status</td>
+            <td style="width:11%;">
+                <select class="form-control frm-search-grp-1" name="search[status_id][operator]" disabled="">                    
+                    <?php foreach($option_logical_operators as $o){ ?>
+                        <option value="<?php echo $o; ?>"><?php echo $o; ?></option>
+                    <?php } ?>
+                </select>
+            </td>
+            <td>
+                <select class="form-control frm-search-grp-1" name="search[status_id][value]" disabled="">
+                    <option value="">-- Select Status --</option>
+                    <?php foreach($optionStatuses as $key => $value){ ?>
+                        <option value="<?php echo $key; ?>"><?php echo $value; ?></option>
+                    <?php } ?>
+                </select>
+            </td>
+        </tr>
+        <tr>                            
             <td class="field-name">Allocation Date</td>
             <td style="width:11%;">
                 <select class="form-control frm-search-grp-1" name="search[allocation_date][operator]" disabled="">

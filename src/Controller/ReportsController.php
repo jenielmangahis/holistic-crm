@@ -70,21 +70,39 @@ class ReportsController extends AppController
     public function leads()
     { 
       $this->Sources = TableRegistry::get('Sources');
+      $this->InterestTypes = TableRegistry::get('InterestTypes');
+      $this->Statuses = TableRegistry::get('Statuses');
 
       //$sources = $this->Sources->find('all');
-      $sources = $this->Sources->find('all', ['order' => ['Sources.sort' => 'ASC']]);
-      $optionSources = array();
+      $sources  = $this->Sources->find('all', ['order' => ['Sources.sort' => 'ASC']]);
+      $statuses = $this->Statuses->find('all');
+      $interestTypes = $this->InterestTypes->find('all')
+        ->order(['InterestTypes.sort' => 'ASC'])      
+      ;
 
+      $optionSources = array();
       foreach($sources as $s){
         $optionSources[$s->id] = $s->name;
       }
 
+      $optionInterestTypes = array();
+      foreach( $interestTypes as $i ){
+        $optionInterestTypes[$i->id] = $i->name;
+      }
+
+      $optionStatuses = array();
+      foreach( $statuses as $s ){
+        $optionStatuses[$s->id] = $s->name;
+      }
+
       $option_logical_operators = ['=', '!=', 'LIKE'];
-      $fields = ['firstname' => 'First Name', 'surname' => 'Surname', 'source_id' => 'Source', 'email' => 'Email', 'phone' => 'Phone', 'address' => 'Adddress', 'status_id' => 'Status', 'city' => 'City', 'state' => 'State' , 'allocation_date' => 'Allocation Date', 'lead_action' => 'Lead Action'];
+      $fields = ['firstname' => 'First Name', 'surname' => 'Surname', 'source_id' => 'Source', 'email' => 'Email', 'phone' => 'Phone', 'address' => 'Adddress', 'status_id' => 'Status', 'city' => 'City', 'state' => 'State' , 'allocation_date' => 'Allocation Date', 'lead_action' => 'Lead Action', 'status' => 'Status', 'interest_type' => 'Interest Type', 'followup_action_reminder_date' => 'Followup Action Reminder Date', 'followup_notes' => 'Followup Notes', 'notes' => 'Notes'];
       $this->set([
           'option_logical_operators' => $option_logical_operators,
           'fields' => $fields,
           'optionSources' => $optionSources,
+          'optionInterestTypes' => $optionInterestTypes,          
+          'optionStatuses' => $optionStatuses,
           'load_reports_js' => true,
           'load_advance_search_script' => true
       ]);      
@@ -264,12 +282,15 @@ class ReportsController extends AppController
               foreach( $data['search'] as $key => $value ){
                 if($key == 'date_created' ){                   
                   //$query_builder[] = ['DATE_FORMAT(Leads.created, "%Y-%m-%d") >=' => $value['value']['from'], 'DATE_FORMAT(Leads.created, "%Y-%m-%d") <=' => $value['value']['to']];
-                  $query_builder[] = ['Leads.created >=' => $value['value']['from'], 'Leads.created <=' => $value['value']['to']];
+                  if( $value['value']['from'] != '' && $value['value']['to'] != '' ){
+                    $query_builder[] = ['Leads.created >=' => $value['value']['from'], 'Leads.created <=' => $value['value']['to']];
+                  }                   
                 }else{
                   $operator    = trim($value['operator']);
                   $query_value = trim($value['value']);
                   if($operator != '' && $query_value != ''){           
                       switch ($key) {
+                        
                         case 'source':                                                                    
                           if( $operator == 'LIKE' ){                                
                               $query_builder[] = ['Source.name ' . $operator . " '%" . $query_value . "%'"];

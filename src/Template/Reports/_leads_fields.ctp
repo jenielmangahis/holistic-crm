@@ -6,6 +6,14 @@
     padding:10px;
     color:#ffffff;
 }
+.fields-list{
+    padding:10px;
+}
+.fields-list li{
+    list-style: none;
+    display: inline-block;
+    width:250px;
+}
 </style>
 <?= $this->Form->create(null,[                
   'url' => ['action' => 'search_result'],
@@ -15,16 +23,11 @@
 <div class="row">
     <div class="col-sm-11">
     <h2 class="form-header">Fields</h2>
-    <table class="table table-striped table-bordered table-hover">
+    <ul class="fields-list">
         <?php foreach($fields as $key => $f){ ?>
-            <tr>                            
-                <td style="Width:1%;"><input class="" name="fields[<?php echo $key; ?>]" value="<?php echo $f; ?>" type="checkbox" checked /></td>
-                <td><?php echo $f; ?></td>                
-            </tr>
-        <?php } ?>          
-    </table>       
-    </div>
-
+            <li><div class="checkbox"><label><input class="" name="fields[<?php echo $key; ?>]" value="<?php echo $f; ?>" type="checkbox" checked > <?php echo $f; ?></label></div></li>
+        <?php } ?>
+    </ul>       
     <div class="col-sm-11">
         <h2 class="form-header">Report Type</h2>
         <table class="table table-striped table-bordered table-hover">
