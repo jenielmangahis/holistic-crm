@@ -96,7 +96,7 @@ class ReportsController extends AppController
       }
 
       $option_logical_operators = ['=', '!=', 'LIKE'];
-      $fields = ['firstname' => 'First Name', 'surname' => 'Surname', 'source_id' => 'Source', 'email' => 'Email', 'phone' => 'Phone', 'address' => 'Adddress', 'status_id' => 'Status', 'city' => 'City', 'state' => 'State' , 'allocation_date' => 'Allocation Date', 'lead_action' => 'Lead Action', 'interest_type_id' => 'Interest Type', 'followup_action_reminder_date' => 'Followup Action Reminder Date', 'followup_notes' => 'Followup Notes', 'notes' => 'Notes'];
+      $fields = ['firstname' => 'First Name', 'surname' => 'Surname', 'source_id' => 'Source', 'email' => 'Email', 'phone' => 'Phone', 'address' => 'Address', 'status_id' => 'Status', 'city' => 'City', 'state' => 'State' , 'allocation_date' => 'Allocation Date', 'lead_action' => 'Lead Action', 'interest_type_id' => 'Interest Type', 'followup_action_reminder_date' => 'Followup Action Reminder Date', 'followup_notes' => 'Followup Notes', 'notes' => 'Notes', 'lead_type_id' => 'Lead Type', 'source_url' => 'Source URL', 'followup_date' => 'Followup Date', 'followup_action_notes' => 'Followup Action Notes'];
       $this->set([
           'option_logical_operators' => $option_logical_operators,
           'fields' => $fields,
@@ -161,14 +161,14 @@ class ReportsController extends AppController
                   }                    
                 }
                 $leads = $this->Leads->find('all')                  
-                    ->contain(['Statuses', 'Sources', 'InterestTypes'])
+                    ->contain(['Statuses', 'Sources', 'InterestTypes', 'LeadTypes'])
                     ->where($query_builder)                   
                     ->order(['Leads.firstname' => 'ASC'])                                 
                 ;
             }else{
               //Select all
               $leads = $this->Leads->find('all')                
-                  ->contain(['Statuses', 'Sources', 'InterestTypes'])                
+                  ->contain(['Statuses', 'Sources', 'InterestTypes', 'LeadTypes'])                
                   ->order(['Leads.firstname' => 'ASC'])                                 
               ;
             }
@@ -186,6 +186,8 @@ class ReportsController extends AppController
                   $excelFields[] = $l->source->name;
                 }elseif($key == 'status_id') {
                   $excelFields[] = $l->status->name;
+                }elseif($key == 'lead_type_id') {
+                  $excelFields[] = $l->lead_type->name;
                 }else{                
                   $excelFields[] = $l->{$key};
                 }              
@@ -310,14 +312,14 @@ class ReportsController extends AppController
               }
 
               $leads = $this->Leads->find('all')                  
-                  ->contain(['Statuses', 'Sources', 'InterestTypes'])
+                  ->contain(['Statuses', 'Sources', 'InterestTypes', 'LeadTypes'])
                   ->where($query_builder)                   
                   ->order(['Leads.firstname' => 'ASC'])                                 
               ;
           }else{
             //Select all
             $leads = $this->Leads->find('all')                
-                ->contain(['Statuses', 'Sources', 'InterestTypes'])                
+                ->contain(['Statuses', 'Sources', 'InterestTypes', 'LeadTypes'])                
                 ->order(['Leads.firstname' => 'ASC'])                                 
             ;
           }
