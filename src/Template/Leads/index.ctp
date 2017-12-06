@@ -51,6 +51,7 @@
                                 <th><?= $this->Paginator->sort('firstname', __("Firstname") . "<i class='fa fa-sort pull-right'> </i>", array('escape' => false)) ?></th>
                                 <th><?= $this->Paginator->sort('surname', __("Surname") . "<i class='fa fa-sort pull-right'> </i>", array('escape' => false)) ?></th>
                                 <th><?= $this->Paginator->sort('is_lock', __("Is Lock") . "<i class='fa fa-sort pull-right'> </i>", array('escape' => false)) ?></th>
+                                <th><?= $this->Paginator->sort('last_modified_by_id', __("Last Modified") . "<i class='fa fa-sort pull-right'> </i>", array('escape' => false)) ?></th>                                
                             </tr>
                         </thead>
                         <tbody>
@@ -139,6 +140,10 @@
                                     <?php if($lead->is_lock == 1){ ?>
                                             <div class="btn btn-warning">Lock by: <strong><?php echo $lead->last_modified_by->username; ?></strong> </div>
                                     <?php }?>
+                                </td>
+                                <td>
+                                        <p>Updated by: <strong><?php echo $lead->last_modified_by->username != '' ? $lead->last_modified_by->username : 'NA'; ?></strong></p>
+                                        <p>Date: <?php echo date("d M, Y", strtotime($lead->modified)); ?></p>
                                 </td>
                             </tr>
                             <?php } ?>
