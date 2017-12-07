@@ -199,7 +199,8 @@ class GroupsController extends AppController
                 "groups" => "Groups",
                 "status" => "Status",
                 "lead_type" => "Lead Type",
-                "interest_type" => "Interest Type"
+                "interest_type" => "Interest Type",
+                "audit_trails" => "Audit Trails"
             );
 
         $this->set(compact('group'));
@@ -326,7 +327,8 @@ class GroupsController extends AppController
                 "groups" => "Groups",
                 "status" => "Status",
                 "lead_type" => "Lead Type",
-                "interest_type" => "Interest Type"
+                "interest_type" => "Interest Type",
+                "audit_trails" => "Audit Trails"
             );
 
         $this->set(compact('group'));        

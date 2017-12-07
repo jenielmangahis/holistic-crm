@@ -1,4 +1,4 @@
-
+<?php ?>
 <section class="content-header">
     <h1><?= __('View Audit Trail') ?></h1>
 </section>
@@ -26,10 +26,10 @@
             <th><?= __('Id') ?></th>
             <td><?= $this->Number->format($auditTrail->id) ?></td>
         </tr>
-        <tr>
+        <!-- <tr>
             <th><?= __('Details') ?></th>
             <td><?= $this->Number->format($auditTrail->details) ?></td>
-        </tr>
+        </tr> -->
         <tr>
             <th><?= __('Audit Date') ?></th>
             <td><?= h($auditTrail->audit_date) ?></td>
@@ -45,11 +45,16 @@
     </tbody>
     </table>
 
-    <div class="form-group" style="margin-top: 80px;">
-    <div class="col-sm-offset-2 col-sm-10">
-        <div class="action-fixed-bottom">        
-        <?= $this->Html->link('<i class="fa fa-angle-left"> </i> Back To list', ['action' => 'index'],['class' => 'btn btn-warning', 'escape' => false]) ?>
-        </div>
-    </div>
-    </div>
+    <br />
+    <table class="table table-striped table-bordered table-hover">
+        <tbody>
+            <tr>
+                <th></th>
+                <td>
+                    <br/>
+                    <?= $this->Html->link('<i class="fa fa-angle-left"> </i> Back To list', ['action' => 'index'],['class' => 'btn btn-warning', 'escape' => false]) ?>
+                </td>
+            </tr>                                      
+        </tbody>
+    </table>    
 </section>

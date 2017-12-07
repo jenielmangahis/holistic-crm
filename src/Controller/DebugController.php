@@ -150,4 +150,30 @@ class DebugController extends AppController
 
         exit;
     }
+
+    public function debugAuditTrailsAdd()
+    {
+        echo 'Audit Trails Add<hr />';
+        $this->AuditTrails = TableRegistry::get('AuditTrails');
+
+        $audit_data['user_id']      = 1; //$this->user->id;
+        $audit_data['action']       = 'Update Lead';
+        $audit_data['event_status'] = 'Success';
+        $audit_data['details']      = 1;
+        $audit_data['audit_date']   = date("Y-m-d h:i:s");
+        $audit_data['ip_address']   = 222;
+        $audit_data['created']      = '';
+        $audit_data['modified']     = '';
+
+        echo '<pre>';
+        print_r($audit_data);
+        echo '</pre>';
+
+        $auditTrail = $this->AuditTrails->newEntity();
+        $auditTrail = $this->AuditTrails->patchEntity($auditTrail, $audit_data);
+        if (!$this->AuditTrails->save($auditTrail)) {
+          echo 'Error updating audit trails';
+        }        
+        exit;
+    }
 }

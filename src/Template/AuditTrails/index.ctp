@@ -1,4 +1,38 @@
-<?php ?>
+<?php use Cake\Utility\Inflector; ?>
+<!--
+<style>
+.label{
+    padding:10px;    
+    display: block;
+    
+    font-size: 12px;
+}
+.thead-inverse th {
+    background-color: #2A80B9;
+    color: #fff;
+    padding:13px !important;
+}
+th a{
+    color:#ffffff;
+}
+div.box-body{
+    padding: 0px;
+}
+.box-header.with-border {
+    border-bottom: 1px solid #2A80B9;
+}
+.box-body, .box-header{
+    overflow:auto;
+}
+.fa-sort{
+    line-height: 19px;
+}
+.user-allocations{
+    padding: 0px;
+}
+</style>
+-->
+
 <section class="content-header">
     <h1><?= __('Audit Trails') ?></h1>
     <ol class="breadcrumb">
@@ -29,21 +63,15 @@
                         </div>                        
                         <?= $this->Form->end() ?>
                     </div>
-
-                    <div class="box-tools" style="top:9px;">
-                        <!-- <?= $this->Html->link(__('<i class="fa fa-plus"></i> Add New Audit Trail'), ['action' => 'add'], ['class' => 'btn btn-box-tool', 'escape' => false]) ?> -->
-                        <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>                        
-                    </div> 
                     
-                    <div class="box-tools" style="top:9px;">                                                 
+                    <div class="box-tools" style="top:9px;">                         
+                        <!-- <?= $this->Html->link('<i class="fa fa-plus"></i> Add New', ['action' => 'add'],['class' => 'btn btn-box-tool', 'escape' => false]) ?> -->
                         <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>                        
-                    </div> 
-
-                </div>
-
-                <div class="box-body">
+                    </div>         
+                </div>             
+                <div class="box-body">                    
                     <table id="dt-users-list" class="table table-hover table-striped">
-                        <thead>
+                        <thead class="thead-inverse">
                             <tr>
                                 <th class="actions"><?= __('Actions') ?></th>
                                 <th><?= $this->Paginator->sort('user_id', __("User") . "<i class='fa fa-sort pull-right'> </i>", array('escape' => false)) ?></th>
@@ -52,20 +80,22 @@
                                 <!-- <th><?= $this->Paginator->sort('details', __("Details") . "<i class='fa fa-sort pull-right'> </i>", array('escape' => false)) ?></th> -->
                                 <th><?= $this->Paginator->sort('audit_date', __("Date") . "<i class='fa fa-sort pull-right'> </i>", array('escape' => false)) ?></th>
                                 <th><?= $this->Paginator->sort('ip_address', __("IP Address") . "<i class='fa fa-sort pull-right'> </i>", array('escape' => false)) ?></th>           
-                            </tr>                                
+                            </tr> 
                         </thead>
                         <tbody>
                             <?php foreach ($auditTrails as $auditTrail): ?>
-                                                        <tr>
+                            <tr>
                                 <td class="table-actions">
                                     <div class="dropdown">
                                         <button class="btn btn-default dropdown-toggle" type="button" id="drpdwn" data-toggle="dropdown" aria-expanded="true">
                                             Action <span class="caret"></span>
                                         </button>
                                         <ul class="dropdown-menu" role="menu" aria-labelledby="drpdwn">
-                                            <li role="presentation"><?= $this->Html->link('<i class="fa fa-eye"></i> View', ['action' => 'view', $auditTrail->id],['escape' => false]) ?></li>
+                                            <li role="presentation"><?= $this->Html->link('<i class="fa fa-eye"></i> View', ['action' => 'view', $auditTrail->id],['escape' => false]) ?></li>                                            
+                                            <!-- 
                                             <li role="presentation"><?= $this->Html->link('<i class="fa fa-pencil"></i> Edit', ['action' => 'edit', $auditTrail->id],['escape' => false]) ?></li>
-                                            <li role="presentation"><?= $this->Html->link('<i class="fa fa-trash"></i> Delete', '#modal-'.$auditTrail->id,['data-toggle' => 'modal','escape' => false]) ?></li>
+                                            <li role="presentation"><?= $this->Html->link('<i class="fa fa-trash"></i> Delete', '#modal-'.$auditTrail->id,['data-toggle' => 'modal','escape' => false]) ?></li> 
+                                            -->
                                         </ul>
                                     </div>   
                                     <div id="modal-<?=$auditTrail->id?>" class="modal fade">
@@ -89,20 +119,19 @@
                                             </div>
                                           </div>
                                         </div>                              
-                                    </div>                       
+                                    </div>              
                                 </td>
-                                                <td <?php if( $isKey == 1 ? 'class="tbl-field-id"' : '' ) ?>><?= $auditTrail->has('user') ? $this->Html->link($auditTrail->user->id, ['controller' => 'Users', 'action' => 'view', $auditTrail->user->id]) : '' ?></td>
+                                                <td><?= h($auditTrail->user->firstname . ' ' . $auditTrail->user->lastname) ?></td>
                                                 <td><?= h($auditTrail->action) ?></td>
                                                 <td><?= h($auditTrail->event_status) ?></td>
                                                 <!-- <td><?= $this->Number->format($auditTrail->details) ?></td> -->
                                                 <td><?= h($auditTrail->audit_date) ?></td>
                                                 <td><?= h($auditTrail->ip_address) ?></td>
-                  
+                                                                                          
                             </tr>
-                            <?php ;endforeach; ?>
+                            <?php endforeach; ?>
                         </tbody>
                     </table>
-                    </div>
                     <div class="paginator" style="text-align:center;">
                         <ul class="pagination">
                         <?= $this->Paginator->prev('«') ?>
@@ -110,7 +139,7 @@
                             <?= $this->Paginator->next('»') ?>
                         </ul>
                         <p class="hidden"><?= $this->Paginator->counter() ?></p>
-                    </div>
+                    </div>                                      
                 </div>
             </div>
         </section>

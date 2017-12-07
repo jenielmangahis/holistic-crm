@@ -27,11 +27,28 @@ class AuditTrailsController extends AppController
         if( isset($user_data) ){
             if( $user_data->group_id == 1 ){ //Admin
               $this->Auth->allow();
+            }else{
+                $authorized_modules = array();     
+                $rights = $this->default_group_actions['leads'];                
+                switch ($rights) {
+                    case 'View Only':
+                        $authorized_modules = ['index', 'view', 'from_source'];
+                        break;
+                    case 'View and Edit':
+                        $authorized_modules = ['index', 'view', 'from_source', 'add', 'edit', 'register', 'unlock', 'leads_unlock'];
+                        break;
+                    case 'View, Edit and Delete':
+                        $authorized_modules = ['index', 'view', 'from_source', 'add', 'edit', 'delete', 'register', 'unlock', 'leads_unlock'];
+                        break;        
+                    default:            
+                        break;
+                }                
+                $this->Auth->allow($authorized_modules);                
             }
         }
 
         $this->user = $user_data;       
-    }
+    }   
 
     /**
      * Index method
@@ -40,6 +57,9 @@ class AuditTrailsController extends AppController
      */
     public function index()
     {
+        $this->paginate = [
+            'contain' => ['Users'],
+        ];        
         $this->set('auditTrails', $this->paginate($this->AuditTrails));
         $this->set('_serialize', ['auditTrails']);
     }
@@ -82,9 +102,11 @@ class AuditTrailsController extends AppController
                 $this->Flash->error(__('The audit trail could not be saved. Please, try again.'));
             }
         }
-        $this->set(compact('auditTrail'));
+
+        $users = $this->AuditTrails->Users->find('list', ['limit' => 200]);
+        $this->set(compact('auditTrail', 'users'));
         $this->set('_serialize', ['auditTrail']);
-    }
+    }   
 
     /**
      * Edit method

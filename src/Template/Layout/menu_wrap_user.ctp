@@ -146,9 +146,9 @@
                           <li><?= $this->Html->link('<i class="fa fa-circle-o"></i><span>' . __("Interest Type") . "</span>",["controller" => "interest_types", "action" => "index"],["escape" => false]) ?></li>
                   <?php } ?>
 
-                  <?php //if($default_group_actions['audit_trails'] != 'No Access') { ?>
+                  <?php if($default_group_actions['audit_trails'] != 'No Access') { ?>
                           <li><?= $this->Html->link('<i class="fa fa-circle-o"></i><span>' . __("Audit Trail") . "</span>",["controller" => "audit_trails", "action" => "index"],["escape" => false]) ?></li>
-                  <?php //} ?>
+                  <?php } ?>
 
                 </ul>
               </li>

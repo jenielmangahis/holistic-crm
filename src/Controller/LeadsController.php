@@ -379,6 +379,7 @@ class LeadsController extends AppController
     {
         $this->SourceUsers = TableRegistry::get('SourceUsers');
         $this->Sources     = TableRegistry::get('Sources');
+        $this->AuditTrails = TableRegistry::get('AuditTrails');
 
         $p = $this->default_group_actions;
         if( $p && $p['leads'] == 'View Only' ){
@@ -507,6 +508,26 @@ class LeadsController extends AppController
                     $data['last_modified_by_id '] = $login_user_id;
                     $lead_lock = $this->Leads->patchEntity($lead_lock, $data);
                     if ( !$this->Leads->save($lead_lock) ) { echo "error updating lock lead"; exit; }
+
+                    /*
+                     * To do: add audit trail here
+                     * Add IP Address on saving in audit trails
+                    */
+
+                    /*
+                    $audit_data['user_id']      = $this->user->id;
+                    $audit_data['action']       = 'Update Lead';
+                    $audit_data['event_status'] = 'Success';
+                    $audit_data['details']      = 1;
+                    $audit_data['audit_date']   = date("Y-m-d h:i:s");
+                    $audit_data['ip_address']   = '222';
+
+                    $auditTrail = $this->AuditTrails->newEntity();
+                    $auditTrail = $this->AuditTrails->patchEntity($auditTrail, $audit_data);
+                    if (!$this->AuditTrails->save($auditTrail)) {
+                      echo 'Error updating audit trails'; exit;
+                    }
+                    */
 
                     if($redir == 'dashboard') {
                       return $this->redirect(array('controller' => 'users', 'action' => 'dashboard'));
