@@ -10,6 +10,28 @@ use App\Controller\AppController;
  */
 class AuditTrailsController extends AppController
 {
+	/**
+     * initialize method
+     *  ID : CA-01
+     * 
+     */
+    public function initialize()
+    {
+        parent::initialize();
+        $nav_selected = ["system_settings"];
+        $this->set('nav_selected', $nav_selected);        
+
+        $session = $this->request->session();    
+        $user_data = $session->read('User.data');         
+
+        if( isset($user_data) ){
+            if( $user_data->group_id == 1 ){ //Admin
+              $this->Auth->allow();
+            }
+        }
+
+        $this->user = $user_data;       
+    }
 
     /**
      * Index method
