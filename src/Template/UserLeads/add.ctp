@@ -164,6 +164,13 @@
                             echo " </div></div>";    
                                     
                                                 ?>
+
+                            <div class="form-group">
+                                <label for='notes' class='col-sm-2 control-label'></label>
+                                <div class='col-sm-6' style="padding-left:33px;">
+                                    <label class='checkbox'><input type="checkbox" name="send_email_notification"> Send email notification to users</label>
+                                </div>
+                            </div>
                     </fieldset>
                     <div class="form-group" style="margin-top: 80px;">
                         <div class="col-sm-offset-2 col-sm-10">                            

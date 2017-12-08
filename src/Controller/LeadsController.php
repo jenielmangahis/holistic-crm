@@ -259,7 +259,7 @@ class LeadsController extends AppController
         if ($this->request->is('post')) {
 
             $data = $this->request->data;
-
+           
             $lead = $this->Leads->patchEntity($lead, $data);
             if ($newLead = $this->Leads->save($lead)) {
 
@@ -315,27 +315,26 @@ class LeadsController extends AppController
 
                   //Send email notification  
                   if($this->enable_email_sending) {
+                    if( isset($data['send_email_notification']) ){
+                      $leadData = $this->Leads->get($newLead->id, [
+                          'contain' => ['Statuses', 'Sources', 'LastModifiedBy','LeadTypes','InterestTypes']
+                      ]);                           
 
-                    $leadData = $this->Leads->get($newLead->id, [
-                        'contain' => ['Statuses', 'Sources', 'LastModifiedBy','LeadTypes','InterestTypes']
-                    ]);                           
+                      $source_name      = !empty($source->name) ? $source->name : "";
+                      $surname          = $leadData->surname != "" ? $leadData->surname : "Not Specified";
+                      $lead_client_name = $leadData->firstname . " " . $surname;
+                      $subject          = "New Lead - " . $source_name . " - " . $lead_client_name;                     
 
-                    $source_name      = !empty($source->name) ? $source->name : "";
-                    $surname          = $leadData->surname != "" ? $leadData->surname : "Not Specified";
-                    $lead_client_name = $leadData->firstname . " " . $surname;
-                    $subject          = "New Lead - " . $source_name . " - " . $lead_client_name;                     
-
-                    $email_customer = new Email('default'); //default or cake_smtp (for testing in local)
-                    $email_customer->from(['websystem@holisticwebpresencecrm.com' => 'Holistic'])
-                      ->template('crm_new_leads')
-                      ->emailFormat('html')          
-                      ->to($users_email)                                                                                               
-                      ->subject($subject)
-                      ->viewVars(['lead' => $leadData->toArray()])
-                      ->send();
-
+                      $email_customer = new Email('default'); //default or cake_smtp (for testing in local)
+                      $email_customer->from(['websystem@holisticwebpresencecrm.com' => 'Holistic'])
+                        ->template('crm_new_leads')
+                        ->emailFormat('html')          
+                        ->to($users_email)                                                                                               
+                        ->subject($subject)
+                        ->viewVars(['lead' => $leadData->toArray()])
+                        ->send();
+                    }
                   }
-
                 }
 
                 $this->Flash->success(__('The lead has been saved.'));
@@ -476,25 +475,25 @@ class LeadsController extends AppController
                 if( !empty($users_email) ){ 
 
                   if($this->enable_email_sending) {
+                    if( isset($data['send_email_notification']) ){
+                      $modifiedLead = $this->Leads->get($id, [
+                          'contain' => ['Statuses', 'Sources', 'LastModifiedBy','LeadTypes','InterestTypes']
+                      ]); 
 
-                    $modifiedLead = $this->Leads->get($id, [
-                        'contain' => ['Statuses', 'Sources', 'LastModifiedBy','LeadTypes','InterestTypes']
-                    ]); 
-
-                    $source_name      = !empty($source->name) ? $source->name : "";
-                    $surname          = $modifiedLead->surname != "" ? $modifiedLead->surname : "Not Specified";
-                    $lead_client_name = $modifiedLead->firstname . " " . $surname;
-                    $subject          = "Updated Lead - " . $source_name . " - " . $lead_client_name;              
-                  
-                    $email_customer = new Email('default'); //default or cake_smtp (for testing in local)
-                    $email_customer->from(['websystem@holisticwebpresencecrm.com' => 'Holistic'])
-                      ->template('crm_modified_leads')
-                      ->emailFormat('html')          
-                      ->to($users_email)                                                                                               
-                      ->subject($subject)
-                      ->viewVars(['lead' => $modifiedLead->toArray()])
-                      ->send();
-
+                      $source_name      = !empty($source->name) ? $source->name : "";
+                      $surname          = $modifiedLead->surname != "" ? $modifiedLead->surname : "Not Specified";
+                      $lead_client_name = $modifiedLead->firstname . " " . $surname;
+                      $subject          = "Updated Lead - " . $source_name . " - " . $lead_client_name;              
+                    
+                      $email_customer = new Email('default'); //default or cake_smtp (for testing in local)
+                      $email_customer->from(['websystem@holisticwebpresencecrm.com' => 'Holistic'])
+                        ->template('crm_modified_leads')
+                        ->emailFormat('html')          
+                        ->to($users_email)                                                                                               
+                        ->subject($subject)
+                        ->viewVars(['lead' => $modifiedLead->toArray()])
+                        ->send();
+                    }                    
                   }
 
                 }     
