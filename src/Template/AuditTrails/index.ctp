@@ -77,7 +77,7 @@ div.box-body{
                                 <th><?= $this->Paginator->sort('user_id', __("User") . "<i class='fa fa-sort pull-right'> </i>", array('escape' => false)) ?></th>
                                 <th><?= $this->Paginator->sort('action', __("Action") . "<i class='fa fa-sort pull-right'> </i>", array('escape' => false)) ?></th>
                                 <th><?= $this->Paginator->sort('event_status', __("Event Status") . "<i class='fa fa-sort pull-right'> </i>", array('escape' => false)) ?></th>
-                                <!-- <th><?= $this->Paginator->sort('details', __("Details") . "<i class='fa fa-sort pull-right'> </i>", array('escape' => false)) ?></th> -->
+                                <th><?= $this->Paginator->sort('details', __("Details") . "<i class='fa fa-sort pull-right'> </i>", array('escape' => false)) ?></th>
                                 <th><?= $this->Paginator->sort('audit_date', __("Date") . "<i class='fa fa-sort pull-right'> </i>", array('escape' => false)) ?></th>
                                 <th><?= $this->Paginator->sort('ip_address', __("IP Address") . "<i class='fa fa-sort pull-right'> </i>", array('escape' => false)) ?></th>           
                             </tr> 
@@ -124,7 +124,7 @@ div.box-body{
                                                 <td><?= h($auditTrail->user->firstname . ' ' . $auditTrail->user->lastname) ?></td>
                                                 <td><?= h($auditTrail->action) ?></td>
                                                 <td><?= h($auditTrail->event_status) ?></td>
-                                                <!-- <td><?= $this->Number->format($auditTrail->details) ?></td> -->
+                                                <td><?= $auditTrail->details ?></td>
                                                 <td><?= h($auditTrail->audit_date) ?></td>
                                                 <td><?= h($auditTrail->ip_address) ?></td>
                                                                                           

@@ -58,7 +58,6 @@ class LeadsController extends AppController
         $this->user = $user_data;
         $this->Auth->allow(['register']);
 
- 
     }
 
     /**
@@ -512,20 +511,20 @@ class LeadsController extends AppController
                      * To do: add audit trail here
                      * Add IP Address on saving in audit trails
                     */
-
-                    /*
                     $audit_data['user_id']      = $this->user->id;
                     $audit_data['action']       = 'Update Lead';
                     $audit_data['event_status'] = 'Success';
-                    $audit_data['details']      = 1;
+                    $audit_data['details']      = 'Lead ID: ' . $id;
                     $audit_data['audit_date']   = date("Y-m-d h:i:s");
-                    $audit_data['ip_address']   = '222';
+                    $audit_data['ip_address']   = $this->getRealIPAddress();
 
                     $auditTrail = $this->AuditTrails->newEntity();
                     $auditTrail = $this->AuditTrails->patchEntity($auditTrail, $audit_data);
                     if (!$this->AuditTrails->save($auditTrail)) {
                       echo 'Error updating audit trails'; exit;
                     }
+                    /*
+                     * Audit trail end here
                     */
 
                     if($redir == 'dashboard') {
@@ -550,7 +549,6 @@ class LeadsController extends AppController
                 $this->Flash->error(__('The lead could not be saved. Please, try again.'));
             }
         }
-
 
         $this->set('redir', $redir);
         $this->set('source_id', $source_id);
@@ -590,6 +588,27 @@ class LeadsController extends AppController
           $this->request->allowMethod(['post', 'delete']);
           $lead = $this->Leads->get($id);
           if ($this->Leads->delete($lead)) {
+
+              /*
+               * Audit Trail start here
+              */
+              $this->AuditTrails = TableRegistry::get('AuditTrails');
+              $audit_data['user_id']      = $login_user_id;
+              $audit_data['action']       = 'Delete Lead';
+              $audit_data['event_status'] = 'Success';
+              $audit_data['details']      = 'Lead ID: ' . $id;
+              $audit_data['audit_date']   = date("Y-m-d h:i:s");
+              $audit_data['ip_address']   = $this->getRealIPAddress();
+
+              $auditTrail = $this->AuditTrails->newEntity();
+              $auditTrail = $this->AuditTrails->patchEntity($auditTrail, $audit_data);
+              if (!$this->AuditTrails->save($auditTrail)) {
+                echo 'Error updating audit trails'; exit;
+              }
+              /*
+               * Audit Trail end here
+              */              
+
               $this->Flash->success(__('The lead has been deleted.'));
           } else {
               $this->Flash->error(__('The lead could not be deleted. Please try again.'));
@@ -736,5 +755,23 @@ class LeadsController extends AppController
     public function no_access() 
     {
         $this->set(['message' => '']);
+    }    
+
+    public function getRealIPAddress() {
+
+      if (!empty($_SERVER['HTTP_CLIENT_IP'])) {
+
+        $ip=$_SERVER['HTTP_CLIENT_IP'];
+
+      } elseif (!empty($_SERVER['HTTP_X_FORWARDED_FOR'])) {
+
+        $ip=$_SERVER['HTTP_X_FORWARDED_FOR'];
+
+      } else {
+
+        $ip=$_SERVER['REMOTE_ADDR'];
+        
+      }
+      return $ip;
     }    
 }

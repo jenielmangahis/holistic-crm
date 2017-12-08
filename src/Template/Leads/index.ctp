@@ -142,7 +142,7 @@
                                     <?php }?>
                                 </td>
                                 <td>
-                                        <p>Updated by: <strong><?php echo $lead->last_modified_by->username != '' ? $lead->last_modified_by->username : 'NA'; ?></strong></p>
+                                        <p>Updated by: <strong><?php echo isset($lead->last_modified_by->username) ? $lead->last_modified_by->username : 'NA'; ?></strong></p>
                                         <p>Date: <?php echo date("d M, Y", strtotime($lead->modified)); ?></p>
                                 </td>
                             </tr>

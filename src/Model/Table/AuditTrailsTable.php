@@ -66,18 +66,18 @@ class AuditTrailsTable extends Table
             ->requirePresence('event_status', 'create')
             ->notEmpty('event_status');
 
-        $validator
+        /*$validator
             ->integer('details')
             ->requirePresence('details', 'create')
-            ->notEmpty('details');
+            ->notEmpty('details');*/
 
         $validator
             ->dateTime('audit_date')
             ->allowEmpty('audit_date');
 
-        $validator
+        /*$validator
             ->requirePresence('ip_address', 'create')
-            ->notEmpty('ip_address');
+            ->notEmpty('ip_address');*/
 
         return $validator;
     }
