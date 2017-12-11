@@ -242,6 +242,7 @@ class LeadsController extends AppController
     {
         $this->SourceUsers = TableRegistry::get('SourceUsers');        
         $this->Sources     = TableRegistry::get('Sources');
+        $this->AuditTrails = TableRegistry::get('AuditTrails');
 
         $p = $this->default_group_actions;
         if( $p && $p['leads'] == 'View Only' ){
@@ -338,6 +339,33 @@ class LeadsController extends AppController
 
                 $this->Flash->success(__('The lead has been saved.'));
                 $action = $this->request->data['save'];
+
+                /*
+                 * To do: add audit trail here
+                 * Add IP Address on saving in audit trails
+                */
+                $audit_details = "";
+                $audit_details .= "Updated By: " . $this->user->firstname . ' ' . $this->user->lastname;
+                $audit_details .= "( " . $this->user->email . " )";
+                $audit_details .= "<br />";
+                $audit_details .= "Lead ID: " . $lead->id;
+
+                $audit_data['user_id']      = $this->user->id;
+                $audit_data['action']       = 'Add New Lead';
+                $audit_data['event_status'] = 'Success';
+                $audit_data['details']      = $audit_details;
+                $audit_data['audit_date']   = date("Y-m-d h:i:s");
+                $audit_data['ip_address']   = getRealIPAddress();
+
+                $auditTrail = $this->AuditTrails->newEntity();
+                $auditTrail = $this->AuditTrails->patchEntity($auditTrail, $audit_data);
+                if (!$this->AuditTrails->save($auditTrail)) {
+                  echo 'Error updating audit trails'; exit;
+                }
+                /*
+                 * Audit trail end here
+                */
+
                 if( $action == 'save' ){
                     if( empty($source_id) || $source_id == '' ) {
                       return $this->redirect(['action' => 'index']);
@@ -421,6 +449,36 @@ class LeadsController extends AppController
 
         if ($this->request->is(['patch', 'post', 'put'])) {
             $data = $this->request->data;
+
+            $fields_changes = array();
+            foreach ($data as $dkey => $lu) {
+              if ($dkey != 'save') {
+
+                /*if ($lead->{$dkey} != $data[$dkey]) {
+                  $fields_changes[$dkey]['old'] = $lead->{$dkey};
+                  $fields_changes[$dkey]['new'] = $data[$dkey];
+                }*/
+
+                if ($dkey == "followup_date") {
+                  if (date( "Y-m-d", strtotime($lead->{$dkey})) != $data[$dkey]) {
+                    $fields_changes[$dkey]['old'] = $lead->{$dkey};
+                    $fields_changes[$dkey]['new'] = $data[$dkey];
+                  }
+                } elseif ($dkey == "followup_action_reminder_date") {
+                  if (date( "Y-m-d", strtotime($lead->{$dkey})) != $data[$dkey]) {
+                    $fields_changes[$dkey]['old'] = $lead->{$dkey};
+                    $fields_changes[$dkey]['new'] = $data[$dkey];
+                  }
+                } else {
+                  if ($lead->{$dkey} != $data[$dkey]) {
+                    $fields_changes[$dkey]['old'] = $lead->{$dkey};
+                    $fields_changes[$dkey]['new'] = $data[$dkey];
+                  }
+                }
+              }
+
+            }
+
             $lead = $this->Leads->patchEntity($lead, $this->request->data);
             if ($this->Leads->save($lead)) {
                 
@@ -500,32 +558,45 @@ class LeadsController extends AppController
 
                 $this->Flash->success(__('The lead has been saved.'));
                 $action = $this->request->data['save'];
+
+                /*
+                 * To do: add audit trail here
+                 * Add IP Address on saving in audit trails
+                */
+                $audit_details = "";
+                $audit_details .= "Updated By: " . $this->user->firstname . ' ' . $this->user->lastname;
+                $audit_details .= " (" . $this->user->email . ")";
+                $audit_details .= "<br />";
+                $audit_details .= "Lead ID: " . $lead->id;
+                $audit_details .= "<hr />";
+                $audit_details .= "<strong>Changes:</strong>" . "<br />";
+                foreach($fields_changes as $fkey => $fd ) {
+                  $audit_details .= $fkey . ": '" . $fd['old'] . "' to '" . $fd['new'] . "'";
+                  $audit_details .= "<br />";
+                }
+
+                $audit_data['user_id']      = $this->user->id;
+                $audit_data['action']       = 'Update Lead';
+                $audit_data['event_status'] = 'Success';
+                $audit_data['details']      = $audit_details;
+                $audit_data['audit_date']   = date("Y-m-d h:i:s");
+                $audit_data['ip_address']   = getRealIPAddress();
+
+                $auditTrail = $this->AuditTrails->newEntity();
+                $auditTrail = $this->AuditTrails->patchEntity($auditTrail, $audit_data);
+                if (!$this->AuditTrails->save($auditTrail)) {
+                  echo 'Error updating audit trails'; exit;
+                }
+                /*
+                 * Audit trail end here
+                */
+
                 if( $action == 'save' ){
 
                     $data['is_lock']              = 0;
                     $data['last_modified_by_id '] = $login_user_id;
                     $lead_lock = $this->Leads->patchEntity($lead_lock, $data);
                     if ( !$this->Leads->save($lead_lock) ) { echo "error updating lock lead"; exit; }
-
-                    /*
-                     * To do: add audit trail here
-                     * Add IP Address on saving in audit trails
-                    */
-                    $audit_data['user_id']      = $this->user->id;
-                    $audit_data['action']       = 'Update Lead';
-                    $audit_data['event_status'] = 'Success';
-                    $audit_data['details']      = 'Lead ID: ' . $id;
-                    $audit_data['audit_date']   = date("Y-m-d h:i:s");
-                    $audit_data['ip_address']   = getRealIPAddress();
-
-                    $auditTrail = $this->AuditTrails->newEntity();
-                    $auditTrail = $this->AuditTrails->patchEntity($auditTrail, $audit_data);
-                    if (!$this->AuditTrails->save($auditTrail)) {
-                      echo 'Error updating audit trails'; exit;
-                    }
-                    /*
-                     * Audit trail end here
-                    */
 
                     if($redir == 'dashboard') {
                       return $this->redirect(array('controller' => 'users', 'action' => 'dashboard'));
