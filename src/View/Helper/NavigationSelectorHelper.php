@@ -37,7 +37,8 @@ class NavigationSelectorHelper extends Helper
             "leads" => "",  
             "trainings" => "",
             "reports" => "",
-            "system_settings" => ""            
+            "system_settings" => "",
+            "audit_trails" => ""           
         );
         $navigation[$selected] = "active";
 

@@ -516,7 +516,7 @@ class LeadsController extends AppController
                     $audit_data['event_status'] = 'Success';
                     $audit_data['details']      = 'Lead ID: ' . $id;
                     $audit_data['audit_date']   = date("Y-m-d h:i:s");
-                    $audit_data['ip_address']   = $this->getRealIPAddress();
+                    $audit_data['ip_address']   = getRealIPAddress();
 
                     $auditTrail = $this->AuditTrails->newEntity();
                     $auditTrail = $this->AuditTrails->patchEntity($auditTrail, $audit_data);
@@ -755,23 +755,5 @@ class LeadsController extends AppController
     public function no_access() 
     {
         $this->set(['message' => '']);
-    }    
-
-    public function getRealIPAddress() {
-
-      if (!empty($_SERVER['HTTP_CLIENT_IP'])) {
-
-        $ip=$_SERVER['HTTP_CLIENT_IP'];
-
-      } elseif (!empty($_SERVER['HTTP_X_FORWARDED_FOR'])) {
-
-        $ip=$_SERVER['HTTP_X_FORWARDED_FOR'];
-
-      } else {
-
-        $ip=$_SERVER['REMOTE_ADDR'];
-        
-      }
-      return $ip;
     }    
 }

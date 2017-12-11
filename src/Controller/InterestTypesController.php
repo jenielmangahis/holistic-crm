@@ -47,6 +47,7 @@ class InterestTypesController extends AppController
                 $this->Auth->allow($authorized_modules);
             }
         }    
+        $this->user = $user_data;
     }    
 
     /**
@@ -120,10 +121,26 @@ class InterestTypesController extends AppController
      */
     public function add()
     {
+        $this->AuditTrails = TableRegistry::get('AuditTrails');
+
         $interestType = $this->InterestTypes->newEntity();
         if ($this->request->is('post')) {
             $interestType = $this->InterestTypes->patchEntity($interestType, $this->request->data);
-            if ($this->InterestTypes->save($interestType)) {
+            if ($newInterestType = $this->InterestTypes->save($interestType)) {
+
+                $audit_data['user_id']      = $this->user->id;
+                $audit_data['action']       = 'Added Interest Type : ' . $newInterestType->name;
+                $audit_data['event_status'] = 'Success';
+                $audit_data['details']      = 'Interest Type ID: ' . $newInterestType->id;
+                $audit_data['audit_date']   = date("Y-m-d h:i:s");
+                $audit_data['ip_address']   = getRealIPAddress();
+
+                $auditTrail = $this->AuditTrails->newEntity();
+                $auditTrail = $this->AuditTrails->patchEntity($auditTrail, $audit_data);
+                if (!$this->AuditTrails->save($auditTrail)) {
+                  echo 'Error updating audit trails'; exit;
+                }
+
                 $this->Flash->success(__('The interest type has been saved.'));
                 $action = $this->request->data['save'];
                 if( $action == 'save' ){
@@ -148,12 +165,28 @@ class InterestTypesController extends AppController
      */
     public function edit($id = null)
     {
+        $this->AuditTrails = TableRegistry::get('AuditTrails');
+
         $interestType = $this->InterestTypes->get($id, [
             'contain' => []
         ]);
         if ($this->request->is(['patch', 'post', 'put'])) {
             $interestType = $this->InterestTypes->patchEntity($interestType, $this->request->data);
             if ($this->InterestTypes->save($interestType)) {
+
+                $audit_data['user_id']      = $this->user->id;
+                $audit_data['action']       = 'Updated Interest Type : ' . $interestType->name;
+                $audit_data['event_status'] = 'Success';
+                $audit_data['details']      = 'Interest Type ID: ' . $interestType->id;
+                $audit_data['audit_date']   = date("Y-m-d h:i:s");
+                $audit_data['ip_address']   = getRealIPAddress();
+
+                $auditTrail = $this->AuditTrails->newEntity();
+                $auditTrail = $this->AuditTrails->patchEntity($auditTrail, $audit_data);
+                if (!$this->AuditTrails->save($auditTrail)) {
+                  echo 'Error updating audit trails'; exit;
+                }
+
                 $this->Flash->success(__('The interest type has been saved.'));
                 $action = $this->request->data['save'];
                 if( $action == 'save' ){

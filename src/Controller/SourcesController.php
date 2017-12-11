@@ -2,6 +2,7 @@
 namespace App\Controller;
 
 use App\Controller\AppController;
+use Cake\ORM\TableRegistry;
 
 /**
  * Sources Controller
@@ -45,6 +46,7 @@ class SourcesController extends AppController
                 $this->Auth->allow($authorized_modules);
             }
         }    
+        $this->user = $user_data;
     }    
 
     /**
@@ -110,13 +112,28 @@ class SourcesController extends AppController
      */
     public function add()
     {
+        $this->AuditTrails = TableRegistry::get('AuditTrails');
         $source = $this->Sources->newEntity();
         if ($this->request->is('post')) {
             $data = $this->request->data;      
             //debug($data);
             $data['emails'] = str_replace(",", ";", $this->request->data['emails']);             
             $source = $this->Sources->patchEntity($source, $data);           
-            if ($this->Sources->save($source)) {
+            if ($newSource = $this->Sources->save($source)) {
+                
+                $audit_data['user_id']      = $this->user->id;
+                $audit_data['action']       = 'Added New Source : ' . $source->name;
+                $audit_data['event_status'] = 'Success';
+                $audit_data['details']      = 'Source ID: ' . $newSource->id;
+                $audit_data['audit_date']   = date("Y-m-d h:i:s");
+                $audit_data['ip_address']   = getRealIPAddress();
+
+                $auditTrail = $this->AuditTrails->newEntity();
+                $auditTrail = $this->AuditTrails->patchEntity($auditTrail, $audit_data);
+                if (!$this->AuditTrails->save($auditTrail)) {
+                  echo 'Error updating audit trails'; exit;
+                }
+
                 $this->Flash->success(__('The source has been saved.'));
                 $action = $this->request->data['save'];
                 if( $action == 'save' ){
@@ -143,6 +160,7 @@ class SourcesController extends AppController
      */
     public function edit($id = null)
     {
+        $this->AuditTrails = TableRegistry::get('AuditTrails');
         $source = $this->Sources->get($id, [
             'contain' => []
         ]);
@@ -151,6 +169,20 @@ class SourcesController extends AppController
             $data['emails'] = str_replace(",", ";", $this->request->data['emails']);              
             $source = $this->Sources->patchEntity($source, $data);
             if ($this->Sources->save($source)) {
+
+                $audit_data['user_id']      = $this->user->id;
+                $audit_data['action']       = 'Updated Source : ' . $source->name;
+                $audit_data['event_status'] = 'Success';
+                $audit_data['details']      = 'Source ID: ' . $source->id;
+                $audit_data['audit_date']   = date("Y-m-d h:i:s");
+                $audit_data['ip_address']   = getRealIPAddress();
+
+                $auditTrail = $this->AuditTrails->newEntity();
+                $auditTrail = $this->AuditTrails->patchEntity($auditTrail, $audit_data);
+                if (!$this->AuditTrails->save($auditTrail)) {
+                  echo 'Error updating audit trails'; exit;
+                }
+
                 $this->Flash->success(__('The source has been saved.'));
                 $action = $this->request->data['save'];
                 if( $action == 'save' ){
