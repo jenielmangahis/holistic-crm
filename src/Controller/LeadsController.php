@@ -345,7 +345,7 @@ class LeadsController extends AppController
                  * Add IP Address on saving in audit trails
                 */
                 $audit_details = "";
-                $audit_details .= "Updated By: " . $this->user->firstname . ' ' . $this->user->lastname;
+                $audit_details .= "Added By: " . $this->user->firstname . ' ' . $this->user->lastname;
                 $audit_details .= "( " . $this->user->email . " )";
                 $audit_details .= "<br />";
                 $audit_details .= "Lead ID: " . $lead->id;

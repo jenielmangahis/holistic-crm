@@ -120,11 +120,17 @@ class SourcesController extends AppController
             $data['emails'] = str_replace(",", ";", $this->request->data['emails']);             
             $source = $this->Sources->patchEntity($source, $data);           
             if ($newSource = $this->Sources->save($source)) {
+
+                $audit_details = "";
+                $audit_details .= "Added By: " . $this->user->firstname . ' ' . $this->user->lastname;
+                $audit_details .= "( " . $this->user->email . " )";
+                $audit_details .= "<br />";
+                $audit_details .= 'Source ID: ' . $newSource->id;  
                 
                 $audit_data['user_id']      = $this->user->id;
                 $audit_data['action']       = 'Added New Source : ' . $source->name;
                 $audit_data['event_status'] = 'Success';
-                $audit_data['details']      = 'Source ID: ' . $newSource->id;
+                $audit_data['details']      = $audit_details;
                 $audit_data['audit_date']   = date("Y-m-d h:i:s");
                 $audit_data['ip_address']   = getRealIPAddress();
 
@@ -167,13 +173,37 @@ class SourcesController extends AppController
         if ($this->request->is(['patch', 'post', 'put'])) {
             $data = $this->request->data;      
             $data['emails'] = str_replace(",", ";", $this->request->data['emails']);              
+
+            $fields_changes = array();
+            foreach ($data as $dkey => $lu) {
+              if ($dkey != 'save') {
+                if ($source->{$dkey} != $data[$dkey]) {
+                    $fields_changes[$dkey]['old'] = $source->{$dkey};
+                    $fields_changes[$dkey]['new'] = $data[$dkey];
+                }
+              }
+            }
+
             $source = $this->Sources->patchEntity($source, $data);
+
             if ($this->Sources->save($source)) {
+
+                $audit_details = "";
+                $audit_details .= "Updated By: " . $this->user->firstname . ' ' . $this->user->lastname;
+                $audit_details .= " (" . $this->user->email . ")";
+                $audit_details .= "<br />";
+                $audit_details .= 'Source ID: ' . $source->id;
+                $audit_details .= "<hr />";
+                $audit_details .= "<strong>Changes:</strong>" . "<br />";
+                foreach($fields_changes as $fkey => $fd ) {
+                  $audit_details .= $fkey . ": '" . $fd['old'] . "' to '" . $fd['new'] . "'";
+                  $audit_details .= "<br />";
+                }                
 
                 $audit_data['user_id']      = $this->user->id;
                 $audit_data['action']       = 'Updated Source : ' . $source->name;
                 $audit_data['event_status'] = 'Success';
-                $audit_data['details']      = 'Source ID: ' . $source->id;
+                $audit_data['details']      = $audit_details;
                 $audit_data['audit_date']   = date("Y-m-d h:i:s");
                 $audit_data['ip_address']   = getRealIPAddress();
 
