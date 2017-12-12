@@ -39,7 +39,7 @@
                                     <div class='form-group'>
                                     <label for='filename' class='col-sm-2 control-label'>" . __('Filename') . "</label>
                                     <div class='col-sm-6'>";
-                            echo $this->Form->input('filename', ['type' => 'file', 'class' => 'form-control', 'id' => 'filename', 'label' => false]);                
+                            echo $this->Form->input('filename', ['type' => 'file', 'class' => '', 'id' => 'filename', 'label' => false]);                
                             echo " </div></div>";    
                                     
                         ?>

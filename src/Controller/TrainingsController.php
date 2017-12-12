@@ -49,7 +49,8 @@ class TrainingsController extends AppController
                 }                
                 $this->Auth->allow($authorized_modules);
             }
-        }         
+        }   
+        $this->user = $user_data;      
     }
 
     /**
@@ -120,6 +121,8 @@ class TrainingsController extends AppController
      */
     public function add()
     {
+        $this->AuditTrails = TableRegistry::get('AuditTrails');
+
         $training = $this->Trainings->newEntity();
         if ($this->request->is('post')) {
 
@@ -148,7 +151,27 @@ class TrainingsController extends AppController
                     $request_data['video_url']   = $this->request->data['video_url'];  
 
                     $training = $this->Trainings->patchEntity($training, $request_data);
-                    if ($this->Trainings->save($training)) {
+                    if ( $newTraining = $this->Trainings->save($training)) {
+
+                        $audit_details = "";
+                        $audit_details .= "Added By: " . $this->user->firstname . ' ' . $this->user->lastname;
+                        $audit_details .= "( " . $this->user->email . " )";
+                        $audit_details .= "<br />";
+                        $audit_details .= 'Training ID: ' . $newTraining->id;
+
+                        $audit_data['user_id']      = $this->user->id;
+                        $audit_data['action']       = 'Added Training : ' . $newTraining->title;
+                        $audit_data['event_status'] = 'Success';
+                        $audit_data['details']      = $audit_details;
+                        $audit_data['audit_date']   = date("Y-m-d h:i:s");
+                        $audit_data['ip_address']   = getRealIPAddress();
+
+                        $auditTrail = $this->AuditTrails->newEntity();
+                        $auditTrail = $this->AuditTrails->patchEntity($auditTrail, $audit_data);
+                        if (!$this->AuditTrails->save($auditTrail)) {
+                          echo 'Error updating audit trails'; exit;
+                        }
+
                         $this->Flash->success(__('The training has been saved.'));
                         $action = $this->request->data['save'];
                         if( $action == 'save' ){
@@ -180,18 +203,34 @@ class TrainingsController extends AppController
      */
     public function edit($id = null)
     {
+        $this->AuditTrails = TableRegistry::get('AuditTrails');
+
         $training = $this->Trainings->get($id, [
             'contain' => []
         ]);
 
         if ($this->request->is(['patch', 'post', 'put'])) {
 
-            $file = $this->request->data['filename'];           
+            $file = $this->request->data['filename'];   
 
-            
             $ext  = substr(strtolower(strrchr($file['name'], '.')), 1); 
             $arr_ext        = array('jpg', 'jpeg', 'gif', 'exe');
-            $setNewFileName = time() . "_" . rand(000000, 999999);
+            $setNewFileName = time() . "_" . rand(000000, 999999);        
+
+            $data     = $this->request->data;   
+            $fields_changes = array();
+            foreach ($data as $dkey => $lu) {
+              if ($dkey != 'save') {                
+                if ($training->{$dkey} != $data[$dkey]) {
+                    $fields_changes[$dkey]['old'] = $training->{$dkey};
+                    if( $dkey == 'filename' ){                        
+                        $fields_changes[$dkey]['new'] = $setNewFileName . '.' . $ext;
+                    }else{
+                        $fields_changes[$dkey]['new'] = $data[$dkey];
+                    }                       
+                }
+              }
+            }
 
             if (!in_array($ext, $arr_ext)) { 
                 $directory_name = WWW_ROOT . '/upload/trainings/';
@@ -217,6 +256,32 @@ class TrainingsController extends AppController
                 
                 $training = $this->Trainings->patchEntity($training, $request_data);
                 if ($this->Trainings->save($training)) {
+
+                    $audit_details = "";
+                    $audit_details .= "Updated By: " . $this->user->firstname . ' ' . $this->user->lastname;
+                    $audit_details .= " (" . $this->user->email . ")";
+                    $audit_details .= "<br />";
+                    $audit_details .= 'Training ID: ' . $training->id;
+                    $audit_details .= "<hr />";
+                    $audit_details .= "<strong>Changes:</strong>" . "<br />";
+                    foreach($fields_changes as $fkey => $fd ) {
+                      $audit_details .= $fkey . ": '" . $fd['old'] . "' to '" . $fd['new'] . "'";
+                      $audit_details .= "<br />";
+                    }                  
+
+                    $audit_data['user_id']      = $this->user->id;
+                    $audit_data['action']       = 'Updated Training : ' . $training->title;
+                    $audit_data['event_status'] = 'Success';
+                    $audit_data['details']      = $audit_details;
+                    $audit_data['audit_date']   = date("Y-m-d h:i:s");
+                    $audit_data['ip_address']   = getRealIPAddress();
+
+                    $auditTrail = $this->AuditTrails->newEntity();
+                    $auditTrail = $this->AuditTrails->patchEntity($auditTrail, $audit_data);
+                    if (!$this->AuditTrails->save($auditTrail)) {
+                      echo 'Error updating audit trails'; exit;
+                    }
+
                     $this->Flash->success(__('The training has been saved.'));
                     $action = $this->request->data['save'];
                     if( $action == 'save' ){
