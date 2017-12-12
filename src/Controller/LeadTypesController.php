@@ -127,10 +127,17 @@ class LeadTypesController extends AppController
             $leadType = $this->LeadTypes->patchEntity($leadType, $this->request->data);
             if ($newLeadType = $this->LeadTypes->save($leadType)) {
 
+                //Audit Trail - Start
+                $audit_details = "";
+                $audit_details .= "Added By: " . $this->user->firstname . ' ' . $this->user->lastname;
+                $audit_details .= "( " . $this->user->email . " )";
+                $audit_details .= "<br />";
+                $audit_details .= 'Lead Type ID: ' . $newLeadType->id;                  
+
                 $audit_data['user_id']      = $this->user->id;
                 $audit_data['action']       = 'Added New Lead Type : ' . $newLeadType->name;
                 $audit_data['event_status'] = 'Success';
-                $audit_data['details']      = 'Lead Type ID: ' . $newLeadType->id;
+                $audit_data['details']      = $audit_details;
                 $audit_data['audit_date']   = date("Y-m-d h:i:s");
                 $audit_data['ip_address']   = getRealIPAddress();
 
@@ -139,6 +146,7 @@ class LeadTypesController extends AppController
                 if (!$this->AuditTrails->save($auditTrail)) {
                   echo 'Error updating audit trails'; exit;
                 }
+                //Audit Trail - End
 
                 $this->Flash->success(__('The lead type has been saved.'));
                 $action = $this->request->data['save'];
@@ -170,13 +178,38 @@ class LeadTypesController extends AppController
             'contain' => []
         ]);
         if ($this->request->is(['patch', 'post', 'put'])) {
+            $data     = $this->request->data;   
+            $fields_changes = array();
+            foreach ($data as $dkey => $lu) {
+              if ($dkey != 'save') {
+                if ($leadType->{$dkey} != $data[$dkey]) {
+                    $fields_changes[$dkey]['old'] = $leadType->{$dkey};
+                    $fields_changes[$dkey]['new'] = $data[$dkey];
+                }
+              }
+            }
+
             $leadType = $this->LeadTypes->patchEntity($leadType, $this->request->data);
+
             if ($this->LeadTypes->save($leadType)) {
+
+                //Audit Trail - Start
+                $audit_details = "";
+                $audit_details .= "Updated By: " . $this->user->firstname . ' ' . $this->user->lastname;
+                $audit_details .= " (" . $this->user->email . ")";
+                $audit_details .= "<br />";
+                $audit_details .= 'Lead Type ID: ' . $leadType->id;
+                $audit_details .= "<hr />";
+                $audit_details .= "<strong>Changes:</strong>" . "<br />";
+                foreach($fields_changes as $fkey => $fd ) {
+                  $audit_details .= $fkey . ": '" . $fd['old'] . "' to '" . $fd['new'] . "'";
+                  $audit_details .= "<br />";
+                }                  
 
                 $audit_data['user_id']      = $this->user->id;
                 $audit_data['action']       = 'Updated Lead Type : ' . $leadType->name;
                 $audit_data['event_status'] = 'Success';
-                $audit_data['details']      = 'Lead Type ID: ' . $leadType->id;
+                $audit_data['details']      = $audit_details;
                 $audit_data['audit_date']   = date("Y-m-d h:i:s");
                 $audit_data['ip_address']   = getRealIPAddress();
 
@@ -185,6 +218,7 @@ class LeadTypesController extends AppController
                 if (!$this->AuditTrails->save($auditTrail)) {
                   echo 'Error updating audit trails'; exit;
                 }
+                //Audit Trail - End
 
                 $this->Flash->success(__('The lead type has been saved.'));
                 $action = $this->request->data['save'];

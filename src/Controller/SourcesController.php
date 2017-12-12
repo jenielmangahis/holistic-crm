@@ -188,6 +188,7 @@ class SourcesController extends AppController
 
             if ($this->Sources->save($source)) {
 
+                //Audit Trails - Start
                 $audit_details = "";
                 $audit_details .= "Updated By: " . $this->user->firstname . ' ' . $this->user->lastname;
                 $audit_details .= " (" . $this->user->email . ")";
@@ -212,6 +213,7 @@ class SourcesController extends AppController
                 if (!$this->AuditTrails->save($auditTrail)) {
                   echo 'Error updating audit trails'; exit;
                 }
+                //Audit Trails - End
 
                 $this->Flash->success(__('The source has been saved.'));
                 $action = $this->request->data['save'];

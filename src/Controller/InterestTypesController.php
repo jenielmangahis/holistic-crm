@@ -128,10 +128,16 @@ class InterestTypesController extends AppController
             $interestType = $this->InterestTypes->patchEntity($interestType, $this->request->data);
             if ($newInterestType = $this->InterestTypes->save($interestType)) {
 
+                $audit_details = "";
+                $audit_details .= "Added By: " . $this->user->firstname . ' ' . $this->user->lastname;
+                $audit_details .= "( " . $this->user->email . " )";
+                $audit_details .= "<br />";
+                $audit_details .= 'Interest Type ID: ' . $newInterestType->id;
+
                 $audit_data['user_id']      = $this->user->id;
                 $audit_data['action']       = 'Added Interest Type : ' . $newInterestType->name;
                 $audit_data['event_status'] = 'Success';
-                $audit_data['details']      = 'Interest Type ID: ' . $newInterestType->id;
+                $audit_data['details']      = $audit_details;
                 $audit_data['audit_date']   = date("Y-m-d h:i:s");
                 $audit_data['ip_address']   = getRealIPAddress();
 
@@ -171,13 +177,37 @@ class InterestTypesController extends AppController
             'contain' => []
         ]);
         if ($this->request->is(['patch', 'post', 'put'])) {
+
+            $data     = $this->request->data;   
+            $fields_changes = array();
+            foreach ($data as $dkey => $lu) {
+              if ($dkey != 'save') {
+                if ($interestType->{$dkey} != $data[$dkey]) {
+                    $fields_changes[$dkey]['old'] = $interestType->{$dkey};
+                    $fields_changes[$dkey]['new'] = $data[$dkey];
+                }
+              }
+            }
+
             $interestType = $this->InterestTypes->patchEntity($interestType, $this->request->data);
             if ($this->InterestTypes->save($interestType)) {
+
+                $audit_details = "";
+                $audit_details .= "Updated By: " . $this->user->firstname . ' ' . $this->user->lastname;
+                $audit_details .= " (" . $this->user->email . ")";
+                $audit_details .= "<br />";
+                $audit_details .= 'Interest Type ID: ' . $interestType->id;
+                $audit_details .= "<hr />";
+                $audit_details .= "<strong>Changes:</strong>" . "<br />";
+                foreach($fields_changes as $fkey => $fd ) {
+                  $audit_details .= $fkey . ": '" . $fd['old'] . "' to '" . $fd['new'] . "'";
+                  $audit_details .= "<br />";
+                }                  
 
                 $audit_data['user_id']      = $this->user->id;
                 $audit_data['action']       = 'Updated Interest Type : ' . $interestType->name;
                 $audit_data['event_status'] = 'Success';
-                $audit_data['details']      = 'Interest Type ID: ' . $interestType->id;
+                $audit_data['details']      = $audit_details;
                 $audit_data['audit_date']   = date("Y-m-d h:i:s");
                 $audit_data['ip_address']   = getRealIPAddress();
 
