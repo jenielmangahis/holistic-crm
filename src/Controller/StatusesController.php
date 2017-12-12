@@ -47,7 +47,7 @@ class StatusesController extends AppController
                 $this->Auth->allow($authorized_modules);
             }
         }          
-
+        $this->user = $user_data;
     }     
 
     /**
@@ -120,10 +120,33 @@ class StatusesController extends AppController
      */
     public function add()
     {
+        $this->AuditTrails = TableRegistry::get('AuditTrails');
         $status = $this->Statuses->newEntity();
         if ($this->request->is('post')) {
             $status = $this->Statuses->patchEntity($status, $this->request->data);
             if ($this->Statuses->save($status)) {
+
+                //Audit Trail - Start
+                $audit_details = "";
+                $audit_details .= "Added By: " . $this->user->firstname . ' ' . $this->user->lastname;
+                $audit_details .= "( " . $this->user->email . " )";
+                $audit_details .= "<br />";
+                $audit_details .= 'Status ID: ' . $status->id;  
+                
+                $audit_data['user_id']      = $this->user->id;
+                $audit_data['action']       = 'Added New Status : ' . $status->name;
+                $audit_data['event_status'] = 'Success';
+                $audit_data['details']      = $audit_details;
+                $audit_data['audit_date']   = date("Y-m-d h:i:s");
+                $audit_data['ip_address']   = getRealIPAddress();
+
+                $auditTrail = $this->AuditTrails->newEntity();
+                $auditTrail = $this->AuditTrails->patchEntity($auditTrail, $audit_data);
+                if (!$this->AuditTrails->save($auditTrail)) {
+                  echo 'Error updating audit trails'; exit;
+                }
+                //Audit Trail - End
+
                 $this->Flash->success(__('The status has been saved.'));
                 $action = $this->request->data['save'];
                 if( $action == 'save' ){
@@ -148,12 +171,52 @@ class StatusesController extends AppController
      */
     public function edit($id = null)
     {
+        $this->AuditTrails = TableRegistry::get('AuditTrails');
         $status = $this->Statuses->get($id, [
             'contain' => []
         ]);
         if ($this->request->is(['patch', 'post', 'put'])) {
+            $data = $this->request->data;
+            $fields_changes = array();
+            foreach ($data as $dkey => $lu) {
+              if ($dkey != 'save') {
+                if ($status->{$dkey} != $data[$dkey]) {
+                    $fields_changes[$dkey]['old'] = $status->{$dkey};
+                    $fields_changes[$dkey]['new'] = $data[$dkey];
+                }
+              }
+            }
+
             $status = $this->Statuses->patchEntity($status, $this->request->data);
             if ($this->Statuses->save($status)) {
+
+                //Audit Trails - Start
+                $audit_details = "";
+                $audit_details .= "Updated By: " . $this->user->firstname . ' ' . $this->user->lastname;
+                $audit_details .= " (" . $this->user->email . ")";
+                $audit_details .= "<br />";
+                $audit_details .= 'Status ID: ' . $status->id;
+                $audit_details .= "<hr />";
+                $audit_details .= "<strong>Changes:</strong>" . "<br />";
+                foreach($fields_changes as $fkey => $fd ) {
+                  $audit_details .= $fkey . ": '" . $fd['old'] . "' to '" . $fd['new'] . "'";
+                  $audit_details .= "<br />";
+                }                
+
+                $audit_data['user_id']      = $this->user->id;
+                $audit_data['action']       = 'Updated Status : ' . $status->name;
+                $audit_data['event_status'] = 'Success';
+                $audit_data['details']      = $audit_details;
+                $audit_data['audit_date']   = date("Y-m-d h:i:s");
+                $audit_data['ip_address']   = getRealIPAddress();
+
+                $auditTrail = $this->AuditTrails->newEntity();
+                $auditTrail = $this->AuditTrails->patchEntity($auditTrail, $audit_data);
+                if (!$this->AuditTrails->save($auditTrail)) {
+                  echo 'Error updating audit trails'; exit;
+                }
+                //Audit Trails - End
+
                 $this->Flash->success(__('The status has been saved.'));
                 $action = $this->request->data['save'];
                 if( $action == 'save' ){

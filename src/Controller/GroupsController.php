@@ -48,7 +48,7 @@ class GroupsController extends AppController
                 $this->Auth->allow($authorized_modules);
             }
         }  
-
+        $this->user = $user_data;
     }
 
     /**
@@ -118,6 +118,7 @@ class GroupsController extends AppController
      */
     public function add()
     {
+        $this->AuditTrails = TableRegistry::get('AuditTrails');
         $group     = $this->Groups->newEntity();
         $post_data = $this->request->data;
 
@@ -126,6 +127,28 @@ class GroupsController extends AppController
             //Insert Group         
             $group = $this->Groups->patchEntity($group, $this->request->data);            
             if ($this->Groups->save($group)) {
+
+                //Audit Trail - Start
+                $audit_details = "";
+                $audit_details .= "Added By: " . $this->user->firstname . ' ' . $this->user->lastname;
+                $audit_details .= "( " . $this->user->email . " )";
+                $audit_details .= "<br />";
+                $audit_details .= 'Group ID: ' . $group->id;  
+                
+                $audit_data['user_id']      = $this->user->id;
+                $audit_data['action']       = 'Added New Group : ' . $group->name;
+                $audit_data['event_status'] = 'Success';
+                $audit_data['details']      = $audit_details;
+                $audit_data['audit_date']   = date("Y-m-d h:i:s");
+                $audit_data['ip_address']   = getRealIPAddress();
+
+                $auditTrail = $this->AuditTrails->newEntity();
+                $auditTrail = $this->AuditTrails->patchEntity($auditTrail, $audit_data);
+                if (!$this->AuditTrails->save($auditTrail)) {
+                  echo 'Error updating audit trails'; exit;
+                }
+                //Audit Trail - End
+
                 $this->Flash->success(__('The group has been saved.'));
                 $action = $this->request->data['save'];
 
@@ -219,15 +242,55 @@ class GroupsController extends AppController
      */
     public function edit($id = null)
     {
+        $this->AuditTrails = TableRegistry::get('AuditTrails');
         $group = $this->Groups->get($id, [
             'contain' => []
         ]);
         $post_data = $this->request->data;
+        $data = $this->request->data;
 
         if ($this->request->is(['patch', 'post', 'put'])) {
 
+            $fields_changes = array();
+            foreach ($data as $dkey => $lu) {
+              if ($dkey != 'save') {
+                if ($group->{$dkey} != $data[$dkey]) {
+                    $fields_changes[$dkey]['old'] = $group->{$dkey};
+                    $fields_changes[$dkey]['new'] = $data[$dkey];
+                }
+              }
+            }      
+
             $group = $this->Groups->patchEntity($group, $this->request->data);
             if ($this->Groups->save($group)) {
+
+                //Audit Trails - Start
+                $audit_details = "";
+                $audit_details .= "Updated By: " . $this->user->firstname . ' ' . $this->user->lastname;
+                $audit_details .= " (" . $this->user->email . ")";
+                $audit_details .= "<br />";
+                $audit_details .= 'Source ID: ' . $group->id;
+                $audit_details .= "<hr />";
+                $audit_details .= "<strong>Changes:</strong>" . "<br />";
+                foreach($fields_changes as $fkey => $fd ) {
+                  $audit_details .= $fkey . ": '" . $fd['old'] . "' to '" . $fd['new'] . "'";
+                  $audit_details .= "<br />";
+                }                
+
+                $audit_data['user_id']      = $this->user->id;
+                $audit_data['action']       = 'Updated Group : ' . $group->name;
+                $audit_data['event_status'] = 'Success';
+                $audit_data['details']      = $audit_details;
+                $audit_data['audit_date']   = date("Y-m-d h:i:s");
+                $audit_data['ip_address']   = getRealIPAddress();
+
+                $auditTrail = $this->AuditTrails->newEntity();
+                $auditTrail = $this->AuditTrails->patchEntity($auditTrail, $audit_data);
+                if (!$this->AuditTrails->save($auditTrail)) {
+                  echo 'Error updating audit trails'; exit;
+                }
+                //Audit Trails - End
+
                 $this->Flash->success(__('The group has been saved.'));
                 $action = $this->request->data['save'];
 

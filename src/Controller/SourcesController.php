@@ -121,6 +121,7 @@ class SourcesController extends AppController
             $source = $this->Sources->patchEntity($source, $data);           
             if ($newSource = $this->Sources->save($source)) {
 
+                //Audit Trail - Start
                 $audit_details = "";
                 $audit_details .= "Added By: " . $this->user->firstname . ' ' . $this->user->lastname;
                 $audit_details .= "( " . $this->user->email . " )";
@@ -139,6 +140,7 @@ class SourcesController extends AppController
                 if (!$this->AuditTrails->save($auditTrail)) {
                   echo 'Error updating audit trails'; exit;
                 }
+                //Audit Trail - End
 
                 $this->Flash->success(__('The source has been saved.'));
                 $action = $this->request->data['save'];
