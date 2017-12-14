@@ -201,9 +201,7 @@
             <td class="field-name">Followup Date</td>
             <td style="width:11%;">
                 <select class="form-control frm-search-grp-1" name="search[followup_date][operator]" disabled="">
-                    <?php foreach($option_logical_operators as $o){ ?>
-                        <option value="<?php echo $o; ?>"><?php echo $o; ?></option>
-                    <?php } ?>
+                    <option value="BETWEEN">BETWEEN</option>
                 </select>
             </td>
             <td><input type="text" class="form-control frm-search-grp-1 default-datepicker" name="search[followup_date][value]" id="followup_date" disabled="" /></td>
