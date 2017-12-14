@@ -151,6 +151,24 @@
             </td>
         </tr>
         <tr>                            
+            <td class="field-name">Lead Types</td>
+            <td style="width:11%;">
+                <select class="form-control frm-search-grp-1" name="search[lead_type_id][operator]" disabled="">                    
+                    <?php foreach($option_logical_operators as $o){ ?>
+                        <option value="<?php echo $o; ?>"><?php echo $o; ?></option>
+                    <?php } ?>
+                </select>
+            </td>
+            <td>
+                <select class="form-control frm-search-grp-1" name="search[lead_type_id][value]" disabled="">
+                    <option value="">-- All Lead Types --</option>
+                    <?php foreach($optionLeadTypes as $key => $value){ ?>
+                        <option value="<?php echo $key; ?>"><?php echo $value; ?></option>
+                    <?php } ?>
+                </select>
+            </td>
+        </tr>
+        <tr>                            
             <td class="field-name">Status</td>
             <td style="width:11%;">
                 <select class="form-control frm-search-grp-1" name="search[status_id][operator]" disabled="">                    
@@ -178,6 +196,15 @@
                 </select>
             </td>
             <td><input type="text" class="form-control frm-search-grp-1 default-datepicker" name="search[allocation_date][value]" id="allocation_date" disabled="" /></td>
+        </tr>
+        <tr>                            
+            <td class="field-name">Followup Date</td>
+            <td style="width:11%;">
+                <select class="form-control frm-search-grp-1" name="search[followup_date][operator]" disabled="">
+                    <option value="BETWEEN">BETWEEN</option>
+                </select>
+            </td>
+            <td><input type="text" class="form-control frm-search-grp-1 default-datepicker" name="search[followup_date][value]" id="followup_date" disabled="" /></td>
         </tr>  
         <tr>                            
             <td class="field-name">Date Created</td>

@@ -72,6 +72,7 @@ class ReportsController extends AppController
       $this->Sources = TableRegistry::get('Sources');
       $this->InterestTypes = TableRegistry::get('InterestTypes');
       $this->Statuses = TableRegistry::get('Statuses');
+      $this->LeadTypes = TableRegistry::get('LeadTypes');
 
       //$sources = $this->Sources->find('all');
       $sources  = $this->Sources->find('all', ['order' => ['Sources.sort' => 'ASC']]);
@@ -79,10 +80,18 @@ class ReportsController extends AppController
       $interestTypes = $this->InterestTypes->find('all')
         ->order(['InterestTypes.sort' => 'ASC'])      
       ;
+      $leadTypes = $this->LeadTypes->find('all')
+        ->order(['LeadTypes.sort' => 'ASC'])
+      ;
 
       $optionSources = array();
       foreach($sources as $s){
         $optionSources[$s->id] = $s->name;
+      }
+
+      $optionLeadTypes = array();
+      foreach( $leadTypes as $lt ){
+        $optionLeadTypes[$lt->id] = $lt->name;
       }
 
       $optionInterestTypes = array();
@@ -102,6 +111,7 @@ class ReportsController extends AppController
           'fields' => $fields,
           'optionSources' => $optionSources,
           'optionInterestTypes' => $optionInterestTypes,          
+          'optionLeadTypes' => $optionLeadTypes,
           'optionStatuses' => $optionStatuses,
           'load_reports_js' => true,
           'load_advance_search_script' => true
