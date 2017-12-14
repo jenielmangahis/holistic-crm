@@ -330,7 +330,8 @@ class ReportsController extends AppController
             'fields' => $fields,
             'load_reports_js' => false,
             'load_advance_search_script' => false,
-            'enable_jscript_datatable', false
+            'enable_jscript_datatable', false,
+            'enable_content_expander_script', true
         ]); 
       }
 

@@ -45,6 +45,46 @@
 	                                			<td><?php echo $s->interest_type->name; ?></td> 
 	                                	<?php }elseif($key == 'lead_type_id') { ?>
 	                                			<td><?php echo $s->lead_type->name; ?></td> 
+	                                	<?php }elseif($key == 'lead_action') { ?>
+	                                			<td>
+												  	<div style="width:350px;"><?php echo substr($s->lead_action,0,100); ?></div>
+												  	<?php if (strlen($s->lead_action) > 100) { ?>
+														  	<div style="width:350px !important;" id="lead_action_<?php echo $s->id; ?>" class="collapse">
+														    	<?php echo substr($s->lead_action,100); ?>
+														  	</div>
+														  	<a href="javascript:void(0);" data-toggle="collapse" data-target="#lead_action_<?php echo $s->id; ?>">View More</a>
+												  	<?php } ?>
+	                                			</td>
+	                                	<?php }elseif($key == 'followup_notes') { ?>
+	                                			<td>
+												  	<div style="width:350px;"><?php echo substr($s->followup_notes,0,100); ?></div>
+												  	<?php if (strlen($s->followup_notes) > 100) { ?>
+														  	<div style="width:350px !important;" id="followup_notes_<?php echo $s->id; ?>" class="collapse">
+														    	<?php echo substr($s->followup_notes,100); ?>
+														  	</div>
+														  	<a href="javascript:void(0);" data-toggle="collapse" data-target="#followup_notes_<?php echo $s->id; ?>">View More</a>
+												  	<?php } ?>
+	                                			</td>
+	                                	<?php }elseif($key == 'notes') { ?>
+	                                			<td>
+												  	<div style="width:350px;"><?php echo substr($s->notes,0,100); ?></div>
+												  	<?php if (strlen($s->notes) > 100) { ?>
+														  	<div style="width:350px !important;" id="notes_<?php echo $s->id; ?>" class="collapse">
+														    	<?php echo substr($s->notes,100); ?>
+														  	</div>
+														  	<a href="javascript:void(0);" data-toggle="collapse" data-target="#notes_<?php echo $s->id; ?>">View More</a>
+												  	<?php } ?>
+	                                			</td>
+	                                	<?php }elseif($key == 'address') { ?>
+	                                			<td>
+												  	<div style="width:150px;"><?php echo substr($s->address,0,100); ?></div>
+												  	<?php if (strlen($s->address) > 100) { ?>
+														  	<div style="width:150px !important;" id="address_<?php echo $s->id; ?>" class="collapse">
+														    	<?php echo substr($s->address,100); ?>
+														  	</div>
+														  	<a href="javascript:void(0);" data-toggle="collapse" data-target="#address_<?php echo $s->id; ?>">View More</a>
+												  	<?php } ?>
+	                                			</td>
 	                                	<?php } else { ?>
 	                                			<td><?php echo $s->{$key} ?></td>
 	                                	<?php } ?>
