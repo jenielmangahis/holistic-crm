@@ -669,7 +669,7 @@ class LeadsController extends AppController
               $audit_data['event_status'] = 'Success';
               $audit_data['details']      = 'Lead ID: ' . $id;
               $audit_data['audit_date']   = date("Y-m-d h:i:s");
-              $audit_data['ip_address']   = $this->getRealIPAddress();
+              $audit_data['ip_address']   = getRealIPAddress();
 
               $auditTrail = $this->AuditTrails->newEntity();
               $auditTrail = $this->AuditTrails->patchEntity($auditTrail, $audit_data);
