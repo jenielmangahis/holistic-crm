@@ -431,7 +431,17 @@ class LeadsController extends AppController
           }
 
         }elseif($lead_lock->is_lock == 0) {
-          $data['is_lock']              = 1;
+          $query = $this->Leads->query();
+          $query->update()
+            ->set(['is_lock' => 1, 'last_modified_by_id' => $login_user_id])
+            ->where(['id' => $id])
+            ->execute();
+
+          $session  = $this->request->session();  
+          $lck_leads[$login_user_id] = $id;
+          $session->write('LeadsLock.data', $lck_leads);    
+
+          /*$data['is_lock']              = 1;
           $data['last_modified_by_id'] = $login_user_id;
           $lead_lock = $this->Leads->patchEntity($lead_lock, $data);
           if ( !$this->Leads->save($lead_lock) ) { 
@@ -440,14 +450,14 @@ class LeadsController extends AppController
             $session  = $this->request->session();  
             $lck_leads[$login_user_id] = $id;
             $session->write('LeadsLock.data', $lck_leads);            
-          }
+          }*/
         } 
 
         $lead = $this->Leads->get($id, [
             'contain' => ['LastModifiedBy']
         ]);        
 
-        if ($this->request->is(['patch', 'post', 'put'])) {
+        if ($this->request->is(['patch', 'post', 'put'])) {          
             $data = $this->request->data;
 
             $fields_changes = array();
