@@ -20,15 +20,18 @@
 .freeze-head{
   display: block;
   overflow-y: hidden;
-  height: 73px;
-  padding-top: 30px
-}
+} 
 .freeze-body{
   display: block;
   overflow-y: scroll;
   overflow-x: hidden !important;
   width: 100%;
   height: 200px;
+}
+@media (max-width: 1425px) {
+  .box-body.box-links{
+    overflow-x: scroll !important;
+  }
 }
 </style>
 
@@ -254,7 +257,7 @@ var BASE_URL = "<?php echo $base_url; ?>";
                 <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>                        
             </div>         
         </div>     
-        <div class="box-body box-links" style="height: 350px;">
+        <div class="box-body box-links" style="height: 365px;">
             <table id="example_datatable" class="collapse-tbl table table-hover table-striped table-scroll-body">
                 <thead class="thead-inverse freeze-head">
                     <tr style="width:100% !important; display:block !important;">
