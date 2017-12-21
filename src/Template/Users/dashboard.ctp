@@ -242,7 +242,13 @@ var BASE_URL = "<?php echo $base_url; ?>";
                     <tr>
                         <th style="">Name</th>
                         <?php foreach($statuses as $status) { ?>
-                                <th style=""><?= $status->name ?></th>
+                                <?php 
+                                  $key_information = "No Description";
+                                  if($status->description != '') {
+                                    $key_information = $status->description;
+                                  }
+                                ?>
+                                <th style=""><div data-balloon="<?php echo $key_information; ?>" data-balloon-pos="up"><?= $status->name ?></div></th>
                         <?php } ?>
                     </tr>
                 </thead>
@@ -270,6 +276,5 @@ var BASE_URL = "<?php echo $base_url; ?>";
       </div>
     </div>  
     <!-- Sources List - End -->
-
 </section>
 <!-- /.content -->

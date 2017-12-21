@@ -139,7 +139,7 @@ class UsersController extends AppController
         $leads      = $this->Leads->find('all');
         $users      = $this->Users->find('all');
         $sources    = $this->Sources->find('all');   
-        $statuses   = $this->Statuses->find('all');   
+        $statuses   = $this->Statuses->find('all')->order(['Statuses.sort' => 'ASC']);   
 
         $total_leads = $leads->count();
         $total_users = $users->count();        
@@ -175,7 +175,6 @@ class UsersController extends AppController
         $this->set('lead_registry', $this->Leads);
         $this->set('followup_leads_today', $followup_leads_today);
         $this->set('_serialize', ['total_users','total_leads']);
-
     }   
 
     /**

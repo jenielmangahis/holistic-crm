@@ -24,7 +24,14 @@
                                 <label for='name' class='col-sm-2 control-label'>" . __('Name') . "</label>
                                 <div class='col-sm-6'>";
                                 echo $this->Form->input('name', ['class' => 'form-control', 'id' => 'name', 'label' => false]);                
-                            echo " </div></div>";    
+                            echo " </div></div>"; 
+
+                            echo "
+                            <div class='form-group'>
+                                <label for='description' class='col-sm-2 control-label'>" . __('Description') . "</label>
+                                <div class='col-sm-6'>";
+                                echo $this->Form->input('description', ['class' => 'form-control', 'id' => 'description', 'label' => false]);                
+                            echo " </div></div>";                                
 
                             echo "
                             <div class='form-group'>
