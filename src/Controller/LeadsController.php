@@ -88,7 +88,7 @@ class LeadsController extends AppController
       }
 
       if( isset($this->request->query['query']) ){
-          $query = $this->request->query['query'];
+          $query = trim($this->request->query['query']);
           $leads = $this->Leads->find('all')
               ->contain(['Statuses', 'Sources'])
               ->where(['Leads.firstname LIKE' => '%' . $query . '%'])       

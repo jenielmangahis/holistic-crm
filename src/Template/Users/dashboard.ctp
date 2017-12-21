@@ -11,7 +11,25 @@
   overflow-y: auto;
   height: 300px;  
 }
-
+.box-links{
+  overflow:hidden;
+}
+.collapse-tbl{
+  border-collapse: collapse;
+}
+.freeze-head{
+  display: block;
+  overflow-y: hidden;
+  height: 73px;
+  padding-top: 30px
+}
+.freeze-body{
+  display: block;
+  overflow-y: scroll;
+  overflow-x: hidden !important;
+  width: 100%;
+  height: 200px;
+}
 </style>
 
 <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script> -->
@@ -236,11 +254,11 @@ var BASE_URL = "<?php echo $base_url; ?>";
                 <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>                        
             </div>         
         </div>     
-        <div class="box-body box-links">
-            <table id="example_datatable" class="table table-hover table-striped table-scroll-body">
-                <thead class="thead-inverse">
-                    <tr>
-                        <th style="">Name</th>
+        <div class="box-body box-links" style="height: 350px;">
+            <table id="example_datatable" class="collapse-tbl table table-hover table-striped table-scroll-body">
+                <thead class="thead-inverse freeze-head">
+                    <tr style="width:100% !important; display:block !important;">
+                        <th style="width:9.5% !important;"><div class="">Name</div></th>
                         <?php foreach($statuses as $status) { ?>
                                 <?php 
                                   $key_information = "No Description";
@@ -248,14 +266,14 @@ var BASE_URL = "<?php echo $base_url; ?>";
                                     $key_information = $status->description;
                                   }
                                 ?>
-                                <th style=""><div data-balloon="<?php echo $key_information; ?>" data-balloon-pos="up"><?= $status->name ?></div></th>
+                                <th style="width:9.5% !important;"><div class="" style="z-index:999 !important;" data-balloon="<?php echo $key_information; ?>" data-balloon-pos="up"><?= $status->name ?></div></th>
                         <?php } ?>
                     </tr>
                 </thead>
-                <tbody>
+                <tbody class="freeze-body" style="overflow-y: scroll;overflow-x: scroll;">
                     <?php foreach($sourcesd as $s) { ?>
-                            <tr>
-                                <td><?= $this->Html->link($s->name, ['controller' => 'leads', 'action' => 'from_source', $s->id],['escape' => false, 'target' => '_blank']) ?></td>
+                            <tr style="width:100% !important;">
+                                <td style="width:9.5% !important;"><?= $this->Html->link($s->name, ['controller' => 'leads', 'action' => 'from_source', $s->id],['escape' => false, 'target' => '_blank']) ?></td>
                                 <?php foreach($statuses as $status) { ?>
                                         <?php 
                                             $total_leads_per_source_status = $lead_registry->find('all')        
@@ -265,7 +283,7 @@ var BASE_URL = "<?php echo $base_url; ?>";
                                                 ->count()
                                             ;                                          
                                         ?>
-                                        <td><?php echo $total_leads_per_source_status; ?></td>
+                                        <td style="width:9.5% !important;"><?php echo $total_leads_per_source_status; ?></td>
                                 <?php } ?>                                
                             </tr>
                     <?php } ?>
