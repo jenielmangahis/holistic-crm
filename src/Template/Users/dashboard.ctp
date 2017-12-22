@@ -11,31 +11,40 @@
   overflow-y: auto;
   height: 300px;  
 }
-.box-links{
-  overflow:hidden;
-}
-.collapse-tbl{
-  border-collapse: collapse;
-}
-.freeze-head{
-  display: block;
-  overflow-y: hidden;
-} 
-.freeze-body{
-  display: block;
-  overflow-y: scroll;
-  overflow-x: hidden !important;
-  width: 100%;
-  height: 200px;
-}
-@media (max-width: 1425px) {
-  .box-body.box-links{
-    overflow-x: scroll !important;
-  }
-}
-</style>
 
-<!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script> -->
+#source-table table { width: 100%; }
+
+#source-table thead, #source-table tbody, #source-table tr, #source-table td, #source-table th { display: block; }
+
+#source-table tr:after {
+    content: ' ';
+    display: block;
+    visibility: hidden;
+    clear: both;
+}
+
+#source-table thead th {
+    height: 50px;
+
+    /*text-align: left;*/
+}
+
+#source-table tbody {
+    height: 250px;
+    overflow-y: auto;
+}
+
+#source-table thead {
+    /* fallback */
+}
+
+
+#source-table tbody td, #source-table thead th {
+    width: 95px;
+    float: left;
+}
+
+</style>
 
 <script>
 var BASE_URL = "<?php echo $base_url; ?>";
@@ -257,11 +266,11 @@ var BASE_URL = "<?php echo $base_url; ?>";
                 <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>                        
             </div>         
         </div>     
-        <div class="box-body box-links" style="height: 365px;">
-            <table id="example_datatable" class="collapse-tbl table table-hover table-striped table-scroll-body">
+        <div class="box-body box-links">
+            <table id="example_datatable" class="table table-hover table-striped table-scroll-body">
                 <thead class="thead-inverse freeze-head">
-                    <tr style="width:100% !important; display:block !important;">
-                        <th style="width:9.5% !important;"><div class="">Name</div></th>
+                    <tr>
+                        <th style="">Name</th>
                         <?php foreach($statuses as $status) { ?>
                                 <?php 
                                   $key_information = "No Description";
@@ -269,14 +278,14 @@ var BASE_URL = "<?php echo $base_url; ?>";
                                     $key_information = $status->description;
                                   }
                                 ?>
-                                <th style="width:9.5% !important;"><div class="" style="z-index:999 !important;" data-balloon="<?php echo $key_information; ?>" data-balloon-pos="up"><?= $status->name ?></div></th>
+                                <th style=""><div data-balloon="<?php echo $key_information; ?>" data-balloon-pos="up"><?= $status->name ?></div></th>
                         <?php } ?>
                     </tr>
                 </thead>
                 <tbody class="freeze-body" style="overflow-y: scroll;overflow-x: scroll;">
                     <?php foreach($sourcesd as $s) { ?>
-                            <tr style="width:100% !important;">
-                                <td style="width:9.5% !important;"><?= $this->Html->link($s->name, ['controller' => 'leads', 'action' => 'from_source', $s->id],['escape' => false, 'target' => '_blank']) ?></td>
+                            <tr>
+                                <td><?= $this->Html->link($s->name, ['controller' => 'leads', 'action' => 'from_source', $s->id],['escape' => false, 'target' => '_blank']) ?></td>
                                 <?php foreach($statuses as $status) { ?>
                                         <?php 
                                             $total_leads_per_source_status = $lead_registry->find('all')        
@@ -286,16 +295,81 @@ var BASE_URL = "<?php echo $base_url; ?>";
                                                 ->count()
                                             ;                                          
                                         ?>
-                                        <td style="width:9.5% !important;"><?php echo $total_leads_per_source_status; ?></td>
+                                        <td><?php echo $total_leads_per_source_status; ?></td>
                                 <?php } ?>                                
                             </tr>
                     <?php } ?>
                 </tbody>
-            </table>                               
+            </table>
         </div>
-
       </div>
     </div>  
-    <!-- Sources List - End -->
+    <!-- Sources List - End -->      
+
+<!-- 
+<div class="col-md-12">
+  <div class="box box-primary box-solid">  
+
+    <div class="box-header with-border">  
+        <div class="user-block"><h2><i class="fa fa-list-alt"></i> <?= __('Sources') ?></h2></div>            
+        <div class="box-tools" style="top:9px;">                                         
+            <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>                        
+        </div>         
+    </div>  
+    <div class="box-body box-links" style="">
+
+      <table id="source-table" class="table table-striped">
+          <thead>
+          <tr>
+            <th style="">Name</th>
+            <?php foreach($statuses as $status) { ?>
+                    <?php 
+                      $key_information = "No Description";
+                      if($status->description != '') {
+                        $key_information = $status->description;
+                      }
+                    ?>
+                    <th style=""><div data-balloon="<?php echo $key_information; ?>" data-balloon-pos="down"><?= $status->name ?></div></th>
+            <?php } ?>
+          </tr>
+          </thead>
+          <tbody>
+          <tr>
+                <td><?= $this->Html->link($s->name, ['controller' => 'leads', 'action' => 'from_source', $s->id],['escape' => false, 'target' => '_blank']) ?></td>
+                <?php foreach($statuses as $status) { ?>
+                        <?php 
+                            $total_leads_per_source_status = $lead_registry->find('all')        
+                                ->contain(['LastModifiedBy'])        
+                                ->where(['Leads.source_id' => $s->id])
+                                ->andWhere(['Leads.status_id' => $status->id])
+                                ->count()
+                            ;                                          
+                        ?>
+                        <td><?php echo $total_leads_per_source_status; ?></td>
+                <?php } ?>     
+          </tr>
+          <?php foreach($sourcesd as $s) { ?>
+                  <tr>
+                      <td><?= $this->Html->link($s->name, ['controller' => 'leads', 'action' => 'from_source', $s->id],['escape' => false, 'target' => '_blank']) ?></td>
+                      <?php foreach($statuses as $status) { ?>
+                              <?php 
+                                  $total_leads_per_source_status = $lead_registry->find('all')        
+                                      ->contain(['LastModifiedBy'])        
+                                      ->where(['Leads.source_id' => $s->id])
+                                      ->andWhere(['Leads.status_id' => $status->id])
+                                      ->count()
+                                  ;                                          
+                              ?>
+                              <td><?php echo $total_leads_per_source_status; ?></td>
+                      <?php } ?>                                
+                  </tr>
+          <?php } ?>
+          </tbody>
+      </table>
+
+    </div>
+  </div>
+</div>
+-->  
 </section>
 <!-- /.content -->
