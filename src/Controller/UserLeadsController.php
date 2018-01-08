@@ -156,6 +156,12 @@ class UserLeadsController extends AppController
           }
 
       }
+
+      $get         = $_GET;
+      if(isset($get['page'])) {
+        $this->set('page', $get['page']);
+      }      
+
       
       $this->set('_serialize', ['']);
     }
@@ -186,6 +192,7 @@ class UserLeadsController extends AppController
     {
         $this->SourceUsers = TableRegistry::get('SourceUsers');
         $this->Sources     = TableRegistry::get('Sources');
+        $this->Statuses    = TableRegistry::get('Statuses');
 
         $p = $this->default_group_actions;
         if( $p && $p['leads'] == 'View Only' ){
@@ -289,11 +296,12 @@ class UserLeadsController extends AppController
                 $this->Flash->error(__('The lead could not be saved. Please, try again.'));
             }
         }
+        $status_list = $this->Statuses->find('all', ['order' => ['Statuses.sort' => 'ASC']]);
         $statuses = $this->Leads->Statuses->find('list');
         $sources  = $this->Leads->Sources->find('list');        
         $interestTypes = $this->Leads->InterestTypes->find('list');
         $leadTypes = $this->Leads->LeadTypes->find('list');
-        $this->set(compact('lead', 'statuses', 'sources', 'interestTypes', 'leadTypes'));
+        $this->set(compact('lead', 'statuses', 'sources', 'interestTypes', 'leadTypes', 'status_list'));
         $this->set('_serialize', ['lead']);
     }
 
@@ -308,6 +316,7 @@ class UserLeadsController extends AppController
     {
         $this->SourceUsers = TableRegistry::get('SourceUsers');
         $this->Sources     = TableRegistry::get('Sources');
+        $this->Statuses    = TableRegistry::get('Statuses');
 
         $p = $this->default_group_actions;
 
@@ -433,22 +442,27 @@ class UserLeadsController extends AppController
                     if($redir == 'dashboard') {
                       return $this->redirect(array('controller' => 'users', 'action' => 'dashboard'));
                     } else {
-                      return $this->redirect(['action' => 'index']);
+                      if(isset($_GET['page'])) {
+                        return $this->redirect(['controller' => 'user_leads', 'action' => 'index?page='.$_GET['page']]);
+                      } else {
+                        return $this->redirect(['action' => 'index']);
+                      }                      
                     }
-                    
                 }else{
-                    return $this->redirect(['action' => 'edit', $id]);
+                    return $this->redirect(['controller' => 'user_leads','action' => 'edit', $id]);
                 }         
             } else {
                 $this->Flash->error(__('The lead could not be saved. Please, try again.'));
             }
         }
+
+        $status_list = $this->Statuses->find('all', ['order' => ['Statuses.sort' => 'ASC']]);
         $statuses = $this->Leads->Statuses->find('list', ['limit' => 200]);
         $sources = $this->Leads->Sources->find('list', ['limit' => 200]);
         //$allocations = $this->Leads->Allocations->find('list', ['limit' => 200]);
         $interestTypes = $this->Leads->InterestTypes->find('list',['limit' => 200]);
         $leadTypes = $this->Leads->LeadTypes->find('list',['limit' => 200]);
-        $this->set(compact('lead', 'statuses', 'sources', 'interestTypes', 'leadTypes'));
+        $this->set(compact('lead', 'statuses', 'sources', 'interestTypes', 'leadTypes', 'status_list'));
         $this->set('_serialize', ['lead']);
     }
 

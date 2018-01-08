@@ -1,3 +1,4 @@
+<?php ?>
 <style>
 .form-hdr{
     background-color: #222D32;
@@ -84,7 +85,25 @@
                                 <label for='status_id' class='col-sm-2 control-label'>" . __('Status') . "</label>
                                 <div class='col-sm-6'>";
                                  echo $this->Form->input('status_id', ['class' => 'form-control', 'id' => 'status_id', 'label' => false, 'options' => $statuses]);                 
-                            echo " </div></div>";    
+                            echo " </div>";
+                            ?>
+                            <div class='col-md-3'>
+                                <div class='callout callout-info'>
+                                    <b>
+                                        <a href='javascript:void(0);' style='display: none;' id='hide_note'>Hide Note</a>
+                                        <a href='javascript:void(0);' id='show_note'>Show Note</a>
+                                    </b>
+                                    <div id='status_note' style='display: none;'>
+                                    <ul>
+                                        <?php foreach($status_list as $stat) { ?>
+                                                <li><div data-balloon='<?php echo $stat->description; ?>' data-balloon-pos='up'><?php echo $stat->name; ?></div></li>    
+                                        <?php } ?>                               
+                                    </ul> 
+                                    </div>                                   
+                                </div>
+                            </div>
+                            <?php
+                            echo "</div>";    
 
                             echo "
                             <div class='form-group'>

@@ -62,7 +62,11 @@
                                         </button>
                                         <ul class="dropdown-menu" role="menu" aria-labelledby="drpdwn">
                                             <li role="presentation"><?= $this->Html->link('<i class="fa fa-eye"></i> View', ['action' => 'viewfs', $lead->id, $source_id],['escape' => false]) ?></li>
-                                            <li role="presentation"><?= $this->Html->link('<i class="fa fa-pencil"></i> Edit', ['action' => 'edit', $lead->id, 'from_source', $source_id],['escape' => false]) ?></li>
+                                            <?php if(isset($page)) { ?>
+                                                    <li role="presentation"><?= $this->Html->link('<i class="fa fa-pencil"></i> Edit', ['action' => 'edit', $lead->id, 'from_source', $source_id. "?page=" . $page],['escape' => false]) ?></li>
+                                            <?php } else { ?>
+                                                    <li role="presentation"><?= $this->Html->link('<i class="fa fa-pencil"></i> Edit', ['action' => 'edit', $lead->id, 'from_source', $source_id],['escape' => false]) ?></li>
+                                            <?php } ?>
                                             <li role="presentation"><?= $this->Html->link('<i class="fa fa-trash"></i> Delete', '#modal-'.$lead->id,['data-toggle' => 'modal','escape' => false]) ?></li>
                                             <?php if($is_admin_user == 1 && $lead->is_lock == 1){ ?>
                                                     <li role="presentation"><?= $this->Html->link('<i class="fa fa-unlock"></i> Unlock', '#unlock-modal-'.$lead->id,['data-toggle' => 'modal','escape' => false]) ?></li>
@@ -83,12 +87,21 @@
                                             </div>
                                             <div class="modal-footer">
                                                 <button type="button" data-dismiss="modal" class="btn btn-default">No</button>
-                                                <?= $this->Form->postLink(
-                                                        'Yes',
-                                                        ['action' => 'delete', $lead->id, $source_id],
-                                                        ['class' => 'btn btn-danger', 'escape' => false]
-                                                    )
-                                                ?>
+                                                <?php if(isset($page)) { ?>
+                                                        <?= $this->Form->postLink(
+                                                                'Yes',
+                                                                ['action' => 'delete', $lead->id, $source_id, "" . '?page='.$page],
+                                                                ['class' => 'btn btn-danger', 'escape' => false]
+                                                            )
+                                                        ?>
+                                                <?php }else{ ?>                                                
+                                                        <?= $this->Form->postLink(
+                                                                'Yes',
+                                                                ['action' => 'delete', $lead->id, $source_id],
+                                                                ['class' => 'btn btn-danger', 'escape' => false]
+                                                            )
+                                                        ?>
+                                                <?php } ?>
                                             </div>
                                           </div>
                                         </div>                              

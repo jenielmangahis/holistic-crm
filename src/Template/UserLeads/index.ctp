@@ -66,7 +66,12 @@
                                         </button>
                                         <ul class="dropdown-menu" role="menu" aria-labelledby="drpdwn">
                                             <li role="presentation"><?= $this->Html->link('<i class="fa fa-eye"></i> View', ['action' => 'view', $lead->id],['escape' => false]) ?></li>
-                                            <li role="presentation"><?= $this->Html->link('<i class="fa fa-pencil"></i> Edit', ['action' => 'edit', $lead->id],['escape' => false]) ?></li>                                            
+                                            <?php if(isset($page)) { ?>
+                                                    <li role="presentation"><?= $this->Html->link('<i class="fa fa-pencil"></i> Edit', ['action' => 'edit', $lead->id . "?page=" . $page],['escape' => false]) ?></li>   
+                                            <?php }else{ ?>
+                                                    <li role="presentation"><?= $this->Html->link('<i class="fa fa-pencil"></i> Edit', ['action' => 'edit', $lead->id],['escape' => false]) ?></li>   
+                                            <?php } ?>
+                                                                                     
                                         </ul>
                                     </div>   
                                     <div id="modal-<?=$lead->id?>" class="modal fade">

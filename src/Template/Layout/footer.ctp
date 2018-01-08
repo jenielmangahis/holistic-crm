@@ -338,6 +338,23 @@ $(function(){
   });
   */
 
+    $(document).ready(function(){
+        /*$("#hide_note").click(function(){
+            $("#status_note").toggle();
+        });*/
+
+        $("#hide_note").click(function(){
+            $("#status_note").hide();
+            $("#hide_note").hide();
+            $("#show_note").show();             
+        });
+        $("#show_note").click(function(){
+            $("#status_note").show();
+            $("#hide_note").show();
+            $("#show_note").hide();           
+        });        
+    });
+
 });
 CKEDITOR.replace( 'ckeditor', {
       width: '100'

@@ -67,7 +67,6 @@ class LeadsController extends AppController
      */
     public function index()
     {
-
       if(isset($this->request->query['unlock']) && isset($this->request->query['lead_id']) ) {
         $lead_id = $this->request->query['lead_id'];
         if($this->request->query['unlock'] == 1) {
@@ -144,6 +143,10 @@ class LeadsController extends AppController
           
       }
 
+      $get         = $_GET;
+      if(isset($get['page'])) {
+        $this->set('page', $get['page']);
+      }      
 
       /*$this->paginate = [
           'contain' => ['Statuses', 'Sources']
@@ -151,7 +154,7 @@ class LeadsController extends AppController
         
       $this->set('is_admin_user', $this->user->group_id);
       $this->set('leads', $this->paginate($leads));
-      $this->set('_serialize', ['leads', 'is_admin_user']);
+      $this->set('_serialize', ['leads', 'is_admin_user', 'page']);
     }
 
     public function from_source($source_id)
@@ -192,12 +195,17 @@ class LeadsController extends AppController
               ->where(['Leads.source_id ' => $source_id]) 
           ;
       }
+
+      $get         = $_GET;
+      if(isset($get['page'])) {
+        $this->set('page', $get['page']);
+      }        
        
       $this->set('source_id', $source_id);
       $this->set('is_admin_user', $this->user->group_id);
       $this->set('source_name', $source->name);
       $this->set('leads', $this->paginate($leads));
-      $this->set('_serialize', ['leads', 'is_admin_user']);
+      $this->set('_serialize', ['leads', 'is_admin_user', 'page']);
 
     }
 
@@ -242,6 +250,7 @@ class LeadsController extends AppController
     {
         $this->SourceUsers = TableRegistry::get('SourceUsers');        
         $this->Sources     = TableRegistry::get('Sources');
+        $this->Statuses    = TableRegistry::get('Statuses');
         $this->AuditTrails = TableRegistry::get('AuditTrails');
 
         $p = $this->default_group_actions;
@@ -386,11 +395,12 @@ class LeadsController extends AppController
         }
 
         $this->set('source_id', $source_id);
+        $status_list = $this->Statuses->find('all', ['order' => ['Statuses.sort' => 'ASC']]);
         $statuses = $this->Leads->Statuses->find('list', ['order' => ['Statuses.sort' => 'ASC']]);
         $sources  = $this->Leads->Sources->find('list', ['order' => ['Sources.sort' => 'ASC']]);        
         $interestTypes = $this->Leads->InterestTypes->find('list', ['order' => ['InterestTypes.sort' => 'ASC']]);
         $leadTypes = $this->Leads->LeadTypes->find('list', ['order' => ['LeadTypes.sort' => 'ASC']]);
-        $this->set(compact('lead', 'statuses', 'sources', 'interestTypes', 'leadTypes'));
+        $this->set(compact('lead', 'statuses', 'sources', 'interestTypes', 'leadTypes','status_list'));
         $this->set('_serialize', ['lead']);
     }
 
@@ -405,6 +415,7 @@ class LeadsController extends AppController
     {
         $this->SourceUsers = TableRegistry::get('SourceUsers');
         $this->Sources     = TableRegistry::get('Sources');
+        $this->Statuses    = TableRegistry::get('Statuses');
         $this->AuditTrails = TableRegistry::get('AuditTrails');
 
         $p = $this->default_group_actions;
@@ -613,9 +624,12 @@ class LeadsController extends AppController
                     }elseif($redir == 'from_source'){
                       return $this->redirect(array('controller' => 'leads', 'action' => 'from_source', $source_id));
                     } else {
-                      return $this->redirect(['action' => 'index']);
+                      if(isset($_GET['page'])) {
+                        return $this->redirect(['controller' => 'leads', 'action' => 'index?page='.$_GET['page']]);
+                      } else {
+                        return $this->redirect(['action' => 'index']);
+                      }
                     }
-                    
                 }else{
                     if($redir == 'from_source'){
                       return $this->redirect(['action' => 'edit', $id, 'from_source', $source_id]);
@@ -634,10 +648,11 @@ class LeadsController extends AppController
         $this->set('redir', $redir);
         $this->set('source_id', $source_id);
         $statuses = $this->Leads->Statuses->find('list', ['order' => ['Statuses.sort' => 'ASC']]);
+        $status_list = $this->Statuses->find('all', ['order' => ['Statuses.sort' => 'ASC']]);
         $sources = $this->Leads->Sources->find('list', ['order' => ['Sources.sort' => 'ASC']]);        
         $interestTypes = $this->Leads->InterestTypes->find('list', ['order' => ['InterestTypes.sort' => 'ASC']]);
         $leadTypes = $this->Leads->LeadTypes->find('list', ['order' => ['LeadTypes.sort' => 'ASC']]);
-        $this->set(compact('lead', 'statuses', 'sources', 'interestTypes', 'leadTypes'));
+        $this->set(compact('lead', 'statuses', 'sources', 'interestTypes', 'leadTypes', 'status_list'));
         $this->set('_serialize', ['lead']);
     }
 
@@ -648,7 +663,7 @@ class LeadsController extends AppController
      * @return \Cake\Network\Response|null Redirects to index.
      * @throws \Cake\Network\Exception\NotFoundException When record not found.
      */
-    public function delete($id = null, $source_id = null)
+    public function delete($id = null, $source_id = null, $page = null)
     {
         $p = $this->default_group_actions;
         if( $p && $p['leads'] != 'View, Edit and Delete' ){
@@ -702,9 +717,19 @@ class LeadsController extends AppController
         }
 
         if( !empty($source_id) ) {
-          return $this->redirect(['action' => 'from_source/'. $source_id]);
+          if(isset($_GET['page']) ) {
+            return $this->redirect(['action' => 'from_source/'. $source_id . '?page='.$_GET['page']]);
+          }else{
+            return $this->redirect(['action' => 'from_source/'. $source_id]);
+          }
+          
         } else {
-          return $this->redirect(['action' => 'index']);      
+          if(isset($_GET['page']) ) {
+            return $this->redirect(['action' => 'index?page='.$_GET['page']]);     
+          } else {
+            return $this->redirect(['action' => 'index']);     
+          }
+           
         }
         
     }
