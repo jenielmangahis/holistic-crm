@@ -26,6 +26,8 @@ use Cake\Validation\Validator;
  */
 class LeadsTable extends Table
 {
+    const IS_ARCHIVE = 'Yes';
+    const ISNOT_ARCHIVE = 'No';
 
     /**
      * Initialize method
@@ -146,5 +148,13 @@ class LeadsTable extends Table
         $rules->add($rules->existsIn(['interest_type_id'], 'InterestTypes'));
 
         return $rules;
+    }
+
+    public function isNotArchive() {
+        return self::ISNOT_ARCHIVE;
+    }
+
+    public function isArchive() {
+        return self::IS_ARCHIVE;
     }
 }

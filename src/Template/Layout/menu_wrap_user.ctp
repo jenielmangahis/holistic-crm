@@ -104,6 +104,19 @@
               </ul>
             </li>
 
+            <li id="groups_nav" title="Archives" class="treeview <?= $nav_selected["archives"] ?>">
+              <a href="#">
+                <i class="fa fa-trash"></i> <span>Archives</span>
+                <span class="pull-right-container">
+                  <i class="fa fa-angle-left pull-right"></i>
+                </span>
+              </a>
+              <ul class="treeview-menu">            
+                <li>
+                  <?= $this->Html->link('<i class="fa fa-users"></i><span>' . __("Leads") . "</span>",["controller" => "archives", "action" => "leads"],["escape" => false]) ?></li>
+              </ul>
+            </li>
+
             <?php if($system_settings_active_action) { ?>
               <li id="groups_nav" title="Groups" class="treeview active <?php //echo $nav_selected["system_settings"] ?>">
                 <a href="#">
