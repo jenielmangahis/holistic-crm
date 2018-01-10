@@ -75,8 +75,8 @@ div.box-body{
                             <tr>
                                 <th class="actions"></th>                                
                                 <th><?= $this->Paginator->sort('name', __("Name") . "<i class='fa fa-sort pull-right'> </i>", array('escape' => false)) ?></th>                                
-                                <th><?= __("Created") ?></th>
-                                <th><?= __("Modified") ?></th>                                   
+                                <!-- <th><?= __("Created") ?></th> -->
+                                <th><?= __("Users") ?></th>                                   
                             </tr>
                         </thead>
                         <tbody>
@@ -118,8 +118,10 @@ div.box-body{
                                     </div>                       
                                 </td>                                
                                 <td><?= $source->name; ?></td>                                
-                                <td><?= $source->created ?></td>
-                                <td><?= $source->modified ?></td>                          
+                                <!-- <td><?= $source->created ?></td> -->
+                                <td>
+                                    --
+                                </td>                          
                             </tr>
                             <?php } ?>
                         </tbody>
