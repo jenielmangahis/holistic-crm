@@ -112,6 +112,7 @@ class UserLeadsController extends AppController
             $leads = $this->Leads->find('all')
               ->contain(['Statuses', 'Sources', 'LastModifiedBy'])
               ->where(['Leads.source_id IN' => $source_ids])
+              ->andwhere(['Leads.is_archive' => 'No']) 
               ->andwhere([
                             'Leads.firstname LIKE' => '%' . $query . '%',
                             'OR' => [['Leads.surname LIKE' => '%' . $query . '%']],
@@ -147,6 +148,7 @@ class UserLeadsController extends AppController
             $leads = $this->Leads->find('all')
                 ->contain(['LastModifiedBy', 'Statuses', 'Sources'])
                 ->where(['Leads.source_id IN' => $source_ids])
+                ->andwhere(['Leads.is_archive' => 'No']) 
             ;
             $this->set('leads', $this->paginate($leads));
 

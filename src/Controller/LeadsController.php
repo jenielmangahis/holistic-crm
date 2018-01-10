@@ -55,6 +55,7 @@ class LeadsController extends AppController
         }         
         
         $this->enable_email_sending = true;
+        $this->enable_archive_data  = true;
         $this->user = $user_data;
         $this->Auth->allow(['register']);
 
@@ -90,9 +91,11 @@ class LeadsController extends AppController
           $query = trim($this->request->query['query']);
           $leads = $this->Leads->find('all')
               ->contain(['Statuses', 'Sources'])
-              ->where(['Leads.firstname LIKE' => '%' . $query . '%'])       
+              ->where(['Leads.is_archive' => 'No']) 
+              ->AndWhere(['Leads.firstname LIKE' => '%' . $query . '%'])       
               ->orWhere(['Leads.surname LIKE' => '%' . $query . '%'])       
-              ->orWhere(['Leads.email LIKE' => '%' . $query . '%'])       
+              ->orWhere(['Leads.email LIKE' => '%' . $query . '%'])     
+
           ;
       }else{
 
@@ -127,6 +130,7 @@ class LeadsController extends AppController
             $this->paginate = ['order' => ['Leads.allocation_date' => 'DESC']];
             $leads = $this->Leads->find('all')
                 ->contain(['Statuses', 'Sources', 'LastModifiedBy'])
+                ->where(['Leads.is_archive' => 'No'])      
                 
             ;
           }else{
@@ -137,6 +141,7 @@ class LeadsController extends AppController
             
             $leads = $this->Leads->find('all')
                 ->contain(['Statuses', 'Sources', 'LastModifiedBy'])
+                ->where(['Leads.is_archive' => 'No']) 
                 //->order(['Sources.name' => 'ASC'])
             ;  
           }
@@ -185,7 +190,8 @@ class LeadsController extends AppController
           $query = $this->request->query['query'];
           $leads = $this->Leads->find('all')
               ->contain(['Statuses', 'Sources', 'Allocations'])
-              ->where(['Leads.firstname LIKE' => '%' . $query . '%'])       
+              ->where(['Leads.is_archive' => 'No']) 
+              ->AndWhere(['Leads.firstname LIKE' => '%' . $query . '%'])       
               ->orWhere(['Leads.surname LIKE' => '%' . $query . '%'])       
               ->orWhere(['Leads.email LIKE' => '%' . $query . '%'])       
           ;
@@ -193,6 +199,7 @@ class LeadsController extends AppController
           $leads = $this->Leads->find('all')
               ->contain(['Statuses', 'Sources', 'LastModifiedBy'])
               ->where(['Leads.source_id ' => $source_id]) 
+              ->AndWhere(['Leads.is_archive' => 'No']) 
           ;
       }
 
@@ -682,32 +689,71 @@ class LeadsController extends AppController
           }       
 
           $this->request->allowMethod(['post', 'delete']);
-          $lead = $this->Leads->get($id);
-          if ($this->Leads->delete($lead)) {
+          
+          if($this->enable_archive_data) {
 
-              /*
-               * Audit Trail start here
-              */
-              $this->AuditTrails = TableRegistry::get('AuditTrails');
-              $audit_data['user_id']      = $login_user_id;
-              $audit_data['action']       = 'Delete Lead';
-              $audit_data['event_status'] = 'Success';
-              $audit_data['details']      = 'Lead ID: ' . $id;
-              $audit_data['audit_date']   = date("Y-m-d h:i:s");
-              $audit_data['ip_address']   = getRealIPAddress();
+            $lead = $this->Leads->get($id);     
 
-              $auditTrail = $this->AuditTrails->newEntity();
-              $auditTrail = $this->AuditTrails->patchEntity($auditTrail, $audit_data);
-              if (!$this->AuditTrails->save($auditTrail)) {
-                echo 'Error updating audit trails'; exit;
-              }
-              /*
-               * Audit Trail end here
-              */              
+            $login_user_id                      = $this->user->id;
+            $lead_data['last_modified_by_id ']  = $login_user_id;
+            $lead_data['is_archive']           = "Yes";
+            $lead = $this->Leads->patchEntity($lead, $lead_data);
 
-              $this->Flash->success(__('The lead has been deleted.'));
+            if ( !$this->Leads->save($lead) ) { 
+              $this->Flash->error(__('The lead could not be archived. Please try again.'));
+            } else {
+                /*
+                 * Audit Trail start here
+                */
+                $this->AuditTrails = TableRegistry::get('AuditTrails');
+                $audit_data['user_id']      = $login_user_id;
+                $audit_data['action']       = 'Archived Lead';
+                $audit_data['event_status'] = 'Success';
+                $audit_data['details']      = 'Lead ID: ' . $id;
+                $audit_data['audit_date']   = date("Y-m-d h:i:s");
+                $audit_data['ip_address']   = getRealIPAddress();
+
+                $auditTrail = $this->AuditTrails->newEntity();
+                $auditTrail = $this->AuditTrails->patchEntity($auditTrail, $audit_data);
+                if (!$this->AuditTrails->save($auditTrail)) {
+                  echo 'Error updating audit trails'; exit;
+                }
+                /*
+                 * Audit Trail end here
+                */             
+                $this->Flash->success(__('The lead has been deleted.'));   
+            }
+
           } else {
-              $this->Flash->error(__('The lead could not be deleted. Please try again.'));
+
+            $lead = $this->Leads->get($id);
+            if ($this->Leads->delete($lead)) {
+
+                /*
+                 * Audit Trail start here
+                */
+                $this->AuditTrails = TableRegistry::get('AuditTrails');
+                $audit_data['user_id']      = $login_user_id;
+                $audit_data['action']       = 'Delete Lead';
+                $audit_data['event_status'] = 'Success';
+                $audit_data['details']      = 'Lead ID: ' . $id;
+                $audit_data['audit_date']   = date("Y-m-d h:i:s");
+                $audit_data['ip_address']   = getRealIPAddress();
+
+                $auditTrail = $this->AuditTrails->newEntity();
+                $auditTrail = $this->AuditTrails->patchEntity($auditTrail, $audit_data);
+                if (!$this->AuditTrails->save($auditTrail)) {
+                  echo 'Error updating audit trails'; exit;
+                }
+                /*
+                 * Audit Trail end here
+                */              
+
+                $this->Flash->success(__('The lead has been deleted.'));
+            } else {
+                $this->Flash->error(__('The lead could not be deleted. Please try again.'));
+            }
+
           }
 
         } else {
