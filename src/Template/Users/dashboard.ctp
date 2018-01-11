@@ -289,8 +289,9 @@ var BASE_URL = "<?php echo $base_url; ?>";
                                 <?php foreach($statuses as $status) { ?>
                                         <?php 
                                             $total_leads_per_source_status = $lead_registry->find('all')        
-                                                ->contain(['LastModifiedBy'])        
-                                                ->where(['Leads.source_id' => $s->id])
+                                                ->contain(['LastModifiedBy'])
+                                                ->where(['Leads.is_archive' => 'No']) 
+                                                ->andwhere(['Leads.source_id' => $s->id])
                                                 ->andWhere(['Leads.status_id' => $status->id])
                                                 ->count()
                                             ;                                          

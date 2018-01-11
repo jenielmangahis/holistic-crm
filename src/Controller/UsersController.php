@@ -150,13 +150,15 @@ class UsersController extends AppController
 
         $new_leads = $this->Leads->find('all')        
             ->contain(['LastModifiedBy'])        
-            ->where(['DATE_FORMAT(Leads.created,"%Y-%m-%d")' => date("Y-m-d")])
+            ->where(['Leads.is_archive' => 'No']) 
+            ->andwhere(['DATE_FORMAT(Leads.created,"%Y-%m-%d")' => date("Y-m-d")])
             ->order(['Leads.id' => 'DESC'])            
         ;
 
         $followup_leads_today = $this->Leads->find('all')
             ->contain(['LastModifiedBy'])
-            ->where(['DATE_FORMAT(Leads.followup_date,"%Y-%m-%d")' => date("Y-m-d")])
+            ->where(['Leads.is_archive' => 'No']) 
+            ->andwhere(['DATE_FORMAT(Leads.followup_date,"%Y-%m-%d")' => date("Y-m-d")])
             ->order(['Leads.id' => 'DESC'])
         ;
 
@@ -240,7 +242,8 @@ class UsersController extends AppController
         if( !empty($rids) ) {
             $userLeads = $this->Leads->find('all')
                 ->contain([])
-                ->where(['Leads.source_id IN' => $rids])
+                ->where(['Leads.is_archive' => 'No']) 
+                ->andwhere(['Leads.source_id IN' => $rids])
             ;
         } else { $userLeads = ''; }
 
