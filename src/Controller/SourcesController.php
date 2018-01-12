@@ -60,7 +60,8 @@ class SourcesController extends AppController
         if( isset( $this->request->query['query'] ) ) {
 
             $query   = $this->request->query['query'];
-            $sources = $this->Sources->find('all')                
+            $sources = $this->Sources->find('all')      
+                ->contain(['SourceUsers' => ['Users']])          
                 ->where( ['Sources.name LIKE' => '%' . $query . '%'] );
 
         } else {
@@ -82,7 +83,11 @@ class SourcesController extends AppController
                 }
             }
 
-            $sources = $this->Sources->find('all', ['order' => ['Sources.sort' => 'ASC']]);
+            $sources = $this->Sources->find('all')
+                ->contain(['SourceUsers' => ['Users']])          
+                ->order(['Sources.sort' => 'ASC'])
+            ;
+            //$sources = $this->Sources->find('all', ['order' => ['Sources.sort' => 'ASC']]);
         }     
 
         $this->set('sources', $this->paginate($sources));

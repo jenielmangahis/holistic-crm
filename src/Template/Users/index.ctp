@@ -147,7 +147,7 @@ div.box-body{
                                                 foreach($user->source_users as $au){                                                    
                                                     $add_list_class = '';
                                                     $add_icon = '';
-                                                    if( $counter_list > 1 ){
+                                                    if( $counter_list > 1 ){                                                        
                                                         $add_list_class = 'hidden';
                                                     }else{
                                                         $add_icon = "<a href='javascript:void(0);' data-id=" . $user->id . " class='btn btn-default btn-xs btn-show-more-sources'><i class='fa fa-plus'></i> View More</a>";
@@ -159,17 +159,19 @@ div.box-body{
                                             }else{
                                                 echo "-";
                                             }
-                                        }else{                                            
-                                            if(count($user->source_users) > 0){
+                                        }else{                                                                                    
+                                            if(count($user->source_users) > 0){                                                
                                                 $counter_list = 1;
                                                 echo "<ul class='user-allocations'>";                                                
                                                 foreach($user->source_users as $au){
                                                     $add_list_class = '';
                                                     $add_icon = '';
-                                                    if( $counter_list > 1 ){
+                                                    if( $counter_list > 1 ){                                                        
                                                         $add_list_class = 'hidden';
                                                     }else{
-                                                        $add_icon = "<a href='javascript:void(0);' data-id=" . $user->id . " class='btn btn-default btn-xs btn-show-more-sources'><i class='fa fa-plus'></i> View More</a>";
+                                                        if( count($user->source_users) > 1 ){
+                                                            $add_icon = "<a href='javascript:void(0);' data-id=" . $user->id . " class='btn btn-default btn-xs btn-show-more-sources'><i class='fa fa-plus'></i> View More</a>";
+                                                        }                                                        
                                                     }
                                                     echo "<li class='source-item-" . $user->id . " {$add_list_class}'>" . $au->source->name . " {$add_icon}</li>";
                                                     $counter_list++;

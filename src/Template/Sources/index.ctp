@@ -117,10 +117,30 @@ div.box-body{
                                         </div>                              
                                     </div>                       
                                 </td>                                
-                                <td><?= $source->name; ?></td>                                
-                                <!-- <td><?= $source->created ?></td> -->
+                                <td><?= $source->name; ?></td>                                                                
                                 <td>
-                                    --
+                                    <?php                                     
+                                        if(count($source->source_users) > 0){
+                                            $counter_list = 1;
+                                            echo "<ul class='user-allocations'>";                                                
+                                            foreach($source->source_users as $au){                                                                                                    
+                                                $add_list_class = '';
+                                                $add_icon = '';
+                                                if( $counter_list > 1 ){
+                                                    $add_list_class = 'hidden';
+                                                }else{
+                                                    if( count($source->source_users) > 1 ){
+                                                        $add_icon = "<a href='javascript:void(0);' data-id=" . $source->id . " class='btn btn-default btn-xs btn-show-more-sources'><i class='fa fa-plus'></i> View More</a>";
+                                                    }
+                                                }
+                                                echo "<li class='source-item-" . $source->id . " {$add_list_class}'>" . $au->user->firstname . " " . $au->user->lastname . " {$add_icon}</li>";
+                                                $counter_list++;
+                                            }
+                                            echo "</ul>";
+                                        }else{
+                                            echo "-";
+                                        }
+                                    ?>
                                 </td>                          
                             </tr>
                             <?php } ?>

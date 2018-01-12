@@ -41,7 +41,11 @@ class SourcesTable extends Table
         $this->belongsTo('Allocations', [
             'foreignKey' => 'allocation_id',
             'joinType' => 'INNER'
-        ]);        
+        ]);     
+
+        $this->hasMany('SourceUsers', [
+            'foreignKey' => 'source_id'
+        ]);   
     }
 
     /**
