@@ -126,6 +126,7 @@ div.box-body{
                                             foreach($source->source_users as $au){                                                                                                    
                                                 $add_list_class = '';
                                                 $add_icon = '';
+                                                $other_email = array();
                                                 if( $counter_list > 1 ){
                                                     $add_list_class = 'hidden';
                                                 }else{
@@ -133,7 +134,15 @@ div.box-body{
                                                         $add_icon = "<a href='javascript:void(0);' data-id=" . $source->id . " class='btn btn-default btn-xs btn-show-more-sources'><i class='fa fa-plus'></i> View More</a>";
                                                     }
                                                 }
-                                                echo "<li class='source-item-" . $source->id . " {$add_list_class}'>" . $au->user->firstname . " " . $au->user->lastname . " {$add_icon}</li>";
+                                                echo "<li class='source-item-" . $source->id . " {$add_list_class}'>" . $au->user->firstname . " " . $au->user->lastname ." {$add_icon}</li>";
+                                                if(!empty($au->user->other_email)) {
+                                                    $other_email = explode(";", $au->user->other_email);
+                                                    echo "<ul class='user-allocations'>";
+                                                        foreach($other_email as $email) {
+                                                            echo "<li class='source-item-" . $source->id . " {$add_list_class}'>".$email."</li>";
+                                                        }
+                                                    echo "</ul>";
+                                                }
                                                 $counter_list++;
                                             }
                                             echo "</ul>";

@@ -226,7 +226,7 @@ class LeadsController extends AppController
     public function view($id = null)
     {
         $lead = $this->Leads->find()
-           ->contain(['Statuses', 'Sources', 'LastModifiedBy'])
+           ->contain(['Statuses', 'Sources', 'LeadTypes', 'InterestTypes', 'LastModifiedBy'])
            ->where(['Leads.id' => $id])
            ->first()
         ;       

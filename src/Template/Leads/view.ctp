@@ -99,6 +99,13 @@
                                 <label for='source_id' class='col-sm-2 control-label'>" . __('Source') . "</label>
                                 <div class='col-sm-6'>";
                                 echo '<input type="text" id="source_id" class="form-control" name="source_id" value="' . $lead->source->name . '" readonly="readonly" />';
+                            echo " </div></div>"; 
+
+                            echo "
+                            <div class='form-group'>
+                                <label for='source_id' class='col-sm-2 control-label'>" . __('URL') . "</label>
+                                <div class='col-sm-6'>";
+                                echo '<input type="text" id="source_url" class="form-control" name="source_url" value="' . $lead->source_url . '" readonly="readonly" />';
                             echo " </div></div>";    
 
                             echo "
@@ -109,18 +116,19 @@
                                 echo '<input type="text" id="lead_type_id" class="form-control" name="lead_type_id" value="' . $lead_type_value . '" readonly="readonly" />';
                             echo " </div></div>";    
 
-                            echo "
+                            /*echo "
                             <div class='form-group'>
                                 <label for='allocation_id' class='col-sm-2 control-label'>" . __('Allocated to') . "</label>
                                 <div class='col-sm-6'>";
                                 echo '<input type="text" id="allocation_id" class="form-control" name="allocation_id" value="' . $lead->allocation->name . '" readonly="readonly" />';
-                            echo " </div></div>";    
-                            echo "
+                            echo " </div></div>"; */ 
+                              
+                            /*echo "
                             <div class='form-group'>
                                 <label for='allocation_date' class='col-sm-2 control-label'>" . __('Allocation Date') . "</label>
                                 <div class='col-sm-6'>";
                                 echo $this->Form->input('allocation_date', ['type' => 'text', 'value' => date("d F, Y"), 'class' => 'form-control', 'id' => 'lead-allocation-date', 'readonly' => 'readonly', 'label' => false]);                
-                            echo " </div></div>";    
+                            echo " </div></div>"; */   
                             
                             echo "
                             <div class='form-group'>
