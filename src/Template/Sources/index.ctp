@@ -1,4 +1,6 @@
 <?php use Cake\Utility\Inflector; ?>
+<?php use Cake\ORM\TableRegistry; ?>
+<?php $this->Leads = TableRegistry::get('Leads'); ?>
 <style>
 .label{
     padding:10px;    
@@ -75,6 +77,7 @@ div.box-body{
                             <tr>
                                 <th class="actions"></th>                                
                                 <th><?= $this->Paginator->sort('name', __("Name") . "<i class='fa fa-sort pull-right'> </i>", array('escape' => false)) ?></th>                                
+                                <th><?= __('Form URL') ?></th>
                                 <!-- <th><?= __("Created") ?></th> -->
                                 <th><?= __("Users") ?></th>                                   
                             </tr>
@@ -150,7 +153,29 @@ div.box-body{
                                             echo "-";
                                         }
                                     ?>
-                                </td>                          
+                                </td>   
+                                <td>
+                                    <?php 
+                                        $leads = $this->Leads->find('all')
+                                            ->select(['source_url'])
+                                            ->where(['Leads.source_id' => $source->id])
+                                            ->group(['Leads.source_url'])
+                                        ;
+                                        $source_url = array();
+                                        foreach($leads as $l){                                            
+                                            if( trim($l->source_url) != '' ){
+                                                $source_url[] = $l->source_url;
+                                            }                                            
+                                        }                                        
+                                    ?>
+                                    <?php if( $source_url ){ ?>
+                                    <ul class="source-forms">
+                                    <?php foreach($source_url as $value){ ?>
+                                        <li><?= $value; ?></li>
+                                    <?php } ?>
+                                    </ul>
+                                    <?php } ?>
+                                </td>                       
                             </tr>
                             <?php } ?>
                         </tbody>

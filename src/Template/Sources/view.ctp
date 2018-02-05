@@ -1,4 +1,10 @@
-
+<?php use Cake\ORM\TableRegistry; ?>
+<?php $this->Leads = TableRegistry::get('Leads'); ?>
+<style>
+.source-forms{
+    padding: 0px;
+}
+</style>
 <section class="content-header">
     <h1><?= __('View Source') ?></h1>
 </section>
@@ -13,6 +19,31 @@
         <tr>
             <th><?= __('Name') ?></th>
             <td><?= h($source->name) ?></td>
+        </tr>
+        <tr>
+            <th><?= __('Form URL') ?></th>
+            <td>
+                <?php 
+                    $leads = $this->Leads->find('all')
+                        ->select(['source_url'])
+                        ->where(['Leads.source_id' => $source->id])
+                        ->group(['Leads.source_url'])
+                    ;
+                    $source_url = array();
+                    foreach($leads as $l){                                            
+                        if( trim($l->source_url) != '' ){
+                            $source_url[] = $l->source_url;
+                        }                                            
+                    }                                        
+                ?>
+                    <?php if( $source_url ){ ?>
+                    <ul class="source-forms">
+                    <?php foreach($source_url as $value){ ?>
+                        <li><?= $value; ?></li>
+                    <?php } ?>
+                    </ul>
+                <?php } ?>
+            </td>
         </tr>
         <tr>
             <th><?= __('Created') ?></th>
