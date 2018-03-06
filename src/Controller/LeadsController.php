@@ -266,7 +266,8 @@ class LeadsController extends AppController
         } 
 
         if(isset($this->request->data['allocation_date']) || isset($this->request->data['followup_date']) || isset($this->request->data['followup_action_reminder_date'])) {
-          $this->request->data['allocation_date']               = empty($this->request->data['allocation_date']) ? date('Y-m-d') : date("Y-m-d", strtotime($this->request->data['allocation_date']));
+          //$this->request->data['allocation_date']               = empty($this->request->data['allocation_date']) ? date('Y-m-d') : date("Y-m-d", strtotime($this->request->data['allocation_date']));
+          $this->request->data['allocation_date']               = date("Y-m-d");
           $this->request->data['followup_date']                 = date("Y-m-d", strtotime($this->request->data['followup_date']));
           $this->request->data['followup_action_reminder_date'] = date("Y-m-d", strtotime($this->request->data['followup_action_reminder_date']));
         }
