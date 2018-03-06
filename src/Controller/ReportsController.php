@@ -88,6 +88,7 @@ class ReportsController extends AppController
       foreach($sources as $s){
         $optionSources[$s->id] = $s->name;
       }
+      
 
       $optionLeadTypes = array();
       foreach( $leadTypes as $lt ){
