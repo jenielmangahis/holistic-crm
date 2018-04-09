@@ -32,7 +32,7 @@
   echo $this->Html->script('plugins/jQuery/jquery-2.2.3.min.js');
   echo $this->Html->script('app/jquery.min.js'); 
   echo $this->Html->script('jquery-sortable.js'); 
-  if ($load_advance_search_script){
+  if ( isset($load_advance_search_script) || isset($load_reports_js) ){
     echo $this->Html->script('reports.js'); 
   }
 ?>

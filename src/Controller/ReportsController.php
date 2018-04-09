@@ -63,6 +63,125 @@ class ReportsController extends AppController
     }
 
     /**
+     * Index method
+     *
+     * @return void
+     */
+    public function index()
+    {
+      $this->Sources = TableRegistry::get('Sources');
+      $this->SourceUsers = TableRegistry::get('SourceUsers');
+
+      $session   = $this->request->session();    
+      $user_data = $session->read('User.data');
+      $report_data =  $session->read('Report.data');
+
+      if ($this->request->is('post')) {
+        $sources = $this->request->data;
+        if( !empty($sources) ){
+          $report_data = $sources;          
+          $session->write('Report.data', $report_data);      
+          
+          return $this->redirect(['action' => 'step2']);
+        }else{
+          $this->Flash->error(__('Please select source to generate report.'));
+        }        
+      }
+
+      if( $user_data->group_id == 1 ){
+        $sources = $this->Sources->find('all')
+          ->order(['Sources.name' => 'ASC'])
+        ;        
+      }else{
+        $source_ids = array();
+        $sourceUsers = $this->SourceUsers->find('all')
+          ->where(['SourceUsers.user_id' => $user_data->id])
+        ;
+        foreach( $sourceUsers as $su ){
+          $source_ids[$su->source_id] = $su->source_id;
+        }
+
+        $sources = $this->Sources->find('all')
+          ->where(['Sources.id IN' => $source_ids])
+          ->order(['Sources.name' => 'ASC'])
+        ;
+      }      
+
+      $this->set([
+        'load_reports_js' => true,
+        'sources' => $sources
+      ]);
+    }
+
+    /**
+     * Report : Step2 method
+     *
+     * @return void
+     */
+    public function step2()
+    {
+      $this->FormLocations = TableRegistry::get('FormLocations');
+
+      $session     = $this->request->session(); 
+      $report_data = $session->read('Report.data'); 
+      
+      if( empty($report_data) ){        
+        $this->Flash->error(__('Please select source to generate report.'));
+        return $this->redirect(['action' => 'index']);
+      }
+
+      if ($this->request->is('post')) {
+        $report_type = $this->request->data;
+        if( $report_type['information'] > 0 ){
+          $report_data = $report_type;
+          $session->write('Report.data', $report_data);      
+
+          return $this->redirect(['action' => 'step3']);
+        }else{
+          $this->Flash->error(__('Please select report type.'));
+        }        
+      }
+
+      $optionInformation = [
+        1 => "How many leads we've received (total)",
+        2 => "How many leads we've received in specific date range",
+        3 => "How many leads are currently open/engaged?",
+        4 => "How many leads are closed/sold",
+        5 => "How many leads are dead/spam?",
+        6 => "How many leads came through the website (all source forms)?",
+        7 => "How many leads came through a specific form",
+        8 => "How many leads came through the telephone"
+      ];
+
+      $optionFormLocations = array();
+      $formLocations = $this->FormLocations->find('all');
+      foreach($formLocations as $f){
+        $optionFormLocations[$f->id] = $f->name;
+      }
+
+      $this->set([
+        'load_reports_js' => true,
+        'optionFormLocations' => $optionFormLocations,
+        'optionInformation' => $optionInformation,
+        'reportData' => $report_data
+      ]);
+    }
+
+    /**
+     * Report : Step3 method
+     *
+     * @return void
+     */
+    public function step3()
+    {
+      $fields = ['firstname' => 'First Name', 'surname' => 'Surname', 'source_id' => 'Source', 'email' => 'Email', 'phone' => 'Phone', 'address' => 'Address', 'status_id' => 'Status', 'city' => 'City', 'state' => 'State' , 'allocation_date' => 'Allocation Date', 'lead_action' => 'Lead Action', 'interest_type_id' => 'Interest Type', 'followup_action_reminder_date' => 'Followup Action Reminder Date', 'followup_notes' => 'Followup Notes', 'notes' => 'Notes', 'lead_type_id' => 'Lead Type', 'source_url' => 'Source URL', 'followup_date' => 'Followup Date', 'followup_action_notes' => 'Followup Action Notes'];
+
+      $this->set([
+        'fields' => $fields
+      ]);
+    }
+
+    /**
      * Leads method
      *
      * @return void
