@@ -25,8 +25,7 @@
                     <ol class="breadcrumb breadcrumb-arrow">
                         <li class="active"><a href="#">Step 1 : Sources</a></li>
                         <li class="active"><a href="#">Step 2 : Information</a></li>
-                        <li><span>Step 3 : Fields</span></li>
-                        <li><span>Step 4 : Report Type</span></li>
+                        <li><span>Step 3 : Step 3 : Fields and Generate Report</span></li>                        
                     </ol>            
                 </div>
                 <?= $this->Form->create(null,[                
@@ -43,7 +42,7 @@
                                     <div class="checkbox">
                                         <?php 
                                             $selected = '';
-                                            if( isset($reportData['information']) && $reportData['information'] == $key ){
+                                            if( isset($report_data['information']) && $report_data['information'] == $key ){
                                                 $selected = 'checked="checked"';
                                                 $hidden   = '';
                                             }else{
@@ -66,23 +65,77 @@
                                             <?php 
                                                 $date_from = date("Y-m-d");
                                                 $date_to   = date("Y-m-d");
-                                                if( isset($reportData['dateRange']['from']) ){
-                                                    $date_from = $reportData['dateRange']['from'];
+                                                if( isset($report_data['dateRange']['from']) ){
+                                                    $date_from = $report_data['dateRange']['from'];
                                                 }
 
-                                                if( isset($reportData['dateRange']['to']) ){
-                                                    $date_to = $reportData['dateRange']['to'];
+                                                if( isset($report_data['dateRange']['to']) ){
+                                                    $date_to = $report_data['dateRange']['to'];
                                                 }
                                             ?>
                                             <div class="grp-form-date-range <?= $hidden; ?>" style="margin-left:10px;margin-top:16px;">
-                                            <div class="col-md-10">
-                                                <div class='form-group'>
-                                                    <input type="text" name="dateRange[from]" value="<?= $date_from; ?>" placeholder="Date From" class="default-datepicker form-control" />
-                                                </div>
-                                                <div class='form-group'>
-                                                    <input type="text" name="dateRange[to]" value="<?= $date_to; ?>" placeholder="Date To" class="default-datepicker form-control" />
+                                                <div class="col-md-10">
+                                                    <div class='form-group'>
+                                                        <input type="text" name="dateRange[from]" value="<?= $date_from; ?>" placeholder="Date From" class="default-datepicker form-control" />
+                                                    </div>
+                                                    <div class='form-group'>
+                                                        <input type="text" name="dateRange[to]" value="<?= $date_to; ?>" placeholder="Date To" class="default-datepicker form-control" />
+                                                    </div>
                                                 </div>
                                             </div>
+                                        <?php }elseif( $key == 6 ){ ?>
+                                            <?php 
+                                                $date_from = date("Y-m-d");
+                                                $date_to   = date("Y-m-d");
+                                                if( isset($report_data['dateRangeAllForms']['from']) ){
+                                                    $date_from = $report_data['dateRangeAllForms']['from'];
+                                                }
+
+                                                if( isset($report_data['dateRangeAllForms']['to']) ){
+                                                    $date_to = $report_data['dateRangeAllForms']['to'];
+                                                }
+                                            ?>
+                                            <div class="grp-form-date-range-all-forms <?= $hidden; ?>" style="margin-left:10px;margin-top:16px;">
+                                                <div class="col-md-10">
+                                                    <div class='form-group'>
+                                                        <input type="text" name="dateRangeAllForms[from]" value="<?= $date_from; ?>" placeholder="Date From" class="default-datepicker form-control dateRangeAllFormsFromDate" />
+                                                    </div>
+                                                    <div class='form-group'>
+                                                        <input type="text" name="dateRangeAllForms[to]" value="<?= $date_to; ?>" placeholder="Date To" class="default-datepicker form-control dateRangeAllFormsToDate" />
+                                                    </div>
+                                                    <div class='form-group'>
+                                                        <div class="checkbox">
+                                                            <label><input type="checkbox" name="viewAllDateRangeAllForms" id="viewAllDateRangeAllForms" /> View all forms</label>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        <?php }elseif( $key == 8 ){ ?>
+                                            <?php 
+                                                $date_from = date("Y-m-d");
+                                                $date_to   = date("Y-m-d");
+                                                if( isset($report_data['dateRangeLeadsTelephone']['from']) ){
+                                                    $date_from = $report_data['dateRangeLeadsTelephone']['from'];
+                                                }
+
+                                                if( isset($report_data['dateRangeLeadsTelephone']['to']) ){
+                                                    $date_to = $report_data['dateRangeLeadsTelephone']['to'];
+                                                }
+                                            ?>
+                                            <div class="grp-form-date-range-leads-telephone <?= $hidden; ?>" style="margin-left:10px;margin-top:16px;">
+                                                <div class="col-md-10">
+                                                    <div class='form-group'>
+                                                        <input type="text" name="dateRangeLeadsTelephone[from]" value="<?= $date_from; ?>" placeholder="Date From" class="default-datepicker form-control dateRangeLeadsTelephoneFromDate" />
+                                                    </div>
+                                                    <div class='form-group'>
+                                                        <input type="text" name="dateRangeLeadsTelephone[to]" value="<?= $date_to; ?>" placeholder="Date To" class="default-datepicker form-control dateRangeLeadsTelephoneToDate" />
+                                                    </div>
+                                                    <div class='form-group'>
+                                                        <div class="checkbox">
+                                                            <label><input type="checkbox" name="viewAllLeadsTelephone" id="viewAllLeadsTelephone" /> View all leads with telephone</label>
+                                                        </div>
+                                                    </div>
+                                                </div>
                                             </div>
                                         <?php } ?>
                                     </div>                                    

@@ -24,8 +24,7 @@
                     <ol class="breadcrumb breadcrumb-arrow">
                         <li class="active"><a href="#">Step 1 : Sources</a></li>
                         <li><span>Step 2 : Information</span></li>
-                        <li><span>Step 3 : Fields</span></li>
-                        <li><span>Step 4 : Report Type</span></li>
+                        <li><span>Step 3 : Fields and Generate Report</span></li>                        
                     </ol>            
                 </div>
                 
@@ -39,9 +38,17 @@
                     <div>
                         <ul class="list-group row">
                             <?php foreach($sources as $s){ ?>
+                                <?php 
+                                    $checked = '';
+                                    if( isset($report_data['sources']) ){
+                                        if( array_key_exists($s->id, $report_data['sources']) ){
+                                            $checked = 'checked="checked"';
+                                        }
+                                    }
+                                ?>
                                 <li class="list-group-item col-xs-2">
                                     <div class="checkbox">
-                                        <label><input type="checkbox" name="sources[<?= $s->id; ?>]" /> <?= $s->name; ?></label>
+                                        <label><input type="checkbox" <?= $checked; ?> name="sources[<?= $s->id; ?>]" /> <?= $s->name; ?></label>
                                     </div>                                    
                                 </li>
                             <?php } ?>

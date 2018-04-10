@@ -81,7 +81,7 @@ class ReportsController extends AppController
       if ($this->request->is('post')) {
         $sources = $this->request->data;
         if( !empty($sources) ){
-          $report_data = $sources;          
+          $report_data['s1'] = $sources;          
           $session->write('Report.data', $report_data);      
           
           return $this->redirect(['action' => 'step2']);
@@ -111,7 +111,8 @@ class ReportsController extends AppController
 
       $this->set([
         'load_reports_js' => true,
-        'sources' => $sources
+        'sources' => $sources,
+        'report_data' => $report_data['s1']
       ]);
     }
 
@@ -127,15 +128,15 @@ class ReportsController extends AppController
       $session     = $this->request->session(); 
       $report_data = $session->read('Report.data'); 
       
-      if( empty($report_data) ){        
+      if( empty($report_data['s1']) ){        
         $this->Flash->error(__('Please select source to generate report.'));
         return $this->redirect(['action' => 'index']);
       }
 
       if ($this->request->is('post')) {
         $report_type = $this->request->data;
-        if( $report_type['information'] > 0 ){
-          $report_data = $report_type;
+        if( $report_type['information'] > 0 ){         
+          $report_data['s2'] = $report_type;          
           $session->write('Report.data', $report_data);      
 
           return $this->redirect(['action' => 'step3']);
@@ -165,7 +166,7 @@ class ReportsController extends AppController
         'load_reports_js' => true,
         'optionFormLocations' => $optionFormLocations,
         'optionInformation' => $optionInformation,
-        'reportData' => $report_data
+        'report_data' => $report_data['s2']
       ]);
     }
 
@@ -176,10 +177,61 @@ class ReportsController extends AppController
      */
     public function step3()
     {
+
+      $session     = $this->request->session(); 
+      $report_data = $session->read('Report.data'); 
+
+      if( empty($report_data['s1']) ){        
+        $this->Flash->error(__('Please select source to generate report.'));
+        return $this->redirect(['action' => 'index']);
+      }
+
+      if( empty($report_data['s2']) ){        
+        $this->Flash->error(__('Please select report type.'));
+        return $this->redirect(['action' => 'step2']);
+      }
+
+      if ($this->request->is('post')) {
+        $data = $this->request->data;        
+        if( !empty($data['fields']) ){           
+          $report_data['s3'] = $data;          
+          $session->write('Report.data', $report_data);      
+
+          return $this->redirect(['action' => 'step3']);
+          debug($data);
+        }else{
+          $this->Flash->error(__('Please select fields to display.')); 
+        }        
+      }
+
       $fields = ['firstname' => 'First Name', 'surname' => 'Surname', 'source_id' => 'Source', 'email' => 'Email', 'phone' => 'Phone', 'address' => 'Address', 'status_id' => 'Status', 'city' => 'City', 'state' => 'State' , 'allocation_date' => 'Allocation Date', 'lead_action' => 'Lead Action', 'interest_type_id' => 'Interest Type', 'followup_action_reminder_date' => 'Followup Action Reminder Date', 'followup_notes' => 'Followup Notes', 'notes' => 'Notes', 'lead_type_id' => 'Lead Type', 'source_url' => 'Source URL', 'followup_date' => 'Followup Date', 'followup_action_notes' => 'Followup Action Notes'];
 
       $this->set([
-        'fields' => $fields
+        'fields' => $fields,
+        'report_data' => $report_data['s3']
+      ]);
+    }
+
+    /**
+     * Report : Step4 method
+     *
+     * @return void
+     */
+    public function step4()
+    {
+      $session     = $this->request->session(); 
+      $report_data = $session->read('Report.data'); 
+
+      if ($this->request->is('post')) {
+
+      }
+
+      $report_type = [
+        1 => 'Excel',
+        2 => 'Webview'
+      ];
+      $this->set([
+        'report_data' => $report_data
       ]);
     }
 

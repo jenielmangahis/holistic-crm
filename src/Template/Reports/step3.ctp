@@ -25,12 +25,11 @@
                     <ol class="breadcrumb breadcrumb-arrow">
                         <li class="active"><a href="#">Step 1 : Sources</a></li>
                         <li class="active"><a href="#">Step 2 : Information</a></li>
-                        <li class="active"><a href="#">Step 3 : Fields</a></li>
-                        <li><span>Step 4 : Report Type</span></li>
+                        <li class="active"><a href="#">Step 3 : Fields and Generate Report</a></li>                        
                     </ol>            
                 </div>
                 <?= $this->Form->create(null,[                
-                  'url' => ['action' => 'step2'],
+                  'url' => ['action' => 'step3'],
                   'class' => 'form-horizontal',
                   'type' => 'POST'                  
                 ]) ?> 
@@ -42,17 +41,32 @@
                                 <?php foreach($fields as $key => $value){ ?>
                                     <li class="list-group-item col-xs-2">
                                         <div class="checkbox">
-                                            <label><input type="checkbox" name="fields[<?= $key; ?>]" /><?= $value; ?></label>
+                                            <?php 
+                                                $checked = '';
+                                                if( array_key_exists($key, $report_data['fields']) ){
+                                                    $checked = 'checked="checked"';
+                                                }
+                                            ?>
+                                            <label><input type="checkbox" <?= $checked; ?> name="fields[<?= $key; ?>]" /><?= $value; ?></label>
                                         </div>                                    
                                     </li>
                                 <?php } ?>
                             </ul>
                         </div>
                     </div>
+                    <hr />
+                    <div class='form-group'>                        
+                        <select class="form-control" style="width:20%;margin-left:15px;">
+                            <option>- Select Report Type -</option>
+                            <option>Excel</option>
+                            <option>View in other tab</option>
+                        </select>
+                    </div>
+                    <br />
                     <div class="form-group" style="margin-top: 30px;">
                         <div class="col-sm-2">           
                             <?= $this->Html->link('<i class="fa fa-arrow-left"></i> ' . __('Back'),["action" => "step2"],["class" => "btn btn-success", "escape" => false]) ?>                            
-                            <?= $this->Form->button(__('Generate') . ' ' . '<i class="fa fa-arrow-right"></i> ',['value' => 'save', 'class' => 'btn btn-success', 'escape' => false]) ?>
+                            <?= $this->Form->button(__('Generate Report'),['value' => 'save', 'class' => 'btn btn-success', 'escape' => false]) ?>
                         </div>
                     </div>
                 </div>
