@@ -75,6 +75,8 @@ class ReportsController extends AppController
       $session   = $this->request->session();    
       $user_data = $session->read('User.data');
       $report_data =  $session->read('Report.data');
+      /*debug($report_data);
+      exit;*/
 
       if ($this->request->is('post')) {
         $sources = $this->request->data;
