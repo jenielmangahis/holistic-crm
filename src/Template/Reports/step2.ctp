@@ -1,3 +1,5 @@
+<?php use Cake\ORM\TableRegistry; ?>
+<?php $this->Leads = TableRegistry::get('Leads'); ?>
 <?php ?>
 <style>
 .list-group-item{
@@ -52,14 +54,28 @@
                                         <label><input type="radio" <?= $selected ?> name="information" class="optInformation" value=<?= $key; ?> /> <?= $value; ?></label>
                                         <?php if( $key == 7 ){ ?>   
                                             <div class="grp-form-types <?= $hidden; ?>">
-                                                <ul class="list-group">
-                                                    <li class="list-group-item col-xs-4" style="border:none;margin:4px;">Select Form Type : </li>
-                                                    <?php foreach($optionFormLocations as $flKey => $flValue){ ?>
-                                                        <li class="list-group-item col-xs-3" style="border:none;margin:4px;width:20%;">
-                                                            <label><input type="checkbox" name="sources[<?= $flKey; ?>]" /> <?= $flValue; ?></label>
+                                                <?php 
+                                                    $leads = $this->Leads->find('all')
+                                                        ->select(['source_url'])
+                                                        ->where(['Leads.source_id IN' => $sources])
+                                                        ->group(['Leads.source_url'])
+                                                    ;
+                                                    $source_url = array();
+                                                    foreach($leads as $l){                                            
+                                                        if( trim($l->source_url) != '' ){
+                                                            $source_url[] = $l->source_url;
+                                                        }                                            
+                                                    }                                        
+                                                ?>
+                                                <?php if( $source_url ){ ?>                                                
+                                                <ul class="list-group">                                                                                                        
+                                                    <?php foreach($source_url as $value){ ?>
+                                                        <li class="list-group-item" style="border:none;margin:4px;font-size:13px;">
+                                                            <label><input type="checkbox" name="formSources[<?= $value; ?>]" /> <?= $value; ?></label>
                                                         </li>
                                                     <?php } ?>
                                                 </ul>
+                                                <?php } ?>
                                             </div>
                                         <?php }elseif( $key == 2 ){ ?>
                                             <?php 

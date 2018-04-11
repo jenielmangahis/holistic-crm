@@ -162,11 +162,17 @@ class ReportsController extends AppController
         $optionFormLocations[$f->id] = $f->name;
       }
 
+      $sources = array();
+      foreach( $report_data['s1']['sources'] as $key => $value ){
+        $sources[$key] = $key;
+      }      
+
       $this->set([
         'load_reports_js' => true,
         'optionFormLocations' => $optionFormLocations,
         'optionInformation' => $optionInformation,
-        'report_data' => $report_data['s2']
+        'report_data' => $report_data['s2'],
+        'sources' => $sources
       ]);
     }
 
