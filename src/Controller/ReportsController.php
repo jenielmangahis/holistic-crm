@@ -136,7 +136,7 @@ class ReportsController extends AppController
       if ($this->request->is('post')) {
         $report_type = $this->request->data;
         if( $report_type['information'] > 0 ){         
-          $report_data['s2'] = $report_type;          
+          $report_data['s2'] = $report_type;              
           $session->write('Report.data', $report_data);      
 
           return $this->redirect(['action' => 'step3']);
@@ -186,6 +186,7 @@ class ReportsController extends AppController
 
       $session     = $this->request->session(); 
       $report_data = $session->read('Report.data'); 
+      debug($report_data);
 
       if( empty($report_data['s1']) ){        
         $this->Flash->error(__('Please select source to generate report.'));
@@ -198,12 +199,85 @@ class ReportsController extends AppController
       }
 
       if ($this->request->is('post')) {
-        $data = $this->request->data;        
+        $data = $this->request->data;   
+
         if( !empty($data['fields']) ){           
           $report_data['s3'] = $data;          
           $session->write('Report.data', $report_data);      
 
-          return $this->redirect(['action' => 'step3']);
+
+          //Generate report
+          $information = $report_data['s2']['information'];
+          $sources     = array();
+          foreach( $report_data['s1']['sources'] as $key => $value ){
+            $sources[$key] = $key;
+          }         
+
+          //Query generator
+          switch ($information) {
+            case 2: //How many leads we've received in specific date range   
+              $date_from = $report_data['s2']['dateRange']['from'];
+              $date_to   = $report_data['s2']['dateRange']['to'];
+              $leads = $this->Leads->find('all')
+                ->contain(['Statuses', 'Sources', 'InterestTypes', 'LeadTypes'])
+                ->where(['Leads.sources IN' => $sources, 'Leads.allocation_date >=' => $date_from, 'Leads.allocation_date <=' => $date_to])
+              ;           
+              break;
+              
+            case 3: //How many leads are currently open/engaged?
+              $leads = $this->Leads->find('all')
+                ->contain(['Statuses', 'Sources', 'InterestTypes', 'LeadTypes'])
+                ->where(['Leads.sources IN' => $sources, 'Leads.status_id' => 1])
+              ;
+              break;
+
+            case 4: //How many leads are closed/sold
+              $leads = $this->Leads->find('all')
+                ->contain(['Statuses', 'Sources', 'InterestTypes', 'LeadTypes'])
+                ->where(['Leads.sources IN' => $sources, 'Leads.status_id' => 7])
+              ;
+              break;
+
+            case 5: //How many leads are dead/spam?
+              $dead_spam_status = [6,11,12,13];
+              $leads = $this->Leads->find('all')
+                ->contain(['Statuses', 'Sources', 'InterestTypes', 'LeadTypes'])
+                ->where(['Leads.sources IN' => $sources, 'Leads.status_id IN' => $dead_spam_status])
+              ;
+              break;
+
+            case 6: //How many leads came through the website (all source forms)?
+              $date_from = $report_data['s2']['dateRangeAllForms']['from'];
+              $date_to   = $report_data['s2']['dateRangeAllForms']['to'];
+              if( isset($report_data['s2']['viewAllDateRangeAllForms']) ){
+                $leads = $this->Leads->find('all')
+                  ->contain(['Statuses', 'Sources', 'InterestTypes', 'LeadTypes'])
+                  ->where(['Leads.sources IN' => $sources])
+                ;      
+              }else{
+                $leads = $this->Leads->find('all')
+                  ->contain(['Statuses', 'Sources', 'InterestTypes', 'LeadTypes'])
+                  ->where(['Leads.sources IN' => $sources, 'Leads.allocation_date >=' => $date_from, 'Leads.allocation_date <=' => $date_to])
+                ;      
+              }              
+              break;
+
+            case 7: //How many leads came through a specific form
+              break;
+
+            case 8: //How many leads came through the telephone
+              $date_from = $report_data['s2']['dateRangeLeadsTelephone']['from'];
+              $date_to   = $report_data['s2']['dateRangeLeadsTelephone']['to'];
+              $leads = $this->Leads->find('all')
+                ->contain(['Statuses', 'Sources', 'InterestTypes', 'LeadTypes'])
+                ->where(['Leads.sources IN' => $sources, 'Leads.allocation_date >=' => $date_from, 'Leads.allocation_date <=' => $date_to])
+              ;    
+              break;
+            default:              
+              break;
+          }
+
+          //return $this->redirect(['action' => 'step3']);
           debug($data);
         }else{
           $this->Flash->error(__('Please select fields to display.')); 

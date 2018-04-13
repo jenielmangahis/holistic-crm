@@ -46,7 +46,7 @@
                                         }
                                     }
                                 ?>
-                                <li class="list-group-item col-xs-2">
+                                <li class="list-group-item col-xs-3">
                                     <div class="checkbox">
                                         <label><input type="checkbox" <?= $checked; ?> name="sources[<?= $s->id; ?>]" /> <?= $s->name; ?></label>
                                     </div>                                    

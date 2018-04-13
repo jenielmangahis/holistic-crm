@@ -56,7 +56,7 @@
                     </div>
                     <hr />
                     <div class='form-group'>                        
-                        <select class="form-control" style="width:20%;margin-left:15px;">
+                        <select class="form-control" name='report-type' style="width:20%;margin-left:15px;">
                             <option>- Select Report Type -</option>
                             <option>Excel</option>
                             <option>View in other tab</option>
