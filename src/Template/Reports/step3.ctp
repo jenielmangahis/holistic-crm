@@ -31,7 +31,8 @@
                 <?= $this->Form->create(null,[                
                   'url' => ['action' => 'generate_leads_report'],
                   'class' => 'form-horizontal',
-                  'type' => 'POST'                  
+                  'type' => 'POST',
+                  'target' => '_blank'                  
                 ]) ?> 
                 <div class="box-body">
                     <h1>What information would you like in the report (check all that apply)?</h1>                    
@@ -62,9 +63,8 @@
                             <option>View in other tab</option>
                         </select>
                     </div>
-                    <br />
                     <div class="form-group" style="margin-top: 30px;">
-                        <div class="col-sm-2">           
+                        <div class="col-sm-3">           
                             <?= $this->Html->link('<i class="fa fa-arrow-left"></i> ' . __('Back'),["action" => "step2"],["class" => "btn btn-success", "escape" => false]) ?>                            
                             <?= $this->Form->button(__('Generate Report'),['value' => 'save', 'class' => 'btn btn-success', 'escape' => false]) ?>
                         </div>
