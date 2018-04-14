@@ -186,7 +186,6 @@ class ReportsController extends AppController
 
       $session     = $this->request->session(); 
       $report_data = $session->read('Report.data'); 
-      debug($report_data);
 
       if( empty($report_data['s1']) ){        
         $this->Flash->error(__('Please select source to generate report.'));
@@ -220,21 +219,21 @@ class ReportsController extends AppController
               $date_to   = $report_data['s2']['dateRange']['to'];
               $leads = $this->Leads->find('all')
                 ->contain(['Statuses', 'Sources', 'InterestTypes', 'LeadTypes'])
-                ->where(['Leads.sources IN' => $sources, 'Leads.allocation_date >=' => $date_from, 'Leads.allocation_date <=' => $date_to])
+                ->where(['Leads.source_id IN' => $sources, 'Leads.allocation_date >=' => $date_from, 'Leads.allocation_date <=' => $date_to])
               ;           
               break;
               
             case 3: //How many leads are currently open/engaged?
               $leads = $this->Leads->find('all')
                 ->contain(['Statuses', 'Sources', 'InterestTypes', 'LeadTypes'])
-                ->where(['Leads.sources IN' => $sources, 'Leads.status_id' => 1])
+                ->where(['Leads.source_id IN' => $sources, 'Leads.status_id' => 1])
               ;
               break;
 
             case 4: //How many leads are closed/sold
               $leads = $this->Leads->find('all')
                 ->contain(['Statuses', 'Sources', 'InterestTypes', 'LeadTypes'])
-                ->where(['Leads.sources IN' => $sources, 'Leads.status_id' => 7])
+                ->where(['Leads.source_id IN' => $sources, 'Leads.status_id' => 7])
               ;
               break;
 
@@ -242,7 +241,7 @@ class ReportsController extends AppController
               $dead_spam_status = [6,11,12,13];
               $leads = $this->Leads->find('all')
                 ->contain(['Statuses', 'Sources', 'InterestTypes', 'LeadTypes'])
-                ->where(['Leads.sources IN' => $sources, 'Leads.status_id IN' => $dead_spam_status])
+                ->where(['Leads.source_id IN' => $sources, 'Leads.status_id IN' => $dead_spam_status])
               ;
               break;
 
@@ -252,12 +251,12 @@ class ReportsController extends AppController
               if( isset($report_data['s2']['viewAllDateRangeAllForms']) ){
                 $leads = $this->Leads->find('all')
                   ->contain(['Statuses', 'Sources', 'InterestTypes', 'LeadTypes'])
-                  ->where(['Leads.sources IN' => $sources])
+                  ->where(['Leads.source_id IN' => $sources])
                 ;      
               }else{
                 $leads = $this->Leads->find('all')
                   ->contain(['Statuses', 'Sources', 'InterestTypes', 'LeadTypes'])
-                  ->where(['Leads.sources IN' => $sources, 'Leads.allocation_date >=' => $date_from, 'Leads.allocation_date <=' => $date_to])
+                  ->where(['Leads.source_id IN' => $sources, 'Leads.allocation_date >=' => $date_from, 'Leads.allocation_date <=' => $date_to])
                 ;      
               }              
               break;
@@ -270,15 +269,117 @@ class ReportsController extends AppController
               $date_to   = $report_data['s2']['dateRangeLeadsTelephone']['to'];
               $leads = $this->Leads->find('all')
                 ->contain(['Statuses', 'Sources', 'InterestTypes', 'LeadTypes'])
-                ->where(['Leads.sources IN' => $sources, 'Leads.allocation_date >=' => $date_from, 'Leads.allocation_date <=' => $date_to])
+                ->where(['Leads.source_id IN' => $sources, 'Leads.allocation_date >=' => $date_from, 'Leads.allocation_date <=' => $date_to])
               ;    
               break;
             default:              
               break;
           }
 
+          $fields = $data['fields'];
+
+          if( $data['report-type'] == 'Excel' ){
+            $total_fields = count($fields) + 2;
+            $eColumns = [1 => 'A', 2 => 'B', 3 => 'C', 4 => 'D', 5 => 'E', 6 => 'F', 7 => 'G', 8 => 'H', 9 => 'I', 10 => 'J', 11 => 'K', 12 => 'L', 13 => 'M', 14 => 'N', 15 => 'O', 16 => 'P', 17 => 'Q', 18 => 'R', 19 => 'S', 20 => 'T', 21 => 'U', 22 => 'V', 23 => 'W', 24 => 'X', 24 => 'Y', 25 => 'Z'];
+
+            $excel_cell_values = array();          
+            foreach( $leads as $l ){                
+              $excelFields = array();
+              foreach( $fields as $key => $value ){              
+                if( $key == 'source_id' ){
+                  $excelFields[] = $l->source->name;
+                }elseif($key == 'status_id') {
+                  $excelFields[] = $l->status->name;
+                }elseif($key == 'lead_type_id') {
+                  $excelFields[] = $l->lead_type->name;
+                }elseif($key == 'interest_type_id'){
+                  $excelFields[] = $l->interest_type->name;
+                }else{                
+                  $excelFields[] = $l->{$key};
+                }              
+              }
+              $excel_cell_values[] = $excelFields;            
+            }
+
+            //generate excel file for attachment
+            define('EOL',(PHP_SAPI == 'cli') ? PHP_EOL : '<br />');
+
+            $objPHPExcel = new PHPExcel();
+            $objPHPExcel->getProperties()->setCreator("Holistic Admin")
+               ->setLastModifiedBy("Holistic Admin")
+               ->setTitle("Leads Report")
+               ->setSubject("Leads Report")
+               ->setDescription("Excel file generated for Leads Report")
+               ->setKeywords("Leads Report")
+               ->setCategory("Lists");
+            $objPHPExcel->setActiveSheetIndex(0);
+
+            $borderArray = array(
+              'borders' => array(
+                'allborders' => array(
+                    'style' => 'thick',
+                    'color' => array('argb' => 'C3232D')
+                 )
+              )
+            );
+            $objPHPExcel->getDefaultStyle()->applyFromArray($borderArray);
+
+            for($col = 'A'; $col !== 'I'; $col++) {
+                $objPHPExcel->getActiveSheet()
+                    ->getColumnDimension($col)
+                    ->setAutoSize(true);
+            }
+
+            $ews = $objPHPExcel->getSheet(0);
+            $ews->setTitle('Sheet 1');
+            //header
+            $ews->setCellValue('A1', 'Date');
+            $ews->setCellValue('B1', date("Y-m-d"));
+
+            $ews->setCellValue('A2', '');
+            $ews->setCellValue('B2', 'Leads Report');
+
+            $start = 1;
+            $end_column;  
+            //debug($eColumns);exit;        
+            foreach( $fields as $key => $value ){
+              //echo $eColumns[1] . ($start+3) . "<br />";
+              if( $key == 'interest_type_id' ){
+                $key = 'interest type';
+              }
+              $ews->setCellValue($eColumns[$start] . 4, $key);
+              $end_column = $eColumns[$start] . 4;
+              $start++;
+            }          
+
+            $ews->getStyle($eColumns[1] . '4' . ':' . $end_column)->applyFromArray(
+                array(
+                    'fill' => array(
+                        'type' => 'solid',
+                        'color' => array('rgb' => 'CDD6DF')
+                    )
+                )
+            );
+
+            $ews->fromArray($excel_cell_values,'','A5');
+
+            $fileName  = time() . "_" . rand(000000, 999999) . ".xls";
+            $objWriter  = \PHPExcel_IOFactory::createWriter($objPHPExcel, 'Excel2007');
+            $objWriter->save('excel\leads\\' . $fileName);          
+
+            $file_path = WWW_ROOT.'excel\leads\\' . $fileName;
+            $this->response->file($file_path, array(
+                'download' => true,
+                'name' => $fileName,
+            ));
+            return $this->response;
+            exit;
+          }else{
+
+          }
           //return $this->redirect(['action' => 'step3']);
           debug($data);
+          exit;
         }else{
           $this->Flash->error(__('Please select fields to display.')); 
         }        

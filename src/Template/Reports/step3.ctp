@@ -1,7 +1,7 @@
 <?php ?>
 <style>
 .list-group-item{
-    margin:10px;
+    margin:10px;    
 }
 .box-body{
     padding:2px 26px;
@@ -39,7 +39,7 @@
                         <div>
                             <ul class="list-group row">
                                 <?php foreach($fields as $key => $value){ ?>
-                                    <li class="list-group-item col-xs-2">
+                                    <li class="list-group-item col-sm-2 col-md-2">
                                         <div class="checkbox">
                                             <?php 
                                                 $checked = '';
