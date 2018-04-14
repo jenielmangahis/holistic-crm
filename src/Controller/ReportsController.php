@@ -393,7 +393,14 @@ class ReportsController extends AppController
             return $this->response;
             exit;
           }else{
-
+            $this->set([
+                'leads' => $leads,
+                'fields' => $fields,
+                'load_reports_js' => false,
+                'load_advance_search_script' => false,
+                'enable_jscript_datatable', false,
+                'enable_content_expander_script', true
+            ]); 
           }          
         }else{
           $this->Flash->error(__('Please select fields to display.')); 
