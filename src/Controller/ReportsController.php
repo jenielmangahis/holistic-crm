@@ -353,7 +353,7 @@ class ReportsController extends AppController
 
             $start = 1;
             $end_column;  
-                        
+
             foreach( $fields as $key => $value ){              
               switch ($key) {
                 case 'interest_type_id':
@@ -400,30 +400,7 @@ class ReportsController extends AppController
         }
       }
     }
-
-    /**
-     * Report : Step4 method
-     *
-     * @return void
-     */
-    public function step4()
-    {
-      $session     = $this->request->session(); 
-      $report_data = $session->read('Report.data'); 
-
-      if ($this->request->is('post')) {
-
-      }
-
-      $report_type = [
-        1 => 'Excel',
-        2 => 'Webview'
-      ];
-      $this->set([
-        'report_data' => $report_data
-      ]);
-    }
-
+   
     /**
      * Leads method
      *
