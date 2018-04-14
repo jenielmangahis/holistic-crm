@@ -197,9 +197,21 @@ class ReportsController extends AppController
         return $this->redirect(['action' => 'step2']);
       }
 
+      $fields = ['firstname' => 'First Name', 'surname' => 'Surname', 'source_id' => 'Source', 'email' => 'Email', 'phone' => 'Phone', 'address' => 'Address', 'status_id' => 'Status', 'city' => 'City', 'state' => 'State' , 'allocation_date' => 'Allocation Date', 'lead_action' => 'Lead Action', 'interest_type_id' => 'Interest Type', 'followup_action_reminder_date' => 'Followup Action Reminder Date', 'followup_notes' => 'Followup Notes', 'notes' => 'Notes', 'lead_type_id' => 'Lead Type', 'source_url' => 'Source URL', 'followup_date' => 'Followup Date', 'followup_action_notes' => 'Followup Action Notes'];
+
+      $this->set([
+        'fields' => $fields,
+        'report_data' => $report_data['s3']
+      ]);
+    }
+
+    public function generate_leads_report()
+    {
+      $session     = $this->request->session(); 
+      $report_data = $session->read('Report.data'); 
+
       if ($this->request->is('post')) {
         $data = $this->request->data;   
-
         if( !empty($data['fields']) ){           
           $report_data['s3'] = $data;          
           $session->write('Report.data', $report_data);      
@@ -341,12 +353,18 @@ class ReportsController extends AppController
 
             $start = 1;
             $end_column;  
-            //debug($eColumns);exit;        
-            foreach( $fields as $key => $value ){
-              //echo $eColumns[1] . ($start+3) . "<br />";
-              if( $key == 'interest_type_id' ){
-                $key = 'interest type';
+                        
+            foreach( $fields as $key => $value ){              
+              switch ($key) {
+                case 'interest_type_id':
+                  $key = 'interest type';  
+                  break;
+                case 'source_id':
+                  $key = 'source';
+                default:                  
+                  break;
               }
+
               $ews->setCellValue($eColumns[$start] . 4, $key);
               $end_column = $eColumns[$start] . 4;
               $start++;
@@ -376,21 +394,11 @@ class ReportsController extends AppController
             exit;
           }else{
 
-          }
-          //return $this->redirect(['action' => 'step3']);
-          debug($data);
-          exit;
+          }          
         }else{
           $this->Flash->error(__('Please select fields to display.')); 
-        }        
+        }
       }
-
-      $fields = ['firstname' => 'First Name', 'surname' => 'Surname', 'source_id' => 'Source', 'email' => 'Email', 'phone' => 'Phone', 'address' => 'Address', 'status_id' => 'Status', 'city' => 'City', 'state' => 'State' , 'allocation_date' => 'Allocation Date', 'lead_action' => 'Lead Action', 'interest_type_id' => 'Interest Type', 'followup_action_reminder_date' => 'Followup Action Reminder Date', 'followup_notes' => 'Followup Notes', 'notes' => 'Notes', 'lead_type_id' => 'Lead Type', 'source_url' => 'Source URL', 'followup_date' => 'Followup Date', 'followup_action_notes' => 'Followup Action Notes'];
-
-      $this->set([
-        'fields' => $fields,
-        'report_data' => $report_data['s3']
-      ]);
     }
 
     /**

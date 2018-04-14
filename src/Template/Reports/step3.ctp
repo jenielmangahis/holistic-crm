@@ -29,7 +29,7 @@
                     </ol>            
                 </div>
                 <?= $this->Form->create(null,[                
-                  'url' => ['action' => 'step3'],
+                  'url' => ['action' => 'generate_leads_report'],
                   'class' => 'form-horizontal',
                   'type' => 'POST'                  
                 ]) ?> 
