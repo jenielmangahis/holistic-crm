@@ -146,7 +146,7 @@ class ReportsController extends AppController
       }
 
       $optionInformation = [
-        1 => "How many leads we've received (total)",
+        //1 => "How many leads we've received (total)",
         2 => "How many leads we've received in specific date range",
         3 => "How many leads are currently open/engaged?",
         4 => "How many leads are closed/sold",
@@ -210,9 +210,9 @@ class ReportsController extends AppController
       $session     = $this->request->session(); 
       $report_data = $session->read('Report.data'); 
 
-      if ($this->request->is('post')) {
+      if ($this->request->is('post')) {        
         $data = $this->request->data;   
-        if( !empty($data['fields']) ){           
+        if( !empty($data['fields']) ){                   
           $report_data['s3'] = $data;          
           $session->write('Report.data', $report_data);      
 
@@ -224,7 +224,7 @@ class ReportsController extends AppController
             $sources[$key] = $key;
           }         
 
-          //Query generator
+          //Query generator           
           switch ($information) {
             case 2: //How many leads we've received in specific date range   
               $date_from = $report_data['s2']['dateRange']['from'];
@@ -257,33 +257,49 @@ class ReportsController extends AppController
               ;
               break;
 
-            case 6: //How many leads came through the website (all source forms)?
+            case 6: //How many leads came through the website (all source forms)?            
               $date_from = $report_data['s2']['dateRangeAllForms']['from'];
               $date_to   = $report_data['s2']['dateRangeAllForms']['to'];
               if( isset($report_data['s2']['viewAllDateRangeAllForms']) ){
                 $leads = $this->Leads->find('all')
                   ->contain(['Statuses', 'Sources', 'InterestTypes', 'LeadTypes'])
-                  ->where(['Leads.source_id IN' => $sources])
+                  ->where(['Leads.source_id IN' => $sources, 'Leads.lead_type_id' => 1])
                 ;      
               }else{
                 $leads = $this->Leads->find('all')
                   ->contain(['Statuses', 'Sources', 'InterestTypes', 'LeadTypes'])
-                  ->where(['Leads.source_id IN' => $sources, 'Leads.allocation_date >=' => $date_from, 'Leads.allocation_date <=' => $date_to])
+                  ->where(['Leads.source_id IN' => $sources, 'Leads.allocation_date >=' => $date_from, 'Leads.allocation_date <=' => $date_to, 'Leads.lead_type_id' => 1])
                 ;      
               }              
               break;
 
             case 7: //How many leads came through a specific form
+              $source_urls = array();              
+              foreach( $report_data['s2']['formSources'] as $key => $value ){                
+                $source_urls[$key] = $key;
+              }
+              $leads = $this->Leads->find('all')
+                  ->contain(['Statuses', 'Sources', 'InterestTypes', 'LeadTypes'])
+                  ->where(['Leads.source_id IN' => $sources, 'Leads.source_url IN' => $source_urls])
+                ; 
               break;
 
             case 8: //How many leads came through the telephone
-              $date_from = $report_data['s2']['dateRangeLeadsTelephone']['from'];
-              $date_to   = $report_data['s2']['dateRangeLeadsTelephone']['to'];
-              $leads = $this->Leads->find('all')
-                ->contain(['Statuses', 'Sources', 'InterestTypes', 'LeadTypes'])
-                ->where(['Leads.source_id IN' => $sources, 'Leads.allocation_date >=' => $date_from, 'Leads.allocation_date <=' => $date_to])
-              ;    
+              if( isset($report_data['s2']['viewAllLeadsTelephone']) ){
+                $leads = $this->Leads->find('all')
+                  ->contain(['Statuses', 'Sources', 'InterestTypes', 'LeadTypes'])
+                  ->where(['Leads.source_id IN' => $sources, 'Leads.lead_type_id' => 2])
+                ;  
+              }else{
+                $date_from = $report_data['s2']['dateRangeLeadsTelephone']['from'];
+                $date_to   = $report_data['s2']['dateRangeLeadsTelephone']['to'];
+                $leads = $this->Leads->find('all')
+                  ->contain(['Statuses', 'Sources', 'InterestTypes', 'LeadTypes'])
+                  ->where(['Leads.source_id IN' => $sources, 'Leads.lead_type_id' => 2, 'Leads.allocation_date >=' => $date_from, 'Leads.allocation_date <=' => $date_to])
+                ;    
+              }
               break;
+
             default:              
               break;
           }
@@ -358,6 +374,9 @@ class ReportsController extends AppController
               switch ($key) {
                 case 'interest_type_id':
                   $key = 'interest type';  
+                  break;
+                case 'lead_type_id':
+                  $key = 'lead type';
                   break;
                 case 'source_id':
                   $key = 'source';
