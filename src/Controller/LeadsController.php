@@ -4,6 +4,7 @@ namespace App\Controller;
 use App\Controller\AppController;
 use Cake\ORM\TableRegistry;
 use Cake\Network\Email\Email;
+use Cake\Routing\Router;
 
 /**
  * Leads Controller
@@ -231,6 +232,8 @@ class LeadsController extends AppController
            ->first()
         ;       
 
+        $back_url = Router::url( $this->referer(), true );
+        $this->set('back_url', $back_url);
         $this->set('lead', $lead);
         $this->set('_serialize', ['lead']);
     }
@@ -653,6 +656,9 @@ class LeadsController extends AppController
             }
         }
 
+        $back_url = Router::url( $this->referer(), true );
+
+        $this->set('back_url', $back_url);
         $this->set('redir', $redir);
         $this->set('source_id', $source_id);
         $statuses = $this->Leads->Statuses->find('list', ['order' => ['Statuses.sort' => 'ASC']]);

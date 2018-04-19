@@ -141,7 +141,7 @@
                             <div class='form-group'>
                                 <label for='followup_date' class='col-sm-2 control-label'>" . __('Followup Date') . "</label>
                                 <div class='col-sm-6'>";
-                                echo $this->Form->input('lead-followup-date', ['type' => 'text', 'value' => date("d F, Y"), 'class' => 'form-control', 'id' => '', 'readonly' => 'readonly', 'label' => false]);                
+                                echo $this->Form->input('lead-followup-date', ['type' => 'text', 'value' => date("d F, Y", strtotime($lead->followup_date)), 'class' => 'form-control', 'id' => '', 'readonly' => 'readonly', 'label' => false]);                
                             echo " </div></div>";    
 
                             echo "
@@ -157,7 +157,7 @@
                             <div class='form-group'>
                                 <label for='followup_action_reminder_date' class='col-sm-2 control-label'>" . __('Followup Action Reminder Date') . "</label>
                                 <div class='col-sm-6'>";
-                                echo $this->Form->input('followup_action_reminder_date', ['type' => 'text', 'value' => date("d F, Y"), 'class' => 'form-control', 'id' => '', 'readonly' => 'readonly', 'label' => false]);                
+                                echo $this->Form->input('followup_action_reminder_date', ['type' => 'text', 'value' => date("d F, Y", strtotime($lead->followup_action_reminder_date)), 'class' => 'form-control', 'id' => '', 'readonly' => 'readonly', 'label' => false]);                
                             echo " </div></div>";  
 
                             echo "
@@ -180,9 +180,10 @@
                                     
                                                 ?>
                     </fieldset>
-                    <div class="form-group" style="margin-top: 80px;">
-                        <div class="col-sm-offset-2 col-sm-10">                            
-                            <?= $this->Html->link('<i class="fa fa-angle-left"> </i> ' . __('Back To list'), ['action' => 'index'],['class' => 'btn btn-warning', 'escape' => false]) ?>                            
+                    <div class="form-group" style="margin-top: 10px;">
+                        <div class="col-sm-offset-2 col-sm-10">  
+                            <a class="btn btn-warning" href="<?php echo $back_url; ?>"><i class="fa fa-angle-left"></i> Back To list</a>    
+                            <?= $this->Html->link('<i class="fa fa-pencil"> </i> ' . __('Edit'), ['controller' => 'leads', 'action' => 'edit/'. $lead->id],['class' => 'btn btn-info', 'escape' => false]) ?>                                                      
                         </div>
                     </div>
                     <?= $this->Form->end() ?>
