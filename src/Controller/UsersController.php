@@ -95,7 +95,7 @@ class UsersController extends AppController
             $sort_field     = !empty($this->request->query['sort']) ? $this->request->query['sort'] : 'ASC';
 
             if( !empty($this->request->query['direction']) && !empty($this->request->query['sort']) ) {
-                $user_to_sort  = $this->Users->find('all', ['order' => ['Users.'.$sort_field  => $sort_direction]]);
+                $user_to_sort  = $this->Users->find('all', ['order' => [$sort_field  => $sort_direction]]);
                 $sort = 1;
                 foreach($user_to_sort as $skey => $sd) {
 
