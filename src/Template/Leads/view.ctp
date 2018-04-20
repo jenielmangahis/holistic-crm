@@ -5,6 +5,19 @@
     color:#ffff;
     padding: 10px;
 }
+.notes-container{
+    background-color: #eeeeee;
+    display: block;
+    width: 48%;
+    padding: 10px;
+    height: 200px;
+    margin-left: 14px;
+    border:1px solid #ccc;
+    overflow: auto;
+}
+.notes-container img{
+    max-height: 100px !important;
+}
 </style>
 <section class="content-header">
     <h1><?= __('View Lead') ?></h1>
@@ -147,10 +160,8 @@
                             echo "
                             <div class='form-group'>
                                 <label for='followup_notes' class='col-sm-2 control-label'>" . __('Followup Notes') . "</label>
-                                <div class='col-sm-6'>";
-                                echo "<textarea rows='4' cols='79' class='form-control' readonly='readonly'>";
-                                echo strip_tags($lead->followup_notes);
-                                echo "</textarea>";                                
+                                <div class='col-sm-6 notes-container'>";                                
+                                echo $lead->followup_notes;                                                           
                             echo " </div></div>";                            
                             
                             echo "
@@ -163,19 +174,15 @@
                             echo "
                             <div class='form-group'>
                                 <label for='followup_action_notes' class='col-sm-2 control-label'>" . __('Followup Action Notes') . "</label>
-                                <div class='col-sm-6'>";
-                                echo "<textarea rows='4' cols='79' class='form-control' readonly='readonly'>";
-                                echo strip_tags($lead->followup_action_notes);
-                                echo "</textarea>";                                   
+                                <div class='col-sm-6 notes-container'>";                                
+                                echo $lead->followup_action_notes;                                                              
                             echo " </div></div>";                                
                             
                             echo "
                             <div class='form-group'>
                                 <label for='notes' class='col-sm-2 control-label'>" . __('Notes') . "</label>
-                                <div class='col-sm-6'>";
-                                echo "<textarea rows='4' cols='79' class='form-control' readonly='readonly'>";
-                                echo strip_tags($lead->notes);
-                                echo "</textarea>";  
+                                <div class='col-sm-6 notes-container'>";                                
+                                echo $lead->notes;                                
                             echo " </div></div>";    
                                     
                                                 ?>
