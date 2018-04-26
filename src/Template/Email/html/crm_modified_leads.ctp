@@ -63,7 +63,7 @@
 </tr>
 <tr>
 	<td>Followup Notes</td>
-	<td>: <?php echo strip_tags($lead['followup_notes']); ?></td>
+	<td>: <?php echo $lead['followup_notes']; ?></td>
 </tr>
 <tr>
 	<td>Followup Action Reminder Date</td>
@@ -71,11 +71,11 @@
 </tr>
 <tr>
 	<td>Followup Action Notes</td>
-	<td>: <?php echo strip_tags($lead['followup_action_notes']); ?></td>
+	<td>: <?php echo $lead['followup_action_notes']; ?></td>
 </tr>	
 <tr>
 	<td>Notes</td>
-	<td>: <?php echo strip_tags($lead['notes']); ?></td>
+	<td>: <?php echo $lead['notes']; ?></td>
 </tr>	
 </table>
 
