@@ -63,7 +63,12 @@
 </tr>
 <tr>
 	<td>Followup Notes</td>
-	<td>: <?php echo $lead['followup_notes']; ?></td>
+	<td>: 
+		<?php 
+			$content = str_replace("/webroot/upload/images/", "http://www.holisticwebpresencecrm.com/webroot/upload/images/", $lead['followup_notes']);
+			echo $content;
+		?>			
+	</td>
 </tr>
 <tr>
 	<td>Followup Action Reminder Date</td>
@@ -71,11 +76,21 @@
 </tr>
 <tr>
 	<td>Followup Action Notes</td>
-	<td>: <?php echo $lead['followup_action_notes']; ?></td>
-</tr>	
+	<td>: 
+		<?php 
+			$content = str_replace("/webroot/upload/images/", "http://www.holisticwebpresencecrm.com/webroot/upload/images/", $lead['followup_action_notes']);
+			echo $content;
+		?>			
+	</td>
+</tr>
 <tr>
 	<td>Notes</td>
-	<td>: <?php echo $lead['notes']; ?></td>
+	<td>: 
+		<?php 
+			$content = str_replace("/webroot/upload/images/", "http://www.holisticwebpresencecrm.com/webroot/upload/images/", $lead['notes']);
+			echo $content;
+		?>
+	</td>
 </tr>	
 </table>
 

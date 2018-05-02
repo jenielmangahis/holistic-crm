@@ -424,6 +424,119 @@ class ReportsController extends AppController
         }else{
           $this->Flash->error(__('Please select fields to display.')); 
         }
+      }else{       
+        $report_data = $session->read('Report.data');
+        //Generate report
+        $information = $report_data['s2']['information'];
+        $sources     = array();
+        foreach( $report_data['s1']['sources'] as $key => $value ){
+          $sources[$key] = $key;
+        }         
+        
+        $order = array();
+        if( isset($this->request->query['sort']) && isset($this->request->query['direction']) ){
+          $order = ['Leads.' . $this->request->query['sort'] => $this->request->query['direction']];
+        }
+
+        //Query generator           
+          switch ($information) {
+            case 2: //How many leads we've received in specific date range   
+              $date_from = $report_data['s2']['dateRange']['from'];
+              $date_to   = $report_data['s2']['dateRange']['to'];
+              $leads = $this->Leads->find('all')
+                ->contain(['Statuses', 'Sources', 'InterestTypes', 'LeadTypes'])
+                ->where(['Leads.source_id IN' => $sources, 'Leads.allocation_date >=' => $date_from, 'Leads.allocation_date <=' => $date_to])
+                ->order($order)
+              ;           
+              break;
+              
+            case 3: //How many leads are currently open/engaged?
+              $leads = $this->Leads->find('all')
+                ->contain(['Statuses', 'Sources', 'InterestTypes', 'LeadTypes'])
+                ->where(['Leads.source_id IN' => $sources, 'Leads.status_id' => 1])
+                ->order($order)
+              ;
+              break;
+
+            case 4: //How many leads are closed/sold
+              $leads = $this->Leads->find('all')
+                ->contain(['Statuses', 'Sources', 'InterestTypes', 'LeadTypes'])
+                ->where(['Leads.source_id IN' => $sources, 'Leads.status_id' => 7])
+                ->order($order)
+              ;
+              break;
+
+            case 5: //How many leads are dead/spam?
+              $dead_spam_status = [6,11,12,13];
+              $leads = $this->Leads->find('all')
+                ->contain(['Statuses', 'Sources', 'InterestTypes', 'LeadTypes'])
+                ->where(['Leads.source_id IN' => $sources, 'Leads.status_id IN' => $dead_spam_status])
+                ->order($order)
+              ;
+              break;
+
+            case 6: //How many leads came through the website (all source forms)?            
+              $date_from = $report_data['s2']['dateRangeAllForms']['from'];
+              $date_to   = $report_data['s2']['dateRangeAllForms']['to'];
+              if( isset($report_data['s2']['viewAllDateRangeAllForms']) ){
+                $leads = $this->Leads->find('all')
+                  ->contain(['Statuses', 'Sources', 'InterestTypes', 'LeadTypes'])
+                  ->where(['Leads.source_id IN' => $sources, 'Leads.lead_type_id' => 1])
+                  ->order($order)
+                ;      
+              }else{
+                $leads = $this->Leads->find('all')
+                  ->contain(['Statuses', 'Sources', 'InterestTypes', 'LeadTypes'])
+                  ->where(['Leads.source_id IN' => $sources, 'Leads.allocation_date >=' => $date_from, 'Leads.allocation_date <=' => $date_to, 'Leads.lead_type_id' => 1])
+                  ->order($order)
+                ;      
+              }              
+              break;
+
+            case 7: //How many leads came through a specific form
+              $source_urls = array();              
+              foreach( $report_data['s2']['formSources'] as $key => $value ){                
+                $source_urls[$key] = $key;
+              }
+              $leads = $this->Leads->find('all')
+                  ->contain(['Statuses', 'Sources', 'InterestTypes', 'LeadTypes'])
+                  ->where(['Leads.source_id IN' => $sources, 'Leads.source_url IN' => $source_urls])
+                  ->order($order)
+                ; 
+              break;
+
+            case 8: //How many leads came through the telephone
+              if( isset($report_data['s2']['viewAllLeadsTelephone']) ){
+                $leads = $this->Leads->find('all')
+                  ->contain(['Statuses', 'Sources', 'InterestTypes', 'LeadTypes'])
+                  ->where(['Leads.source_id IN' => $sources, 'Leads.lead_type_id' => 2])
+                  ->order($order)
+                ;  
+              }else{
+                $date_from = $report_data['s2']['dateRangeLeadsTelephone']['from'];
+                $date_to   = $report_data['s2']['dateRangeLeadsTelephone']['to'];
+                $leads = $this->Leads->find('all')
+                  ->contain(['Statuses', 'Sources', 'InterestTypes', 'LeadTypes'])
+                  ->where(['Leads.source_id IN' => $sources, 'Leads.lead_type_id' => 2, 'Leads.allocation_date >=' => $date_from, 'Leads.allocation_date <=' => $date_to])
+                  ->order($order)
+                ;    
+              }
+              break;
+
+            default:              
+              break;
+          }
+          
+          $fields = $report_data['s3']['fields'];
+
+        $this->set([
+            'leads' => $this->Paginate($leads),
+            'fields' => $fields,
+            'load_reports_js' => false,
+            'load_advance_search_script' => false,
+            'enable_jscript_datatable', false,
+            'enable_content_expander_script', true
+        ]); 
       }
     }
    

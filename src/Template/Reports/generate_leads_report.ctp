@@ -24,7 +24,7 @@
 	                    <tr>
 	                        <th style="">Action</th>
 	                        <?php foreach($fields as $fkey => $f) { ?>
-	                        		<th style=""><?php echo $fkey; ?></th>
+	                        		<th style=""><?= $this->Paginator->sort($fkey, $fkey . "<i class='fa fa-sort pull-right'> </i>", array('escape' => false)) ?></th>
 	                        <?php } ?>
 	                    </tr>
 	                </thead>
