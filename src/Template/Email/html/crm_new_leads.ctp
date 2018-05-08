@@ -27,6 +27,19 @@
 <h3 class="form-hdr" style="background-color: #222D32;color:#ffffff;padding: 10px;">Other Information</h3>
 <table>
 <tr>
+	<td>Attachment</td>
+	<td>: 
+		<?php 
+			if( $lead_attachment != '' ){
+				$file = $this->Url->build("/webroot/" . $attachment_folder . '/' . $lead_attachment,'true');
+				echo "<a target='_blank' href='" . $file . "'>Download Attachment</a>";
+			}else{
+				echo "No Attachment";
+			}
+		?>
+	</td>
+</tr>
+<tr>
 	<td>Status</td>
 	<td>: <?php echo $lead['status']['name']; ?></td>
 </tr>

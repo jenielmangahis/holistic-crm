@@ -282,6 +282,11 @@ class LeadsController extends AppController
            
             $lead = $this->Leads->patchEntity($lead, $data);
             if ($newLead = $this->Leads->save($lead)) {
+                if( $this->request->data['lead_attachment']['name'] != '' ){
+                  //Save attachement
+                  $newLead->attachment = $this->Leads->uploadAttachment($newLead, $this->request->data['lead_attachment']);
+                  $this->Leads->save($newLead);
+                }
 
                 //Send Email notification
                 $source_users = $this->SourceUsers->find('all')
@@ -343,7 +348,9 @@ class LeadsController extends AppController
                       $source_name      = !empty($source->name) ? $source->name : "";
                       $surname          = $leadData->surname != "" ? $leadData->surname : "Not Specified";
                       $lead_client_name = $leadData->firstname . " " . $surname;
-                      $subject          = "New Lead - " . $source_name . " - " . $lead_client_name;                     
+                      $subject          = "New Lead - " . $source_name . " - " . $lead_client_name;    
+                      $attachment       = $leadData->attachment;
+                      $attachment_folder = $this->Leads->getFolderName() . $leadData->id;                  
 
                       $email_customer = new Email('default'); //default or cake_smtp (for testing in local)
                       $email_customer->from(['websystem@holisticwebpresencecrm.com' => 'Holistic'])
@@ -351,7 +358,7 @@ class LeadsController extends AppController
                         ->emailFormat('html')          
                         ->to($users_email)                                                                                               
                         ->subject($subject)
-                        ->viewVars(['lead' => $leadData->toArray()])
+                        ->viewVars(['lead' => $leadData->toArray(), 'lead_attachment' => $attachment, 'attachment_folder' => $attachment_folder])
                         ->send();
                     }
                   }
@@ -513,6 +520,12 @@ class LeadsController extends AppController
 
             $lead = $this->Leads->patchEntity($lead, $this->request->data);
             if ($this->Leads->save($lead)) {
+
+                if( $this->request->data['lead_attachment']['name'] != '' ){
+                  //Save attachement
+                  $lead->attachment = $this->Leads->uploadAttachment($lead, $this->request->data['lead_attachment']);
+                  $this->Leads->save($lead);
+                }
                 
                 //Send Email notification
                 $source_users = $this->SourceUsers->find('all')
@@ -574,14 +587,15 @@ class LeadsController extends AppController
                       $surname          = $modifiedLead->surname != "" ? $modifiedLead->surname : "Not Specified";
                       $lead_client_name = $modifiedLead->firstname . " " . $surname;
                       $subject          = "Updated Lead - " . $source_name . " - " . $lead_client_name;              
-                    
+                      $attachment       = $modifiedLead->attachment;
+                      $attachment_folder = $this->Leads->getFolderName() . $modifiedLead->id; 
                       $email_customer = new Email('default'); //default or cake_smtp (for testing in local)
                       $email_customer->from(['websystem@holisticwebpresencecrm.com' => 'Holistic'])
                         ->template('crm_modified_leads')
                         ->emailFormat('html')          
                         ->to($users_email)                                                                                               
                         ->subject($subject)
-                        ->viewVars(['lead' => $modifiedLead->toArray()])
+                        ->viewVars(['lead' => $modifiedLead->toArray(), 'lead_attachment' => $attachment, 'attachment_folder' => $attachment_folder])
                         ->send();
                     }                    
                   }

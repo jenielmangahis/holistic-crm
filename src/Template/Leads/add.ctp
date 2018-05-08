@@ -24,7 +24,7 @@
 
                 </div>
                 <div class="box-body">
-                    <?= $this->Form->create($lead,['id' => 'frm-default-add', 'data-toggle' => 'validator', 'role' => 'form','class' => 'form-horizontal']) ?>
+                    <?= $this->Form->create($lead,['id' => 'frm-default-add', 'data-toggle' => 'validator', 'role' => 'form','class' => 'form-horizontal', 'enctype' => 'multipart/form-data']) ?>
                     <fieldset>        
                         <h3 class="form-hdr">Lead Personal Information</h3>
                         <div class="row">
@@ -91,6 +91,13 @@
                             </div>
                             <h3 class="form-hdr">Other Information</h3>
                             <?php
+                            echo "
+                            <div class='form-group'>
+                                <label for='lead_attachment' class='col-sm-2 control-label'>" . __('Attachment') . "</label>
+                                <div class='col-sm-6'>";
+                                 echo $this->Form->input('lead_attachment', ['type' => 'file', 'id' => 'lead_attachment', 'label' => false]);                 
+                            echo "</div></div>";
+
                             echo "
                             <div class='form-group'>
                                 <label for='status_id' class='col-sm-2 control-label'>" . __('Status') . "</label>

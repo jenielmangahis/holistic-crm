@@ -1,4 +1,7 @@
-<?php ?>
+<?php 
+use Cake\ORM\TableRegistry;
+$this->Leads = TableRegistry::get('Leads');
+?>
 <style>
 .form-hdr{
     background-color: #222D32;
@@ -93,6 +96,18 @@
 
                             <h3 class="form-hdr">Other Information</h3>
                             <?php
+                            echo "
+                            <div class='form-group'>
+                                <label for='status_id' class='col-sm-2 control-label'>" . __('Attachment') . "</label>
+                                <div class='col-sm-6'>";
+                            if( $lead->attachment != '' ){
+                                $file = $this->Url->build("/webroot/" . $this->Leads->getFolderName() . $lead->id . '/' . $lead->attachment);
+                                echo "<a class='btn btn-info' target='_blank' href='" . $file . "' >View Attachement</a>";
+                            }else{ 
+                                echo "<div class='alert alert-warning'>No Attachment</div>";
+                            }
+                            echo " </div></div>";
+
                             echo "
                             <div class='form-group'>
                                 <label for='status_id' class='col-sm-2 control-label'>" . __('Status') . "</label>
