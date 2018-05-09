@@ -59,6 +59,7 @@ class AuditTrailsController extends AppController
     {
         $this->paginate = [
             'contain' => ['Users'],
+            'order' => ['AuditTrails.id' => 'DESC']
         ];        
         $this->set('auditTrails', $this->paginate($this->AuditTrails));
         $this->set('_serialize', ['auditTrails']);

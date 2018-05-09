@@ -93,10 +93,13 @@ class LeadsController extends AppController
           $leads = $this->Leads->find('all')
               ->contain(['Statuses', 'Sources'])
               ->where(['Leads.is_archive' => 'No']) 
-              ->AndWhere(['Leads.firstname LIKE' => '%' . $query . '%'])       
-              ->orWhere(['Leads.surname LIKE' => '%' . $query . '%'])       
-              ->orWhere(['Leads.email LIKE' => '%' . $query . '%'])     
-
+              ->andWhere([
+                'OR' => [
+                  'Leads.firstname LIKE' => '%' . $query . '%',
+                  'Leads.surname LIKE' => '%' . $query . '%',
+                  'Leads.email LIKE' => '%' . $query . '%'
+                ]
+              ])
           ;
       }else{
 
@@ -127,7 +130,7 @@ class LeadsController extends AppController
           }*/
           
           
-          if( !isset($this->request->query['sort']) ){
+          if( !isset($this->request->query['sort']) ){            
             $this->paginate = ['order' => ['Leads.allocation_date' => 'DESC']];
             $leads = $this->Leads->find('all')
                 ->contain(['Statuses', 'Sources', 'LastModifiedBy'])
@@ -138,8 +141,7 @@ class LeadsController extends AppController
 
             if($sort_field == 'source_id' || $sort_field == 'Leads.source_id') {
               $this->paginate = ['order' => ['Sources.name' => $sort_direction]];
-            }
-            
+            }            
             $leads = $this->Leads->find('all')
                 ->contain(['Statuses', 'Sources', 'LastModifiedBy'])
                 ->where(['Leads.is_archive' => 'No']) 
