@@ -101,6 +101,7 @@
               <ul class="treeview-menu">            
                 <li><?= $this->Html->link('<i class="fa fa-users"></i><span>' . __("Leads") . "</span>",["controller" => "reports", "action" => "leads"],["escape" => false]) ?></li>
                 <li><?= $this->Html->link('<i class="fa fa-users"></i><span>' . __("Leads B") . "</span>",["controller" => "reports", "action" => "index"],["escape" => false]) ?></li>                
+                <li><?= $this->Html->link('<i class="fa fa-users"></i><span>' . __("Cumulative") . "</span>",["controller" => "reports", "action" => "cumulative"],["escape" => false]) ?></li>                
               </ul>
             </li>
 

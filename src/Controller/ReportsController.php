@@ -824,8 +824,157 @@ class ReportsController extends AppController
             'enable_content_expander_script', true
         ]); 
       }
+    }
+
+    /**
+     * Cumulative method
+     *
+     * @return void
+     */
+    public function cumulative()
+    {
+      $this->Sources = TableRegistry::get('Sources');
+      $this->SourceUsers = TableRegistry::get('SourceUsers');
+
+      $session   = $this->request->session();    
+      $user_data = $session->read('User.data');
+      $report_data =  $session->read('Report.data');
+      
+      if ($this->request->is('post')) {
+        $sources = $this->request->data;
+        if( !empty($sources) ){
+          $report_data['s1'] = $sources;          
+          $session->write('CumulativeReport.data', $report_data);      
+          
+          return $this->redirect(['action' => 'cumulative_step2']);
+        }else{
+          $this->Flash->error(__('Please select source to generate report.'));
+        }        
+      }
+
+      if( $user_data->group_id == 1 ){
+        $sources = $this->Sources->find('all')
+          ->order(['Sources.name' => 'ASC'])
+        ;        
+      }else{
+        $source_ids = array();
+        $sourceUsers = $this->SourceUsers->find('all')
+          ->where(['SourceUsers.user_id' => $user_data->id])
+        ;
+        foreach( $sourceUsers as $su ){
+          $source_ids[$su->source_id] = $su->source_id;
+        }
+
+        $sources = $this->Sources->find('all')
+          ->where(['Sources.id IN' => $source_ids])
+          ->order(['Sources.name' => 'ASC'])
+        ;
+      }      
+
+      $this->set([
+        'load_reports_js' => true,
+        'sources' => $sources,
+        'report_data' => $report_data['s1']
+      ]);
+    }
+
+    /**
+     * Cumulative Step2 method
+     *
+     * @return void
+     */
+    public function cumulative_step2()
+    {      
+      $session     = $this->request->session(); 
+      $report_data = $session->read('CumulativeReport.data'); 
+      
+      if( empty($report_data['s1']) ){        
+        $this->Flash->error(__('Please select source to generate report.'));
+        return $this->redirect(['action' => 'cumulative']);
+      }
+
+      if ($this->request->is('post')) {
+        $report_type = $this->request->data;
+        if( $report_type['information'] > 0 ){         
+          $report_data['s2'] = $report_type;              
+          $session->write('CumulativeReport.data', $report_data);      
+
+          return $this->redirect(['action' => 'cumulative_step3']);
+        }else{
+          $this->Flash->error(__('Please select report type.'));
+        }        
+      }
+
+      $optionInformation = [
+        //1 => "How many leads we've received (total)",
+        2 => "Number of leads per month with chart",
+        3 => "Number of leads per week with chart​",
+        4 => "Number of leads per day with chart​"        
+      ];
+
+      $sources = array();
+      foreach( $report_data['s1']['sources'] as $key => $value ){
+        $sources[$key] = $key;
+      }      
+
+      $this->set([
+        'load_reports_js' => true,        
+        'optionInformation' => $optionInformation,
+        'report_data' => $report_data['s2'],
+        'sources' => $sources
+      ]);
+    }
+
+    /**
+     * Cumulative Step3 method
+     *
+     * @return void
+     */
+    public function cumulative_step3()
+    {
+
+      $session     = $this->request->session(); 
+      $report_data = $session->read('CumulativeReport.data'); 
+
+      if( empty($report_data['s1']) ){        
+        $this->Flash->error(__('Please select source to generate report.'));
+        return $this->redirect(['action' => 'cumulative']);
+      }
+
+      if( empty($report_data['s2']) ){        
+        $this->Flash->error(__('Please select report type.'));
+        return $this->redirect(['action' => 'cumulative_step2']);
+      }
+      
+      $this->set([
+        'fields' => $fields,
+        'report_data' => $report_data['s3']
+      ]);
+    }
+
+    /**
+     * Generate Cumulative Report method
+     *
+     * @return download file
+     */
+    public function generate_cumulative_report()
+    {
+      $session     = $this->request->session(); 
+      $report_data = $session->read('Report.data'); 
+
+      if ($this->request->is('post')) {        
+        $data = $this->request->data;   
+        if( !empty($data['fields']) ){    
+
+        }else{
+          $this->Flash->error(__('Cannot generate report'));
+          return $this->redirect(['action' => 'cumulative_step3']);
+        }
+      }else{
+        $this->Flash->error(__('Cannot generate report'));
+        return $this->redirect(['action' => 'cumulative_step3']);
+      }
 
 
     }
-
 }
