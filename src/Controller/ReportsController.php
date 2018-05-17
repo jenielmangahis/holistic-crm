@@ -838,10 +838,10 @@ class ReportsController extends AppController
 
       $session   = $this->request->session();    
       $user_data = $session->read('User.data');
-      $report_data =  $session->read('Report.data');
+      $report_data =  $session->read('CumulativeReport.data');
       
       if ($this->request->is('post')) {
-        $sources = $this->request->data;
+        $sources = $this->request->data;       
         if( !empty($sources) ){
           $report_data['s1'] = $sources;          
           $session->write('CumulativeReport.data', $report_data);      
@@ -886,8 +886,8 @@ class ReportsController extends AppController
     public function cumulative_step2()
     {      
       $session     = $this->request->session(); 
-      $report_data = $session->read('CumulativeReport.data'); 
-      
+      $report_data = $session->read('CumulativeReport.data');
+
       if( empty($report_data['s1']) ){        
         $this->Flash->error(__('Please select source to generate report.'));
         return $this->redirect(['action' => 'cumulative']);
@@ -896,7 +896,7 @@ class ReportsController extends AppController
       if ($this->request->is('post')) {
         $report_type = $this->request->data;
         if( $report_type['information'] > 0 ){         
-          $report_data['s2'] = $report_type;              
+          $report_data['s2'] = $report_type;                        
           $session->write('CumulativeReport.data', $report_data);      
 
           return $this->redirect(['action' => 'cumulative_step3']);
@@ -905,11 +905,10 @@ class ReportsController extends AppController
         }        
       }
 
-      $optionInformation = [
-        //1 => "How many leads we've received (total)",
-        2 => "Number of leads per month with chart",
-        3 => "Number of leads per week with chart​",
-        4 => "Number of leads per day with chart​"        
+      $optionInformation = [        
+        1 => "Number of leads per month with chart",
+        2 => "Number of leads per week with chart​",
+        3 => "Number of leads per day with chart​"        
       ];
 
       $sources = array();
@@ -934,7 +933,7 @@ class ReportsController extends AppController
     {
 
       $session     = $this->request->session(); 
-      $report_data = $session->read('CumulativeReport.data'); 
+      $report_data = $session->read('CumulativeReport.data');       
 
       if( empty($report_data['s1']) ){        
         $this->Flash->error(__('Please select source to generate report.'));
@@ -947,7 +946,6 @@ class ReportsController extends AppController
       }
       
       $this->set([
-        'fields' => $fields,
         'report_data' => $report_data['s3']
       ]);
     }
@@ -960,15 +958,89 @@ class ReportsController extends AppController
     public function generate_cumulative_report()
     {
       $session     = $this->request->session(); 
-      $report_data = $session->read('Report.data'); 
+      $report_data = $session->read('CumulativeReport.data'); 
 
       if ($this->request->is('post')) {        
         $data = $this->request->data;   
-        if( !empty($data['fields']) ){    
+        
+        $report_data['s3'] = $data;          
+        $session->write('CumulativeReport.data', $report_data);      
 
-        }else{
-          $this->Flash->error(__('Cannot generate report'));
-          return $this->redirect(['action' => 'cumulative_step3']);
+        //Generate report
+        $information = $report_data['s2']['information'];
+        $sources     = array();
+        foreach( $report_data['s1']['sources'] as $key => $value ){
+          $sources[$key] = $key;
+        } 
+
+        $chart_data   = array(); 
+        $chart_labels = array();
+        $date_from = $report_data['s3']['dateRange']['from'];
+        $date_to   = $report_data['s3']['dateRange']['to'];
+        switch ($information) {
+          case 1: //Number of leads per month with chart                      
+            $leads = $this->Leads->find('all')
+              ->contain(['Statuses', 'Sources', 'InterestTypes', 'LeadTypes'])
+              ->where(['Leads.source_id IN' => $sources, 'Leads.allocation_date >=' => $date_from, 'Leads.allocation_date <=' => $date_to])
+            ; 
+            
+            //Get months covered between 2 dates
+            $start    = (new \DateTime($date_from))->modify('first day of this month');
+            $end      = (new \DateTime($date_to))->modify('first day of next month');
+            $interval = \DateInterval::createFromDateString('1 month');
+            $period   = new \DatePeriod($start, $interval, $end);
+                       
+            foreach ($period as $dt) {
+                $start_day = $dt->format("Y-m-01");                
+                $last_day  = date("Y-m-t", strtotime($dt->format("Y-m-01")));                
+                $leads = $this->Leads->find('all')
+                  ->select(['id', 'source_id', 'allocation_date'])    
+                  ->where(['Leads.source_id IN' => $sources, 'Leads.allocation_date >=' => $start_day, 'Leads.allocation_date <=' => $last_day])
+                ;   
+                $chart_labels[] = '"' . $dt->format("Y-M") . '"';
+                $chart_data[]   = $leads->count();                                           
+            }                        
+            break;
+          case 2: //Number of leads per week with chart​
+            $begin = new \DateTime($date_from);
+            $end   = new \DateTime($date_to);
+            $week  = '';
+            for($i = $begin; $i <= $end; $i->modify('+1 day')){
+              if( $week != $i->format("W") ){
+                $chart_labels[] = '"' . "Week #" . $i->format("W") . '"';
+                $week = $i->format("W");
+              }
+              $leads = $this->Leads->find('all')
+                ->select(['id', 'source_id', 'allocation_date'])    
+                ->where(['Leads.source_id IN' => $sources, 'Leads.allocation_date =' => $i->format("Y-m-d")])
+              ;                            
+              $chart_data[$week] = $chart_data[$week] + $leads->count();
+            }            
+            break;
+          case 3: //Number of leads per day with chart​
+              $begin = new \DateTime($date_from);
+              $end   = new \DateTime($date_to);
+
+              for($i = $begin; $i <= $end; $i->modify('+1 day')){
+                $leads = $this->Leads->find('all')
+                  ->select(['id', 'source_id', 'allocation_date'])    
+                  ->where(['Leads.source_id IN' => $sources, 'Leads.allocation_date =' => $i->format("Y-m-d")])
+                ;
+                $chart_labels[] = '"' . $i->format("Y-M-d") . '"';
+                $chart_data[]   = $leads->count();
+              }
+            break;
+          default:              
+            break;
+        }        
+        if( $report_data['s3']['report-type'] == 'Excel' ){
+
+        }else{          
+          $this->set([
+            'chart_labels' => $chart_labels,
+            'chart_data' => $chart_data,
+            'load_chart_js' => true
+          ]);
         }
       }else{
         $this->Flash->error(__('Cannot generate report'));

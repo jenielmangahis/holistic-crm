@@ -37,7 +37,7 @@
                 <div class="box-body">
                     <h1>Please specify the date range you wish to generate report</h1>                    
                     <div>
-                        <div class="grp-form-date-range <?= $hidden; ?>" style="margin-left:10px;margin-top:16px;">
+                        <div class="grp-form-date-range" style="margin-left:10px;margin-top:16px;">
                             <div class="col-md-10">
                                 <div class='form-group'>
                                     <input type="text" name="dateRange[from]" value="" placeholder="Date From" class="default-datepicker form-control" />
