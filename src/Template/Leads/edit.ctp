@@ -240,7 +240,7 @@ $this->Leads = TableRegistry::get('Leads');
                                     <?php if($redir == 'dashboard') { ?>
                                             <?= $this->Html->link('<i class="fa fa-angle-left"> </i> ' . __('Back To list'), ['controller' => 'users', 'action' => 'dashboard'],['class' => 'btn btn-warning', 'escape' => false]) ?>
                                     <?php }else { ?>
-                                            <?= $this->Html->link('<i class="fa fa-angle-left"> </i> ' . __('Back To list'), ['action' => 'index?unlock=1&lead_id='.$lead->id],['class' => 'btn btn-warning', 'escape' => false]) ?>
+                                            <a href="<?= $back_url; ?>" class="btn btn-warning"><i class="fa fa-angle-left"> </i> Back To list</a>                                            
                                     <?php } ?>
                                     
                             <?php } else { ?>

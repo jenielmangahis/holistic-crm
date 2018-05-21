@@ -670,7 +670,7 @@ class LeadsController extends AppController
                     }elseif($redir == 'from_source'){
                       return $this->redirect(array('controller' => 'leads', 'action' => 'from_source', $source_id));
                     } else {
-                      if(isset($_GET['page'])) {
+                      if(isset($_GET['page'])) {                        
                         return $this->redirect(['controller' => 'leads', 'action' => 'index?page='.$_GET['page']]);
                       } else {
                         return $this->redirect(['action' => 'index']);
