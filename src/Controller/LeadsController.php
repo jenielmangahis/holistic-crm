@@ -452,7 +452,8 @@ class LeadsController extends AppController
 
         $lead_lock = $this->Leads->get($id, [ 'contain' => ['LastModifiedBy'] ]);         
 
-        if($lead_lock->is_lock && $lead_lock->last_modified_by->id != $this->user->id) {
+        //if($lead_lock->is_lock && $lead_lock->last_modified_by->id != $this->user->id) {
+        if($lead_lock->is_lock ) {
 
           $this->Flash->error(__('This lead is being accessed by another user, please try again later.'));
           if($redir == 'dashboard') {
@@ -463,14 +464,19 @@ class LeadsController extends AppController
 
         }elseif($lead_lock->is_lock == 0) {
           $query = $this->Leads->query();
-          $query->update()
+          /*$query->update()
             ->set(['is_lock' => 1, 'last_modified_by_id' => $login_user_id])
+            ->where(['id' => $id])
+            ->execute();*/
+
+          /*$query->update()
+            ->set(['is_lock' => 1])
             ->where(['id' => $id])
             ->execute();
 
           $session  = $this->request->session();  
           $lck_leads[$login_user_id] = $id;
-          $session->write('LeadsLock.data', $lck_leads);    
+          $session->write('LeadsLock.data', $lck_leads);    */
 
           /*$data['is_lock']              = 1;
           $data['last_modified_by_id'] = $login_user_id;
@@ -521,6 +527,16 @@ class LeadsController extends AppController
             }
 
             $lead = $this->Leads->patchEntity($lead, $this->request->data);
+            $dataChanges = $lead->extract($lead->visibleProperties(), true);
+            $is_with_changes = false;
+            if( count($dataChanges) == 2 ){                                
+                if( $this->request->data['lead_attachment']['name'] != '' ){
+                  $is_with_changes = true;
+                }                
+            }elseif( count($dataChanges) > 2 ){
+              $is_with_changes = true;
+            }            
+
             if ($this->Leads->save($lead)) {
 
                 if( $this->request->data['lead_attachment']['name'] != '' ){
@@ -607,45 +623,48 @@ class LeadsController extends AppController
                 $this->Flash->success(__('The lead has been saved.'));
                 $action = $this->request->data['save'];
 
-                /*
-                 * To do: add audit trail here
-                 * Add IP Address on saving in audit trails
-                */
-                $audit_details = "";
-                $audit_details .= "Updated By: " . $this->user->firstname . ' ' . $this->user->lastname;
-                $audit_details .= " (" . $this->user->email . ")";
-                $audit_details .= "<br />";
-                $audit_details .= "Lead ID: " . $lead->id;
-                $audit_details .= "<hr />";
-                $audit_details .= "<strong>Changes:</strong>" . "<br />";
-                foreach($fields_changes as $fkey => $fd ) {
-                  $audit_details .= $fkey . ": '" . $fd['old'] . "' to '" . $fd['new'] . "'";
-                  $audit_details .= "<br />";
+                if( $is_with_changes ){
+                  /*
+                   * To do: add audit trail here
+                   * Add IP Address on saving in audit trails
+                  */
+                    $audit_details = "";
+                    $audit_details .= "Updated By: " . $this->user->firstname . ' ' . $this->user->lastname;
+                    $audit_details .= " (" . $this->user->email . ")";
+                    $audit_details .= "<br />";
+                    $audit_details .= "Lead ID: " . $lead->id;
+                    $audit_details .= "<hr />";
+                    $audit_details .= "<strong>Changes:</strong>" . "<br />";
+                    foreach($fields_changes as $fkey => $fd ) {
+                      $audit_details .= $fkey . ": '" . $fd['old'] . "' to '" . $fd['new'] . "'";
+                      $audit_details .= "<br />";
+                    }
+
+                    $audit_data['user_id']      = $this->user->id;
+                    $audit_data['action']       = 'Update Lead';
+                    $audit_data['event_status'] = 'Success';
+                    $audit_data['details']      = $audit_details;
+                    $audit_data['audit_date']   = date("Y-m-d h:i:s");
+                    $audit_data['ip_address']   = getRealIPAddress();
+
+                    $auditTrail = $this->AuditTrails->newEntity();
+                    $auditTrail = $this->AuditTrails->patchEntity($auditTrail, $audit_data);
+                    if (!$this->AuditTrails->save($auditTrail)) {
+                      echo 'Error updating audit trails'; exit;
+                    }
+
+                    //$data['is_lock']              = 0;
+                    //$data['last_modified_by_id '] = $login_user_id; 
+                    $lead->last_modified_by_id = $login_user_id;
+                    $lead->is_lock = 0;
+                    $this->Leads->save($lead);                                                        
+                  /*
+                   * Audit trail end here
+                  */
                 }
+                  
 
-                $audit_data['user_id']      = $this->user->id;
-                $audit_data['action']       = 'Update Lead';
-                $audit_data['event_status'] = 'Success';
-                $audit_data['details']      = $audit_details;
-                $audit_data['audit_date']   = date("Y-m-d h:i:s");
-                $audit_data['ip_address']   = getRealIPAddress();
-
-                $auditTrail = $this->AuditTrails->newEntity();
-                $auditTrail = $this->AuditTrails->patchEntity($auditTrail, $audit_data);
-                if (!$this->AuditTrails->save($auditTrail)) {
-                  echo 'Error updating audit trails'; exit;
-                }
-                /*
-                 * Audit trail end here
-                */
-
-                if( $action == 'save' ){
-
-                    $data['is_lock']              = 0;
-                    $data['last_modified_by_id '] = $login_user_id;
-                    $lead_lock = $this->Leads->patchEntity($lead_lock, $data);
-                    if ( !$this->Leads->save($lead_lock) ) { echo "error updating lock lead"; exit; }
-
+                if( $action == 'save' ){                    
                     if($redir == 'dashboard') {
                       return $this->redirect(array('controller' => 'users', 'action' => 'dashboard'));
                     }elseif($redir == 'from_source'){

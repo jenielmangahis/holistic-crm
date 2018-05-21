@@ -184,8 +184,12 @@ class AppController extends Controller
                         $lead_unlock   = $this->Leads->get($lead_id, [ 'contain' => ['LastModifiedBy'] ]);       
                         $login_user_id = $u->id;
                         $query = $this->Leads->query();
-                        $query->update()
+                        /*$query->update()
                             ->set(['is_lock' => 0, 'last_modified_by_id' => $login_user_id])
+                            ->where(['id' => $lead_id])
+                            ->execute();*/
+                        $query->update()
+                            ->set(['is_lock' => 0])
                             ->where(['id' => $lead_id])
                             ->execute();
 
