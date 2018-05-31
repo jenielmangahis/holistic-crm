@@ -957,6 +957,8 @@ class ReportsController extends AppController
      */
     public function generate_cumulative_report()
     {
+      define('EOL',(PHP_SAPI == 'cli') ? PHP_EOL : '<br />');
+
       $session     = $this->request->session(); 
       $report_data = $session->read('CumulativeReport.data'); 
 
@@ -978,7 +980,7 @@ class ReportsController extends AppController
         $date_from = $report_data['s3']['dateRange']['from'];
         $date_to   = $report_data['s3']['dateRange']['to'];
         switch ($information) {
-          case 1: //Number of leads per month with chart                      
+          case 1: //Number of leads per month with chart                                
             $leads = $this->Leads->find('all')
               ->contain(['Statuses', 'Sources', 'InterestTypes', 'LeadTypes'])
               ->where(['Leads.source_id IN' => $sources, 'Leads.allocation_date >=' => $date_from, 'Leads.allocation_date <=' => $date_to])
@@ -998,7 +1000,7 @@ class ReportsController extends AppController
                   ->where(['Leads.source_id IN' => $sources, 'Leads.allocation_date >=' => $start_day, 'Leads.allocation_date <=' => $last_day])
                 ;   
                 $chart_labels[] = '"' . $dt->format("Y-M") . '"';
-                $chart_data[]   = $leads->count();                                           
+                $chart_data[]   = $leads->count();                
             }                        
             break;
           case 2: //Number of leads per week with chart​
@@ -1034,19 +1036,28 @@ class ReportsController extends AppController
             break;
         }        
         if( $report_data['s3']['report-type'] == 'Excel' ){
-          define('EOL',(PHP_SAPI == 'cli') ? PHP_EOL : '<br />');
+          $excel_data = array();                    
+          $excel_data[0] = ["", "Leads"];
+          $start = 0;
+          foreach( $chart_data as $key => $c ){
+            if( isset($chart_labels[$start]) ){
+              $date = str_replace('"',"",$chart_labels[$start]);
+              $excel_data[$start+1] = [$date, $c];
+            }            
+            $start++;
+          }
+
+          $total_rows    = 1;
+          foreach( $chart_data as $d ){              
+              $total_rows++;
+          }         
+                    
           $objPHPExcel = new PHPExcel();
           $objWorksheet = $objPHPExcel->getActiveSheet();
-          $objWorksheet->fromArray(
-            array(
-              array('',2010,2011,2012,2013,2014),
-              array('Q1',12,15,21,2,5),
-              array('Q2',56,73,86,10,6),
-              array('Q3',52,61,69,22,11),
-              array('Q4',30,32,0,2,25),
-              array('Q5',30,32,0,2,25),
-            )
-          );
+          $objWorksheet->fromArray($excel_data);                      
+          $excel_labels = array();
+          $columns = [1 => 'A', 2 => 'B', 3 => 'C', 4 => 'D', 5 => 'E', 6 => 'F', 7 => 'G', 8 => 'H', 9 => 'I', 10 => 'J', 11 => 'K', 12 => 'L'];                  
+          
           //  Set the Labels for each data series we want to plot
           //    Datatype
           //    Cell reference for data
@@ -1055,22 +1066,21 @@ class ReportsController extends AppController
           //    Data values
           //    Data Marker
           $dataseriesLabels = array(
-            new \PHPExcel_Chart_DataSeriesValues('String', 'Worksheet!$B$1', null, 1), //  2010
-            new \PHPExcel_Chart_DataSeriesValues('String', 'Worksheet!$C$1', null, 1), //  2011
-            new \PHPExcel_Chart_DataSeriesValues('String', 'Worksheet!$D$1', null, 1), //  2012
-            new \PHPExcel_Chart_DataSeriesValues('String', 'Worksheet!$E$1', null, 1), //  2013
-            new \PHPExcel_Chart_DataSeriesValues('String', 'Worksheet!$F$1', null, 1), //  2014
-          );
+            new \PHPExcel_Chart_DataSeriesValues('String', 'Worksheet!$B$1', null, 1)//  2010
+            //new \PHPExcel_Chart_DataSeriesValues('String', 'Worksheet!$C$1', null, 1), //  2011        
+          );   
           //  Set the X-Axis Labels
           //    Datatype
           //    Cell reference for data
           //    Format Code
           //    Number of datapoints in series
           //    Data values
-          //    Data Marker
+          //    Data Marker          
+          
           $xAxisTickValues = array(
-            new \PHPExcel_Chart_DataSeriesValues('String', 'Worksheet!$A$2:$A$6', null, 5),  //  Q1 to Q4
-          );
+            new \PHPExcel_Chart_DataSeriesValues('String', 'Worksheet!$A$2:$A$' . (count($chart_labels) + 1), null, 5),  //  Q1 to Q4
+          );                
+          
           //  Set the Data values for each data series we want to plot
           //    Datatype
           //    Cell reference for data
@@ -1078,13 +1088,17 @@ class ReportsController extends AppController
           //    Number of datapoints in series
           //    Data values
           //    Data Marker
+          $excel_data_series_values = array();
+          for( $x = 1; $x < $total_rows; $x++ ){
+              $worksheet = "Worksheet!$" . $columns[$x + 1] . "$2:$" . $columns[$x + 1] . "$" . count($chart_labels);              
+              $excel_data_series_values[] = new \PHPExcel_Chart_DataSeriesValues('Number', $worksheet, null, 5);
+          }       
           $dataSeriesValues = array(
-            new \PHPExcel_Chart_DataSeriesValues('Number', 'Worksheet!$B$2:$B$6', null, 5),
-            new \PHPExcel_Chart_DataSeriesValues('Number', 'Worksheet!$C$2:$C$6', null, 5),
-            new \PHPExcel_Chart_DataSeriesValues('Number', 'Worksheet!$D$2:$D$6', null, 5),
-            new \PHPExcel_Chart_DataSeriesValues('Number', 'Worksheet!$E$2:$E$6', null, 5),
-            new \PHPExcel_Chart_DataSeriesValues('Number', 'Worksheet!$F$2:$F$6', null, 5),
-          );
+            new \PHPExcel_Chart_DataSeriesValues('Number', 'Worksheet!$B$2:$B$' . (count($chart_labels) + 1), null, 1)        
+          );      
+
+          //debug($dataSeriesValues);exit;       
+          
           //  Build the dataseries
           $series = new \PHPExcel_Chart_DataSeries(
             \PHPExcel_Chart_DataSeries::TYPE_LINECHART,    // plotType
@@ -1098,7 +1112,7 @@ class ReportsController extends AppController
           $plotarea = new \PHPExcel_Chart_PlotArea(null, array($series));
           //  Set the chart legend
           $legend = new \PHPExcel_Chart_Legend(\PHPExcel_Chart_Legend::POSITION_TOPRIGHT, null, false);
-          $title = new \PHPExcel_Chart_Title('Test Stacked Line Chart');
+          $title = new \PHPExcel_Chart_Title('Accumulated Leads Chart');
           $yAxisLabel = new \PHPExcel_Chart_Title('Value ($k)');
           //  Create the chart
           $chart = new \PHPExcel_Chart(
@@ -1113,20 +1127,19 @@ class ReportsController extends AppController
           );
           //  Set the position where the chart should appear in the worksheet
           $chart->setTopLeftPosition('A7');
-          $chart->setBottomRightPosition('H20');
-          //  Add the chart to the worksheet
+          $chart->setBottomRightPosition('H20');          
           $objWorksheet->addChart($chart);
-          // Save Excel 2007 file
-          echo date('H:i:s') , " Write to Excel2007 format" , EOL;
-          $objWriter = \PHPExcel_IOFactory::createWriter($objPHPExcel, 'Excel2007');
+          
+          $fileName  = time() . "_" . rand(000000, 999999) . ".xlsx";
+          $objWriter  = \PHPExcel_IOFactory::createWriter($objPHPExcel, 'Excel2007');
           $objWriter->setIncludeCharts(TRUE);
-          $objWriter->save(str_replace('.php', '.xlsx', __FILE__));
-          echo date('H:i:s') , " File written to " , str_replace('.php', '.xlsx', pathinfo(__FILE__, PATHINFO_BASENAME)) , EOL;
-          // Echo memory peak usage
-          echo date('H:i:s') , " Peak memory usage: " , (memory_get_peak_usage(true) / 1024 / 1024) , " MB" , EOL;
-          // Echo done
-          echo date('H:i:s') , " Done writing file" , EOL;
-          echo 'File has been created in ' , getcwd() , EOL;
+          $objWriter->save('excel\leads\\' . $fileName);   
+          $file_path = WWW_ROOT.'excel\leads\\' . $fileName;
+            $this->response->file($file_path, array(
+                'download' => true,
+                'name' => $fileName,
+            ));
+          return $this->response;   
           exit;
         }else{          
           $this->set([

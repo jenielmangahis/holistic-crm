@@ -191,14 +191,15 @@ class DebugController extends AppController
       $objWorksheet = $objPHPExcel->getActiveSheet();
       $objWorksheet->fromArray(
         array(
-          array('',2010,2011,2012,2013,2014),
-          array('Q1',12,15,21,2,5),
-          array('Q2',56,73,86,10,6),
-          array('Q3',52,61,69,22,11),
-          array('Q4',30,32,0,2,25),
-          array('Q5',30,32,0,2,25),
+          array('','Leads'),
+          array('Jan',12),
+          array('Feb',10)
         )
       );
+      $from = array(
+          array('',2010,2011),
+          array('Q1',12,15)
+        );
       //  Set the Labels for each data series we want to plot
       //    Datatype
       //    Cell reference for data
@@ -207,12 +208,9 @@ class DebugController extends AppController
       //    Data values
       //    Data Marker
       $dataseriesLabels = array(
-        new \PHPExcel_Chart_DataSeriesValues('String', 'Worksheet!$B$1', null, 1), //  2010
-        new \PHPExcel_Chart_DataSeriesValues('String', 'Worksheet!$C$1', null, 1), //  2011
-        new \PHPExcel_Chart_DataSeriesValues('String', 'Worksheet!$D$1', null, 1), //  2012
-        new \PHPExcel_Chart_DataSeriesValues('String', 'Worksheet!$E$1', null, 1), //  2013
-        new \PHPExcel_Chart_DataSeriesValues('String', 'Worksheet!$F$1', null, 1), //  2014
-      );
+        new \PHPExcel_Chart_DataSeriesValues('String', 'Worksheet!$B$1', null, 1)//  2010
+        //new \PHPExcel_Chart_DataSeriesValues('String', 'Worksheet!$C$1', null, 1), //  2011        
+      );      
       //  Set the X-Axis Labels
       //    Datatype
       //    Cell reference for data
@@ -221,7 +219,7 @@ class DebugController extends AppController
       //    Data values
       //    Data Marker
       $xAxisTickValues = array(
-        new \PHPExcel_Chart_DataSeriesValues('String', 'Worksheet!$A$2:$A$6', null, 5),  //  Q1 to Q4
+        new \PHPExcel_Chart_DataSeriesValues('String', 'Worksheet!$A$2:$A$3', null, 1),  //  Q1 to Q4        
       );
       //  Set the Data values for each data series we want to plot
       //    Datatype
@@ -231,12 +229,9 @@ class DebugController extends AppController
       //    Data values
       //    Data Marker
       $dataSeriesValues = array(
-        new \PHPExcel_Chart_DataSeriesValues('Number', 'Worksheet!$B$2:$B$6', null, 5),
-        new \PHPExcel_Chart_DataSeriesValues('Number', 'Worksheet!$C$2:$C$6', null, 5),
-        new \PHPExcel_Chart_DataSeriesValues('Number', 'Worksheet!$D$2:$D$6', null, 5),
-        new \PHPExcel_Chart_DataSeriesValues('Number', 'Worksheet!$E$2:$E$6', null, 5),
-        new \PHPExcel_Chart_DataSeriesValues('Number', 'Worksheet!$F$2:$F$6', null, 5),
+        new \PHPExcel_Chart_DataSeriesValues('Number', 'Worksheet!$B$2:$B$3', null, 1)        
       );
+      //debug($dataSeriesValues);exit;
       //  Build the dataseries
       $series = new \PHPExcel_Chart_DataSeries(
         \PHPExcel_Chart_DataSeries::TYPE_LINECHART,    // plotType
