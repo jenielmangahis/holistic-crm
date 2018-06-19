@@ -40,7 +40,7 @@
   }
 ?>
 
-<script>
+<script>  
     var base_url = "<?= $base_url; ?>";
 
     //$.noConflict();
@@ -264,7 +264,7 @@
 var base_url = "<?= $base_url; ?>";
 $(function(){
   var date = new Date(<?php echo time() * 1000 ?>);  
-    var d = new Date("<?php echo date("Y-m-d H:i:s"); ?>");        
+  var d = new Date("<?php echo date("Y-m-d H:i:s"); ?>");        
 
     setInterval(function(){ 
         d.setSeconds(d.getSeconds() + 1);            
@@ -319,6 +319,10 @@ $(function(){
     }
   });
   */
+
+  $(".leads-delete-multiple").click(function(){
+    $("#multi-leads").submit();
+  });
 
   //Users
   $(".btn-show-more-sources").click(function(){   

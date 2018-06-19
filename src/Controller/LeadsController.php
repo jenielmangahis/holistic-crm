@@ -151,7 +151,7 @@ class LeadsController extends AppController
           
       }
 
-      $get         = $_GET;
+      $get = $_GET;
       if(isset($get['page'])) {
         $this->set('page', $get['page']);
       }      
@@ -950,4 +950,36 @@ class LeadsController extends AppController
     {
         $this->set(['message' => '']);
     }    
+
+    public function leads_delete_multiple()
+    {
+      if( $this->user->group_id == 1 ){
+        $leadsIds = $this->request->data['leads'];
+        if( count($leadsIds) > 0 ){
+          $total_deleted = 0;
+          foreach( $leadsIds as $id ){
+            $lead = $this->Leads->find()
+              ->where(['Leads.id' => $id])
+              ->first()
+            ;
+
+            if ($this->Leads->delete($lead)) {
+              $total_deleted++;
+            }
+          } 
+          if( $total_deleted > 0 ){
+            $message = __('Selected leads was successfully deleted. Total Deleted : ') . $total_deleted;          
+          }else{
+            $message = __('0 leads deleted');          
+          }
+          
+          $this->Flash->success($message);
+        }else{
+          $this->Flash->error(__('Please select leads to delete'));
+        }        
+      }else{
+        $this->Flash->error(__('Cannot perform selected action.'));
+      }
+      return $this->redirect(['action' => 'index']);
+    }
 }

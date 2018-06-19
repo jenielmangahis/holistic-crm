@@ -29,10 +29,13 @@
                         <?= $this->Form->end() ?>
                     </div>
 
-                    <div class="box-tools" style="top:9px;">                         
+                    <div class="box-tools" style="top:9px;">  
+                        <?php if( $is_admin_user == 1 ){ ?>   
+                            <?= $this->Html->link('<i class="fa fa-trash"></i> Delete Selected', '#modal-multiple-delete',['class' => 'btn btn-danger btn-box-tool', 'data-toggle' => 'modal','escape' => false]) ?>
+                        <?php } ?>
                         <?php if( $default_group_actions && $default_group_actions['leads'] != 'View Only' ){ ?>
                                     <?= $this->Html->link('<i class="fa fa-plus"></i> Add New', ['action' => 'add'],['class' => 'btn btn-box-tool', 'escape' => false]) ?>
-                        <?php } ?>
+                        <?php } ?>                        
                         <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>                        
                     </div>                    
                     
@@ -40,10 +43,14 @@
                         <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>                        
                     </div>         
                 </div>             
-                <div class="box-body">                    
+                <div class="box-body">   
+                    <?= $this->Form->create(null,['url' => ['action' => 'leads_delete_multiple'], 'id' => 'multi-leads', 'data-toggle' => 'validator', 'role' => 'form']) ?>                 
                     <table id="dt-users-list" class="table table-hover table-striped">
                         <thead class="thead-inverse">
                             <tr>
+                                <?php if( $is_admin_user == 1 ){ ?>
+                                <th class="actions"></th>
+                                <?php } ?>
                                 <th class="actions"></th>
                                 <th><?= $this->Paginator->sort('status_id', __("Status") . "<i class='fa fa-sort pull-right'> </i>", array('escape' => false)) ?></th>
                                 <th><?= $this->Paginator->sort('source_id', __("Source") . "<i class='fa fa-sort pull-right'> </i>", array('escape' => false)) ?></th>                                
@@ -57,6 +64,9 @@
                         <tbody>
                             <?php foreach ($leads as $lead) { ?>
                             <tr>
+                                <?php if( $is_admin_user == 1 ){ ?>
+                                    <td style="vertical-align:middle;"><input type="checkbox" name="leads[]" value="<?= $lead->id; ?>" /></td>
+                                <?php } ?>
                                 <td class="table-actions">
                                     <div class="dropdown">
                                         <button class="btn btn-default dropdown-toggle" type="button" id="drpdwn" data-toggle="dropdown" aria-expanded="true">
@@ -167,6 +177,24 @@
                             <?php } ?>
                         </tbody>
                     </table>
+                    <div id="modal-multiple-delete" class="modal fade">
+                        <div class="modal-dialog">
+                          <div class="modal-content">
+                            <div class="modal-header">
+                                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                                <h4 class="modal-title">Multiple Delete Confirmation</h4>
+                            </div>
+                            <div class="modal-body">
+                                <p><?= __('Are you sure you want to delete all selected leads?') ?></p>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" data-dismiss="modal" class="btn btn-default">No</button>
+                                <a class="btn btn-danger leads-delete-multiple" href="javascript:void(0);">Yes</a>
+                            </div>
+                          </div>
+                        </div>                              
+                    </div>
+                    <?= $this->Form->end() ?>
                     <div class="paginator" style="text-align:center;">
                         <ul class="pagination">
                         <?= $this->Paginator->prev('«') ?>
