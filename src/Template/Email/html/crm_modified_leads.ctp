@@ -45,7 +45,12 @@
 </tr>
 <tr>
 	<td>Action</td>
-	<td>: <?php echo $lead['lead_action']; ?></td>
+	<td>: 
+		<?php
+			$action = str_replace('\"', "", $lead['lead_action']); 
+			echo $action; 
+		?>
+	</td>
 </tr>
 <tr>
 	<td>Source</td>

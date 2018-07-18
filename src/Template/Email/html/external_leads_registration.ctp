@@ -32,7 +32,12 @@
 </tr>
 <tr>
 	<td>Action</td>
-	<td>: <?php echo $new_lead['lead_action']; ?></td>
+	<td>: 
+		<?php
+			$action = str_replace('\"', "", $new_lead['lead_action']); 
+			echo $action; 
+		?>
+	</td>
 </tr>
 <tr>
 	<td>Source</td>

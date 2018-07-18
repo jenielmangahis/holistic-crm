@@ -119,7 +119,7 @@ $this->Leads = TableRegistry::get('Leads');
                             <div class='form-group'>
                                 <label for='lead_action' class='col-sm-2 control-label'>" . __('Action') . "</label>
                                 <div class='col-sm-6'>";
-                                echo $this->Form->input('lead_action', ['class' => 'form-control', 'id' => 'lead_action', 'readonly' => 'readonly',  'type' => 'textarea', 'label' => false]);
+                                echo $this->Form->input('lead_action', ['value' => str_replace('\"', "", $lead->lead_action), 'class' => 'form-control', 'id' => 'lead_action', 'readonly' => 'readonly',  'type' => 'textarea', 'label' => false]);
                             echo " </div></div>"; 
 
                             echo "

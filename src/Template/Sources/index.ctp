@@ -1,6 +1,9 @@
 <?php use Cake\Utility\Inflector; ?>
-<?php use Cake\ORM\TableRegistry; ?>
-<?php $this->Leads = TableRegistry::get('Leads'); ?>
+<?php 
+use Cake\ORM\TableRegistry;
+$this->SourceUsers = TableRegistry::get('SourceUsers');
+$this->Leads = TableRegistry::get('Leads'); 
+?>
 <style>
 .label{
     padding:10px;    
@@ -121,30 +124,28 @@ div.box-body{
                                 </td>                                
                                 <td><?= $source->name; ?></td>                                                                
                                 <td>
-                                    <?php                                     
-                                        if(count($source->source_users) > 0){
+                                    <?php        
+                                        $sourceUsers = $this->SourceUsers->find('all')
+                                            ->contain(['Users'])
+                                            ->where(['SourceUsers.source_id' => $source->id])
+                                            ->order(['Users.firstname' => 'ASC'])
+                                        ;          
+                                        if( $sourceUsers->count() > 0 ){
                                             $counter_list = 1;
-                                            echo "<ul class='user-allocations'>";                                                
-                                            foreach($source->source_users as $au){                                                                                                    
+                                            echo "<ul class='user-allocations'>";
+                                            foreach($sourceUsers as $au){                                                    
                                                 $add_list_class = '';
                                                 $add_icon = '';
-                                                $other_email = array();
-                                                if( $counter_list > 1 ){
+                                                if( $counter_list > 1 ){                                                        
                                                     $add_list_class = 'hidden';
+                                                    $li_class = 'source-item-' . $source->id;
                                                 }else{
-                                                    if( count($source->source_users) > 1 ){
+                                                    $li_class = 'source-item-' . $source->id . '-1';
+                                                    if( $sourceUsers->count() > 1 ){
                                                         $add_icon = "<a href='javascript:void(0);' data-id=" . $source->id . " class='btn btn-default btn-xs btn-show-more-sources'><i class='fa fa-plus'></i> View More</a>";
                                                     }
                                                 }
-                                                echo "<li class='source-item-" . $source->id . " {$add_list_class}'>" . $au->user->firstname . " " . $au->user->lastname ." {$add_icon}</li>";
-                                                if(!empty($au->user->other_email)) {
-                                                    $other_email = explode(";", $au->user->other_email);
-                                                    echo "<ul class='user-allocations'>";
-                                                        foreach($other_email as $email) {
-                                                            echo "<li class='source-item-" . $source->id . " {$add_list_class}'>".$email."</li>";
-                                                        }
-                                                    echo "</ul>";
-                                                }
+                                                echo "<li class='{$li_class} {$add_list_class}'>" . $au->user->firstname . ' ' . $au->user->lastname . " {$add_icon}</li>";
                                                 $counter_list++;
                                             }
                                             echo "</ul>";

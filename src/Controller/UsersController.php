@@ -82,7 +82,7 @@ class UsersController extends AppController
 
             $query = $this->request->query['query'];
             $users = $this->Users->find('all', ['order' => ['Users.sort' => 'ASC']])
-                ->contain(['Groups', 'SourceUsers' => ['Sources']])
+                ->contain(['Groups'])
                 ->where(['Users.firstname LIKE' => '%' . $query . '%'])       
                 ->orWhere(['Users.lastname LIKE' => '%' . $query . '%'])       
                 ->orWhere(['Users.email LIKE' => '%' . $query . '%'])       
@@ -109,8 +109,8 @@ class UsersController extends AppController
             }
 
             $users = $this->Users->find('all', ['order' => ['Users.sort' => 'ASC']])
-                                ->contain(['Groups', 'SourceUsers' => ['Sources']])
-                    ;
+                ->contain(['Groups'])
+            ;
         } 
 
         $this->set('users', $this->paginate($users));

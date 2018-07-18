@@ -326,9 +326,15 @@ $(function(){
 
   //Users
   $(".btn-show-more-sources").click(function(){   
-    var data_id = 'source-item-' + $(this).attr('data-id');    
-    $("." + data_id).removeClass("hidden");        
+    var data_id = 'source-item-' + $(this).attr('data-id'); 
+    if( $("." + data_id).hasClass("hidden") ){
+      $("." + data_id).removeClass("hidden"); 
+    }else{
+      $("." + data_id).addClass("hidden"); 
+    }  
   });
+
+  
 
   //Date picker       
   $('.default-datepicker').datepicker({

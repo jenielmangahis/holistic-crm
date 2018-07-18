@@ -980,6 +980,6 @@ class LeadsController extends AppController
       }else{
         $this->Flash->error(__('Cannot perform selected action.'));
       }
-      return $this->redirect(['action' => 'index']);
+      return $this->redirect($this->referer());
     }
 }

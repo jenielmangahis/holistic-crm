@@ -1,4 +1,8 @@
 <?php use Cake\Utility\Inflector; ?>
+<?php 
+use Cake\ORM\TableRegistry;
+$this->SourceUsers = TableRegistry::get('SourceUsers');
+?>
 <style>
 .label{
     padding:10px;    
@@ -42,6 +46,7 @@ div.box-body{
 <section class="content">
     <!-- Main Row -->
     <div class="row">
+        <a class="btn-hide-more-sources" href="javascript:void(0);">hide</a>
         <section class="col-lg-12 ">
             <div class="box box-primary box-solid">   
                 <div class="box-header with-border">  
@@ -117,73 +122,60 @@ div.box-body{
                                 <td><?= h($user->username) ?></td>                                                           
                                 <td><?= h($user->group->name) ?></td>
                                 <td>
-                                    <?php 
-                                        /*if($user->group_id == 1){
-                                            if(count($user->allocation_users) > 0){
-                                                echo "<ul class='user-allocations'>";
-                                                foreach($user->allocation_users as $au){
-                                                    echo "<li>" . $au->allocation->name . "</li>";
-                                                }
-                                                echo "</ul>";
-                                            }else{
-                                                echo "-";
-                                            }
-                                        }else{                                            
-                                            if(count($user->allocation_users) > 0){
-                                                echo "<ul class='user-allocations'>";
-                                                foreach($user->allocation_users as $au){
-                                                    echo "<li>" . $au->allocation->name . "</li>";
-                                                }
-                                                echo "</ul>";
-                                            }else{
-                                                echo "-";
-                                            }
-                                        }*/
-
+                                    <?php
+                                        $sourceUsers = $this->SourceUsers->find('all')
+                                            ->contain(['Sources'])
+                                            ->where(['SourceUsers.user_id' => $user->id])
+                                            ->order(['Sources.name' => 'ASC'])
+                                        ;
                                         if($user->group_id == 1){
-                                            if(count($user->source_users) > 0){
+                                            if( $sourceUsers->count() > 0 ){
                                                 $counter_list = 1;
-                                                echo "<ul class='user-allocations'>";                                                
-                                                foreach($user->source_users as $au){                                                    
+                                                echo "<ul class='user-allocations'>";
+                                                foreach($sourceUsers as $au){                                                    
                                                     $add_list_class = '';
                                                     $add_icon = '';
                                                     if( $counter_list > 1 ){                                                        
                                                         $add_list_class = 'hidden';
+                                                        $li_class = 'source-item-' . $user->id;
                                                     }else{
-                                                        $add_icon = "<a href='javascript:void(0);' data-id=" . $user->id . " class='btn btn-default btn-xs btn-show-more-sources'><i class='fa fa-plus'></i> View More</a>";
+                                                        $li_class = 'source-item-' . $user->id . '-1';
+                                                        if( $sourceUsers->count() > 1 ){
+                                                            $add_icon = "<a href='javascript:void(0);' data-id=" . $user->id . " class='btn btn-default btn-xs btn-show-more-sources'><i class='fa fa-plus'></i> View More</a>";
+                                                        }
+                                                        //$add_icon = "<a href='javascript:void(0);' data-id=" . $user->id . " class='btn btn-default btn-xs btn-show-more-sources'><i class='fa fa-plus'></i> View More</a>";
                                                     }
-                                                    echo "<li class='source-item-" . $user->id . " {$add_list_class}'>" . $au->source->name . " {$add_icon}</li>";
+                                                    echo "<li class='{$li_class} {$add_list_class}'>" . $au->source->name . " {$add_icon}</li>";
                                                     $counter_list++;
                                                 }
                                                 echo "</ul>";
                                             }else{
                                                 echo "-";
                                             }
-                                        }else{                                                                                    
-                                            if(count($user->source_users) > 0){                                                
+                                        }else{                            
+                                            if( $sourceUsers->count() > 0 ){
                                                 $counter_list = 1;
-                                                echo "<ul class='user-allocations'>";                                                
-                                                foreach($user->source_users as $au){
+                                                echo "<ul class='user-allocations'>";
+                                                foreach($sourceUsers as $au){  
                                                     $add_list_class = '';
                                                     $add_icon = '';
                                                     if( $counter_list > 1 ){                                                        
                                                         $add_list_class = 'hidden';
+                                                        $li_class = 'source-item-' . $user->id;
                                                     }else{
-                                                        if( count($user->source_users) > 1 ){
+                                                        $li_class = 'source-item-' . $user->id . '-1';
+                                                        if( $sourceUsers->count() > 1 ){
                                                             $add_icon = "<a href='javascript:void(0);' data-id=" . $user->id . " class='btn btn-default btn-xs btn-show-more-sources'><i class='fa fa-plus'></i> View More</a>";
                                                         }                                                        
                                                     }
-                                                    echo "<li class='source-item-" . $user->id . " {$add_list_class}'>" . $au->source->name . " {$add_icon}</li>";
+                                                    echo "<li class='{$li_class} {$add_list_class}'>" . $au->source->name . " {$add_icon}</li>";
                                                     $counter_list++;
                                                 }
                                                 echo "</ul>";
                                             }else{
-                                                echo "-";
+                                                echo "-"; 
                                             }
                                         }
-                                           
-
-                                       
                                     ?>
                                 </td>                                                                                           
                             </tr>
