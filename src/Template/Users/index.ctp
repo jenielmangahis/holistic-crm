@@ -46,7 +46,6 @@ div.box-body{
 <section class="content">
     <!-- Main Row -->
     <div class="row">
-        <a class="btn-hide-more-sources" href="javascript:void(0);">hide</a>
         <section class="col-lg-12 ">
             <div class="box box-primary box-solid">   
                 <div class="box-header with-border">  
