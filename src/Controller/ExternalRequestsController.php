@@ -117,7 +117,7 @@ class ExternalRequestsController extends AppController
               $subject          = "New Lead - " . $source_name . " - " . $lead_client_name; 
 
               $email_customer = new Email('cake_smtp'); //default or cake_smtp (for testing in local)
-              $email_customer->from(['websystem@holisticwebpresencecrm.com' => 'Holistic'])
+              $email_customer->from(['websystem@holisticwebpresencecrm.com' => 'websystem@holisticwebpresencecrm.com'])
                 ->template('external_leads_registration')
                 ->emailFormat('html')          
                 ->cc($users_email)                                                                                               
@@ -225,7 +225,7 @@ class ExternalRequestsController extends AppController
               $subject          = "New Lead - " . $source_name . " - " . $lead_client_name; 
               
               $email_customer = new Email('cake_smtp'); //default or cake_smtp (for testing in local)
-              $email_customer->from(['websystem@holisticwebpresencecrm.com' => 'Holistic'])
+              $email_customer->from(['websystem@holisticwebpresencecrm.com' => 'websystem@holisticwebpresencecrm.com'])
                 ->template('external_leads_registration')
                 ->emailFormat('html')          
                 ->cc($users_email)                                                                                               
