@@ -354,7 +354,7 @@ class LeadsController extends AppController
                       $attachment       = $leadData->attachment;
                       $attachment_folder = $this->Leads->getFolderName() . $leadData->id;                  
 
-                      $email_customer = new Email('default'); //default or cake_smtp (for testing in local)
+                      $email_customer = new Email('cake_smtp'); //default or cake_smtp (for testing in local)
                       $email_customer->from(['websystem@holisticwebpresencecrm.com' => 'Holistic'])
                         ->template('crm_new_leads')
                         ->emailFormat('html')          
@@ -607,7 +607,7 @@ class LeadsController extends AppController
                       $subject          = "Updated Lead - " . $source_name . " - " . $lead_client_name;              
                       $attachment       = $modifiedLead->attachment;
                       $attachment_folder = $this->Leads->getFolderName() . $modifiedLead->id; 
-                      $email_customer = new Email('default'); //default or cake_smtp (for testing in local)
+                      $email_customer = new Email('cake_smtp'); //default or cake_smtp (for testing in local)
                       $email_customer->from(['websystem@holisticwebpresencecrm.com' => 'Holistic'])
                         ->template('crm_modified_leads')
                         ->emailFormat('html')          
@@ -841,7 +841,7 @@ class LeadsController extends AppController
 
                 //Send email notification to admin
                 $admin_email = 'bryan.yobi@gmail.com';
-                $email_customer = new Email('default'); //default or cake_smtp (for testing in local)
+                $email_customer = new Email('cake_smtp'); //default or cake_smtp (for testing in local)
                 $email_customer->from(['websystem@holisticwebpresencecrm.com' => 'Holistic'])
                   ->template('leads_registration')
                   ->emailFormat('html')
