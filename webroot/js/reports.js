@@ -1,4 +1,8 @@
 $(function(){
+    $(".select-all-sources").click(function(){
+        $('.chk-sources').not(this).prop('checked', this.checked);
+    });
+
     $("#filter-leads-report").change(function() {
         if(this.checked) {
             var div = document.getElementById("leads-filter-grp");

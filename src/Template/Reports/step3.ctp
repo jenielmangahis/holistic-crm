@@ -1,7 +1,15 @@
 <?php ?>
 <style>
 .list-group-item{
-    margin:10px;    
+    margin:10px;
+    flex: 1 0 20%; /* explanation below */
+    margin: 5px;
+    height: 60px;
+    overflow: auto;
+
+}
+.list-group{
+
 }
 .box-body{
     padding:2px 26px;
@@ -31,11 +39,16 @@
                 <?= $this->Form->create(null,[                
                   'url' => ['action' => 'generate_leads_report'],
                   'class' => 'form-horizontal',
-                  'type' => 'POST',
-                  'target' => '_blank'                  
+                  'type' => 'POST'                 
                 ]) ?> 
-                <div class="box-body">
-                    <h1>What information would you like in the report (check all that apply)?</h1>                    
+                <div style="display: inline-block;width: 85%;">
+                    <h1 class="pull-left">What information would you like in the report (check all that apply)?</h1>
+                    <div class="checkbox pull-right" style="margin-top:37px;padding:10px;border:1px solid #ddd;">
+                        <label><input type="checkbox" class="select-all-sources"  />Check All</label>
+                    </div>
+                </div>
+                <div class="clearfix"></div>
+                <div class="box-body">          
                     <div>
                         <div>
                             <ul class="list-group row">
@@ -48,7 +61,7 @@
                                                     $checked = 'checked="checked"';
                                                 }
                                             ?>
-                                            <label><input type="checkbox" <?= $checked; ?> name="fields[<?= $key; ?>]" /><?= $value; ?></label>
+                                            <label><input type="checkbox" <?= $checked; ?> name="fields[<?= $key; ?>]" class="chk-sources" /><?= $value; ?></label>
                                         </div>                                    
                                     </li>
                                 <?php } ?>

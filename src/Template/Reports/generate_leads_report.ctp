@@ -1,39 +1,56 @@
-<?php ?>
-
-	<section class="content-header">
-	    <h1><?= __('Reports : Leads') ?></h1>
-	    <ol class="breadcrumb">
-	        <li><?= $this->Html->link("<i class='fa fa-dashboard'></i>" . __("Home"), ['controller' => 'users', 'action' => 'dashboard'],['escape' => false]) ?></li>
-	        <li><?= $this->Html->link("<i class='fa fa-tags'></i>" . __('Reports'), ['action' => 'index'],['escape' => false]) ?></li>
-	        <li class="active"><?= __('Leads') ?></li>
-	    </ol>
-	</section>
+<style>
+th{
+	background-color: #374850;
+	color:#ffffff;
+}
+th a{
+	color:#ffffff;
+}
+th{
+	border-bottom: 1px solid #ffffff !important;
+}
+td{
+	border:1px solid #d1e0e0;
+}
+</style>
+<section class="content-header">
+    <h1><?= __('Reports : Leads') ?></h1>
+    <ol class="breadcrumb">
+        <li><?= $this->Html->link("<i class='fa fa-dashboard'></i>" . __("Home"), ['controller' => 'users', 'action' => 'dashboard'],['escape' => false]) ?></li>
+        <li><?= $this->Html->link("<i class='fa fa-tags'></i>" . __('Reports'), ['action' => 'index'],['escape' => false]) ?></li>
+        <li class="active"><?= __('Leads') ?></li>
+    </ol>
+</section>
 
 <section class="content">
-
 	<div class="row">
-
 	    <div class="col-md-12">
 	      <div class="box box-primary box-solid"> 
 	        <div class="box-header with-border">  
-	            <div class="user-block"><i class="fa fa-list-alt"></i> <?= __('Results') ?></div>                  
+	            <div class="user-block"><i class="fa fa-list-alt"></i> <?= __('Results') ?><?= $this->Html->link('<i class="fa fa-arrow-left"></i> ' . __('Back'),["action" => "step3"],["class" => "btn btn-success pull-right", "escape" => false]) ?></div>                  
 	        </div>     
 	        <div class="box-body box-links" style="overflow-x:auto !important; overflow-y:auto !important; height: 490px;">
-	            <table id="example_datatable" class="table table-hover table-striped table-scroll-body">
+	            <table class="table table-hover table-striped table-scroll-body">
 	                <thead class="thead-inverse">
+	                    <?php $total_cols = count($fields);?>
+	                	<tr>
+	                		<th colspan="<?= $total_cols + 2; ?>">Total Leads : <?= $leads->count(); ?></th>
+	                	</tr>
 	                    <tr>
-	                        <th style="">Action</th>
+	                        <th class="actions">Action</th>
+	                        <th>#</th>
 	                        <?php foreach($fields as $fkey => $f) { ?>
 	                        		<th style=""><?= $this->Paginator->sort($fkey, $fkey . "<i class='fa fa-sort pull-right'> </i>", array('escape' => false)) ?></th>
 	                        <?php } ?>
 	                    </tr>
 	                </thead>
 	                <tbody>
-	                    <?php foreach($leads as $s) { ?>
+	                    <?php $count_leads = 1; foreach($leads as $s) { ?>
 	                            <tr>
-	                                <td>
-	                                	<?= $this->Html->link("" . __("Edit"), ['controller' => 'leads', 'action' => 'edit/'. $s->id],['escape' => false, 'class' => 'btn btn-info btn-xs', 'target' => '_blank']) ?>
+	                                <td class="table-actions">
+	                                	<?= $this->Html->link("<i class='fa fa-pencil'></i> " . __("Edit"), ['controller' => 'leads', 'action' => 'edit/'. $s->id],['escape' => false, 'class' => 'btn btn-info', 'target' => '_blank']) ?>
 	                                </td>
+	                                <td style="width:1%;"><?= $count_leads; ?></td>
 	                                <?php
 	                                foreach( $fields as $key => $value ){  
 	                                	if($key == 'source_id') {
@@ -91,7 +108,7 @@
 	                                <?php } ?>
 	                                
 	                            </tr>
-	                    <?php } ?>
+	                    <?php $count_leads++;} ?>
 	                </tbody>
 	            </table>         
 

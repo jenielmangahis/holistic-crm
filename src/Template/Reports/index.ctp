@@ -2,6 +2,14 @@
 <style>
 .list-group-item{
     margin:10px;
+    flex: 1 0 20%; /* explanation below */
+    margin: 5px;
+    height: 80px;
+    overflow: auto;
+
+}
+.list-group{
+
 }
 .box-body{
     padding:2px 26px;
@@ -33,8 +41,14 @@
                   'class' => 'form-horizontal',
                   'type' => 'POST'                  
                 ]) ?> 
+                <div style="display: inline-block;width: 76%;">
+                    <h1 class="pull-left">Select sources you like a report for</h1>
+                    <div class="checkbox pull-right" style="margin-top:37px;padding:10px;border:1px solid #ddd;">
+                        <label><input type="checkbox" class="select-all-sources"  />Check All</label>
+                    </div>
+                </div>
+                <div class="clearfix"></div>
                 <div class="box-body">
-                    <h1>Select sources you like a report for</h1>
                     <div>
                         <ul class="list-group row">
                             <?php foreach($sources as $s){ ?>
@@ -48,7 +62,7 @@
                                 ?>
                                 <li class="list-group-item col-xs-3">
                                     <div class="checkbox">
-                                        <label><input type="checkbox" <?= $checked; ?> name="sources[<?= $s->id; ?>]" /> <?= $s->name; ?></label>
+                                        <label><input type="checkbox" <?= $checked; ?> name="sources[<?= $s->id; ?>]" class="chk-sources" /> <?= $s->name; ?></label>
                                     </div>                                    
                                 </li>
                             <?php } ?>
