@@ -131,11 +131,10 @@ class LeadsController extends AppController
           
           
           if( !isset($this->request->query['sort']) ){            
-            $this->paginate = ['order' => ['Leads.allocation_date' => 'DESC']];
+            $this->paginate = ['order' => ['Leads.allocation_date' => 'DESC', 'Leads.id' => 'DESC']];
             $leads = $this->Leads->find('all')
                 ->contain(['Statuses', 'Sources', 'LastModifiedBy'])
-                ->where(['Leads.is_archive' => 'No'])      
-                
+                ->where(['Leads.is_archive' => 'No'])
             ;
           }else{
 
