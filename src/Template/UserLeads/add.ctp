@@ -24,7 +24,7 @@
 
                 </div>
                 <div class="box-body">
-                    <?= $this->Form->create($lead,['id' => 'frm-default-add', 'data-toggle' => 'validator', 'role' => 'form','class' => 'form-horizontal']) ?>
+                    <?= $this->Form->create($lead,['id' => 'frm-default-add', 'type' => 'post', 'data-toggle' => 'validator', 'role' => 'form','class' => 'form-horizontal']) ?>
                     <fieldset>        
                         <h3 class="form-hdr">Lead Personal Information</h3>
                         <?php

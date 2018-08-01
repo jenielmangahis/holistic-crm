@@ -233,21 +233,21 @@ class ReportsController extends AppController
               $date_to   = $report_data['s2']['dateRange']['to'];
               $leads = $this->Leads->find('all')
                 ->contain(['Statuses', 'Sources', 'InterestTypes', 'LeadTypes'])
-                ->where(['Leads.source_id IN' => $sources, 'Leads.allocation_date >=' => $date_from, 'Leads.allocation_date <=' => $date_to])
+                ->where(['Leads.source_id IN' => $sources, 'Leads.allocation_date >=' => $date_from, 'Leads.allocation_date <=' => $date_to, 'Leads.is_archive' => 'No'])
               ;           
               break;
               
             case 3: //How many leads are currently open/engaged?
               $leads = $this->Leads->find('all')
                 ->contain(['Statuses', 'Sources', 'InterestTypes', 'LeadTypes'])
-                ->where(['Leads.source_id IN' => $sources, 'Leads.status_id' => 1])
+                ->where(['Leads.source_id IN' => $sources, 'Leads.status_id' => 1, 'Leads.is_archive' => 'No'])
               ;
               break;
 
             case 4: //How many leads are closed/sold
               $leads = $this->Leads->find('all')
                 ->contain(['Statuses', 'Sources', 'InterestTypes', 'LeadTypes'])
-                ->where(['Leads.source_id IN' => $sources, 'Leads.status_id' => 7])
+                ->where(['Leads.source_id IN' => $sources, 'Leads.status_id' => 7, 'Leads.is_archive' => 'No'])
               ;
               break;
 
@@ -255,7 +255,7 @@ class ReportsController extends AppController
               $dead_spam_status = [6,11,12,13];
               $leads = $this->Leads->find('all')
                 ->contain(['Statuses', 'Sources', 'InterestTypes', 'LeadTypes'])
-                ->where(['Leads.source_id IN' => $sources, 'Leads.status_id IN' => $dead_spam_status])
+                ->where(['Leads.source_id IN' => $sources, 'Leads.status_id IN' => $dead_spam_status, 'Leads.is_archive' => 'No'])
               ;
               break;
 
@@ -265,12 +265,12 @@ class ReportsController extends AppController
               if( isset($report_data['s2']['viewAllDateRangeAllForms']) ){
                 $leads = $this->Leads->find('all')
                   ->contain(['Statuses', 'Sources', 'InterestTypes', 'LeadTypes'])
-                  ->where(['Leads.source_id IN' => $sources, 'Leads.lead_type_id' => 1])
+                  ->where(['Leads.source_id IN' => $sources, 'Leads.lead_type_id' => 1, 'Leads.is_archive' => 'No'])
                 ;      
               }else{
                 $leads = $this->Leads->find('all')
                   ->contain(['Statuses', 'Sources', 'InterestTypes', 'LeadTypes'])
-                  ->where(['Leads.source_id IN' => $sources, 'Leads.allocation_date >=' => $date_from, 'Leads.allocation_date <=' => $date_to, 'Leads.lead_type_id' => 1])
+                  ->where(['Leads.source_id IN' => $sources, 'Leads.allocation_date >=' => $date_from, 'Leads.allocation_date <=' => $date_to, 'Leads.lead_type_id' => 1, 'Leads.is_archive' => 'No'])
                 ;      
               }              
               break;
@@ -282,7 +282,7 @@ class ReportsController extends AppController
               }
               $leads = $this->Leads->find('all')
                   ->contain(['Statuses', 'Sources', 'InterestTypes', 'LeadTypes'])
-                  ->where(['Leads.source_id IN' => $sources, 'Leads.source_url IN' => $source_urls])
+                  ->where(['Leads.source_id IN' => $sources, 'Leads.source_url IN' => $source_urls, 'Leads.is_archive' => 'No'])
                 ; 
               break;
 
@@ -290,14 +290,14 @@ class ReportsController extends AppController
               if( isset($report_data['s2']['viewAllLeadsTelephone']) ){
                 $leads = $this->Leads->find('all')
                   ->contain(['Statuses', 'Sources', 'InterestTypes', 'LeadTypes'])
-                  ->where(['Leads.source_id IN' => $sources, 'Leads.lead_type_id' => 2])
+                  ->where(['Leads.source_id IN' => $sources, 'Leads.lead_type_id' => 2, 'Leads.is_archive' => 'No'])
                 ;  
               }else{
                 $date_from = $report_data['s2']['dateRangeLeadsTelephone']['from'];
                 $date_to   = $report_data['s2']['dateRangeLeadsTelephone']['to'];
                 $leads = $this->Leads->find('all')
                   ->contain(['Statuses', 'Sources', 'InterestTypes', 'LeadTypes'])
-                  ->where(['Leads.source_id IN' => $sources, 'Leads.lead_type_id' => 2, 'Leads.allocation_date >=' => $date_from, 'Leads.allocation_date <=' => $date_to])
+                  ->where(['Leads.source_id IN' => $sources, 'Leads.lead_type_id' => 2, 'Leads.allocation_date >=' => $date_from, 'Leads.allocation_date <=' => $date_to, 'Leads.is_archive' => 'No'])
                 ;    
               }
               break;
@@ -616,7 +616,8 @@ class ReportsController extends AppController
 
             if( isset($data['filter-leads-report']) ){
                 $query_builder = array();
-                $or_query_builder = array();              
+                $or_query_builder = array();  
+                $query_builder[] = ['Leads.is_archive' => 'No'];          
                 foreach( $data['search'] as $key => $value ){
                   if($key == 'date_created' ){                   
                     //$query_builder[] = ['DATE_FORMAT(Leads.created, "%Y-%m-%d") >=' => $value['value']['from'], 'DATE_FORMAT(Leads.created, "%Y-%m-%d") <=' => $value['value']['to']];
@@ -766,6 +767,7 @@ class ReportsController extends AppController
 
           if( isset($data['filter-leads-report']) ){
               $query_builder = array();
+              $query_builder[] = ['Leads.is_archive' => 'No'];
               $or_query_builder = array();              
               foreach( $data['search'] as $key => $value ){
                 if($key == 'date_created' ){                   
@@ -980,7 +982,7 @@ class ReportsController extends AppController
           case 1: //Number of leads per month with chart                                
             $leads = $this->Leads->find('all')
               ->contain(['Statuses', 'Sources', 'InterestTypes', 'LeadTypes'])
-              ->where(['Leads.source_id IN' => $sources, 'Leads.allocation_date >=' => $date_from, 'Leads.allocation_date <=' => $date_to])
+              ->where(['Leads.source_id IN' => $sources, 'Leads.allocation_date >=' => $date_from, 'Leads.allocation_date <=' => $date_to, 'Leads.is_archive' => 'No'])
             ; 
             
             //Get months covered between 2 dates
@@ -994,7 +996,7 @@ class ReportsController extends AppController
                 $last_day  = date("Y-m-t", strtotime($dt->format("Y-m-01")));                
                 $leads = $this->Leads->find('all')
                   ->select(['id', 'source_id', 'allocation_date'])    
-                  ->where(['Leads.source_id IN' => $sources, 'Leads.allocation_date >=' => $start_day, 'Leads.allocation_date <=' => $last_day])
+                  ->where(['Leads.source_id IN' => $sources, 'Leads.allocation_date >=' => $start_day, 'Leads.allocation_date <=' => $last_day, 'Leads.is_archive' => 'No'])
                 ;   
                 $chart_labels[] = '"' . $dt->format("Y-M") . '"';
                 $chart_data[]   = $leads->count();                
@@ -1011,7 +1013,7 @@ class ReportsController extends AppController
               }
               $leads = $this->Leads->find('all')
                 ->select(['id', 'source_id', 'allocation_date'])    
-                ->where(['Leads.source_id IN' => $sources, 'Leads.allocation_date =' => $i->format("Y-m-d")])
+                ->where(['Leads.source_id IN' => $sources, 'Leads.allocation_date =' => $i->format("Y-m-d"), 'Leads.is_archive' => 'No'])
               ;                            
               $chart_data[$week] = $chart_data[$week] + $leads->count();
             }            
@@ -1023,7 +1025,7 @@ class ReportsController extends AppController
               for($i = $begin; $i <= $end; $i->modify('+1 day')){
                 $leads = $this->Leads->find('all')
                   ->select(['id', 'source_id', 'allocation_date'])    
-                  ->where(['Leads.source_id IN' => $sources, 'Leads.allocation_date =' => $i->format("Y-m-d")])
+                  ->where(['Leads.source_id IN' => $sources, 'Leads.allocation_date =' => $i->format("Y-m-d"), 'Leads.is_archive' => 'No'])
                 ;
                 $chart_labels[] = '"' . $i->format("Y-M-d") . '"';
                 $chart_data[]   = $leads->count();

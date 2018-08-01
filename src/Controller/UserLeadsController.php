@@ -276,7 +276,7 @@ class UserLeadsController extends AppController
                     $lead_client_name = $leadData->firstname . " " . $surname;
                     $subject          = "New Lead - " . $source_name . " - " . $lead_client_name;                   
 
-                    $email_customer = new Email('default'); //default or cake_smtp (for testing in local)
+                    $email_customer = new Email('cake_smtp'); //default or cake_smtp (for testing in local)
                     $email_customer->from(['websystem@holisticwebpresencecrm.com' => 'Holistic'])
                       ->template('crm_new_leads')
                       ->emailFormat('html')          
@@ -421,7 +421,7 @@ class UserLeadsController extends AppController
                     $lead_client_name = $modifiedLead->firstname . " " . $surname;
                     $subject          = "Updated Lead - " . $source_name . " - " . $lead_client_name;                    
                   
-                    $email_customer = new Email('default');  //default or cake_smtp (for testing in local)
+                    $email_customer = new Email('cake_smtp');  //default or cake_smtp (for testing in local)
                     $email_customer->from(['websystem@holisticwebpresencecrm.com' => 'Holistic'])
                       ->template('crm_modified_leads')
                       ->emailFormat('html')          
@@ -529,7 +529,7 @@ class UserLeadsController extends AppController
 
                 //Send email notification to admin
                 $admin_email = 'bryan.yobi@gmail.com';
-                $email_customer = new Email('default');  //default or cake_smtp (for testing in local)
+                $email_customer = new Email('cake_smtp');  //default or cake_smtp (for testing in local)
                 $email_customer->from(['websystem@holisticwebpresencecrm.com' => 'Holistic'])
                   ->template('leads_registration')
                   ->emailFormat('html')
