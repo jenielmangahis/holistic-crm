@@ -787,7 +787,7 @@ class LeadsController extends AppController
             return $this->redirect(['action' => 'index']);
           }       
 
-          $this->request->allowMethod(['post', 'delete']);
+          //$this->request->allowMethod(['post', 'delete']);
           
           if($this->enable_archive_data) {
 

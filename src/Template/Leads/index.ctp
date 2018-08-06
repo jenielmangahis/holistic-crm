@@ -112,19 +112,9 @@
                                             <div class="modal-footer">
                                                 <button type="button" data-dismiss="modal" class="btn btn-default">No</button>
                                                 <?php if(isset($page)) { ?>
-                                                        <?= $this->Form->postLink(
-                                                                'Yes',
-                                                                ['action' => 'delete', $lead->id . '?page='.$page],
-                                                                ['class' => 'btn btn-danger', 'escape' => false]
-                                                            )
-                                                        ?>
+                                                        <?= $this->Html->link('Yes', ['action' => 'delete', $lead->id . '?page='.$page],['class' => 'btn btn-danger', 'escape' => false]) ?>
                                                 <?php }else{ ?>
-                                                        <?= $this->Form->postLink(
-                                                                'Yes',
-                                                                ['action' => 'delete', $lead->id],
-                                                                ['class' => 'btn btn-danger', 'escape' => false]
-                                                            )
-                                                        ?>
+                                                        <?= $this->Html->link('Yes', ['action' => 'delete', $lead->id],['class' => 'btn btn-danger', 'escape' => false]) ?>
                                                 <?php } ?>
 
                                             </div>
