@@ -26,7 +26,7 @@
 
                 </div>
                 <div class="box-body">
-                    <?= $this->Form->create($user,['id' => 'frm-default-add', 'data-toggle' => 'validator', 'role' => 'form','class' => 'form-horizontal']) ?>
+                    <?= $this->Form->create($user,['id' => 'frm-default-add', 'type' => 'post', 'data-toggle' => 'validator', 'role' => 'form','class' => 'form-horizontal']) ?>
                     <fieldset>        
                         <h3 class="form-caption" style="background-color:#374850;">Source : <?php echo $source->name; ?></h3>                        
                         <h3 class="form-caption">User Information</h3>

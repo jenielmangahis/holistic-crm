@@ -320,6 +320,27 @@ $(function(){
   });
   */
 
+  $(".attachment-add-row").click(function(){
+    var rowCount = $('.lead-attachments tr').length + 1;
+    if ( $(".lead-attachments tr").hasClass("rowAttachment" + rowCount) ) {
+      var rowCount = rowCount+1;
+    }
+    var rowLable = "<td>&nbsp;</td>";
+    var rowAttachment = "<td><input type='file' name='attachments[]'' /></td>";
+    var col_delete = "<td><a class='btn btn-danger attachment-delete-row' href='javascript:void(0);'><i class='fa fa-trash'></i></a></td>";
+    var add_row  = "<tr class='rowAttachment" + rowCount + "'>" + rowLable + rowAttachment + col_delete + "</tr>";
+
+    $('.lead-attachments tr:last').after(add_row);   
+
+    $(".attachment-delete-row").click(function(){
+      $(this).closest('tr').remove();
+    }); 
+  });
+
+  $(".current-attachment-delete-row").click(function(){
+    $(this).closest('tr').remove();
+  }); 
+
   $(".leads-delete-multiple").click(function(){
     $("#multi-leads").submit();
   });

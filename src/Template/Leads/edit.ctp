@@ -1,12 +1,17 @@
 <?php 
 use Cake\ORM\TableRegistry;
 $this->Leads = TableRegistry::get('Leads');
+$this->LeadAttachments = TableRegistry::get('LeadAttachments');
 ?>
 <style>
 .form-hdr{
     background-color: #222D32;
     color:#ffffff;
     padding: 10px;
+}
+.lead-attachments{
+     border-collapse:separate;
+    border-spacing:0 5px;
 }
 </style>
 
@@ -93,18 +98,36 @@ $this->Leads = TableRegistry::get('Leads');
                                 </div>
                             </div>
                             </div>
+                            <h3 class="form-hdr">Attachments <a class="btn btn-info btn-small pull-right attachment-add-row" href="javascript:void(0);" style="line-height: 0px;"><i class="fa fa-plus"></i></a></h3>
+                            <?php if( count($lead->lead_attachments) > 0){ ?>
+                                <table class="current-lead-attachments">
+                                    <?php foreach($lead->lead_attachments as $a){ ?>
+                                        <tr>
+                                            <td style="padding:10px;">
+                                                <input type="hidden" name="currentAttachments[<?= $a->id; ?>]" value="<?= $a->id; ?>" />
+                                                <?php
+                                                    $file = $this->Url->build("/webroot/" . $this->LeadAttachments->getFolderName() . $lead->id . '/' . $a->attachment);
+                                                    echo "<a class='btn btn-info' target='_blank' href='" . $file . "' >View Attachement - " . $a->attachment . "</a>";
+                                                ?>
+                                            </td>
+                                            <td><a class='btn btn-danger current-attachment-delete-row' href='javascript:void(0);'><i class='fa fa-trash'></i></a></td>
+                                        </tr>
+                                    <?php } ?>
+                                </table>
+                            <?php }else{ echo "<div class='alert alert-warning'>No Attachment</div>"; } ?>
+                            
+                            <hr />
+                            <table class="lead-attachments">
+                                <tr>
+                                    <td style="width:40%;">&nbsp;</td>
+                                    <td><input type="file" name="attachments[]" /></td>
+                                </tr>
+                            </table>
                             <h3 class="form-hdr">Other Information</h3>
                             <?php
                             echo "
                             <div class='form-group'>
-                                <label for='lead_attachment' class='col-sm-2 control-label'>" . __('Attachment') . "</label>
-                                <div class='col-sm-6'>";
-                                 echo $this->Form->input('lead_attachment', ['type' => 'file', 'id' => 'lead_attachment', 'label' => false]);                 
-                            echo "</div></div>";
-
-                            echo "
-                            <div class='form-group'>
-                                <label for='lead_attachment' class='col-sm-2 control-label'>" . __('Current Attachment') . "</label>
+                                <label for='lead_attachment' class='col-sm-2 control-label'>" . __('Old Attachment') . "</label>
                                 <div class='col-sm-6'>";
                                 if( $lead->attachment != '' ){
                                     $file = $this->Url->build("/webroot/" . $this->Leads->getFolderName() . $lead->id . '/' . $lead->attachment);

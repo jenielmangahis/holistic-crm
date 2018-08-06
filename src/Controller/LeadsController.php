@@ -263,6 +263,7 @@ class LeadsController extends AppController
         $this->Sources     = TableRegistry::get('Sources');
         $this->Statuses    = TableRegistry::get('Statuses');
         $this->AuditTrails = TableRegistry::get('AuditTrails');
+        $this->LeadAttachments = TableRegistry::get('LeadAttachments');
 
         $p = $this->default_group_actions;
         if( $p && $p['leads'] == 'View Only' ){
@@ -280,14 +281,25 @@ class LeadsController extends AppController
         if ($this->request->is('post')) {
 
             $data = $this->request->data;
-           
             $lead = $this->Leads->patchEntity($lead, $data);
             if ($newLead = $this->Leads->save($lead)) {
-                if( $this->request->data['lead_attachment']['name'] != '' ){
-                  //Save attachement
-                  $newLead->attachment = $this->Leads->uploadAttachment($newLead, $this->request->data['lead_attachment']);
-                  $this->Leads->save($newLead);
+                foreach( $this->request->data['attachments'] as $a ){
+                  if( $a['name'] != '' ){
+                    $attachment = $this->LeadAttachments->uploadAttachment($newLead, $a);
+                    $data_attachment = [
+                      'lead_id' => $newLead->id,
+                      'attachment' => $attachment
+                    ];
+                    $leadAttachment = $this->LeadAttachments->newEntity();
+                    $leadAttachment = $this->LeadAttachments->patchEntity($leadAttachment, $data_attachment);
+                    $this->LeadAttachments->save($leadAttachment);
+                  }
                 }
+                //if( $this->request->data['lead_attachment']['name'] != '' ){
+                  //Save attachement
+                  //$newLead->attachment = $this->Leads->uploadAttachment($newLead, $this->request->data['lead_attachment']);
+                  //$this->Leads->save($newLead);
+                //}
 
                 //Send Email notification
                 $source_users = $this->SourceUsers->find('all')
@@ -350,8 +362,19 @@ class LeadsController extends AppController
                       $surname          = $leadData->surname != "" ? $leadData->surname : "Not Specified";
                       $lead_client_name = $leadData->firstname . " " . $surname;
                       $subject          = "New Lead - " . $source_name . " - " . $lead_client_name;    
-                      $attachment       = $leadData->attachment;
-                      $attachment_folder = $this->Leads->getFolderName() . $leadData->id;                  
+                      /*$attachment       = $leadData->attachment;
+                      $attachment_folder = $this->Leads->getFolderName() . $leadData->id;*/ 
+
+                      //Attachments
+                      $leadAttachments = $this->LeadAttachments->find('all')
+                        ->where(['LeadAttachments.lead_id' => $newLead->id])
+                      ;             
+
+                      $aAttachments = array();
+                      $attachment_folder = $this->Leads->LeadAttachments->getFolderName() . $newLead->id;
+                      foreach($leadAttachments as $a){
+                        $aAttachments[] = $a->attachment;
+                      }
 
                       $email_customer = new Email('cake_smtp'); //default or cake_smtp (for testing in local)
                       $email_customer->from(['websystem@holisticwebpresencecrm.com' => 'Holistic'])
@@ -359,7 +382,7 @@ class LeadsController extends AppController
                         ->emailFormat('html')          
                         ->to($users_email)                                                                                               
                         ->subject($subject)
-                        ->viewVars(['lead' => $leadData->toArray(), 'lead_attachment' => $attachment, 'attachment_folder' => $attachment_folder])
+                        ->viewVars(['lead' => $leadData->toArray(), 'aAttachments' => $aAttachments, 'attachment_folder' => $attachment_folder])
                         ->send();
                     }
                   }
@@ -436,6 +459,7 @@ class LeadsController extends AppController
         $this->Sources     = TableRegistry::get('Sources');
         $this->Statuses    = TableRegistry::get('Statuses');
         $this->AuditTrails = TableRegistry::get('AuditTrails');
+        $this->LeadAttachments = TableRegistry::get('LeadAttachments');
 
         $p = $this->default_group_actions;
         if( $p && $p['leads'] == 'View Only' ){
@@ -490,7 +514,7 @@ class LeadsController extends AppController
         } 
 
         $lead = $this->Leads->get($id, [
-            'contain' => ['LastModifiedBy']
+            'contain' => ['LastModifiedBy', 'LeadAttachments']
         ]);        
 
         if ($this->request->is(['patch', 'post', 'put'])) {          
@@ -538,13 +562,34 @@ class LeadsController extends AppController
 
             if ($this->Leads->save($lead)) {
 
-                if( $this->request->data['lead_attachment']['name'] != '' ){
+                /*if( $this->request->data['lead_attachment']['name'] != '' ){
                   //Save attachement
                   $lead->attachment = $this->Leads->uploadAttachment($lead, $this->request->data['lead_attachment']);
                   $this->Leads->save($lead);
+                }*/
+
+                //New Attachments
+                $attachmentIds = array();
+                foreach( $data['currentAttachments'] as $key => $a ){
+                  $attachmentIds[] = $key;
+                }
+                $this->LeadAttachments->deleteAll(['LeadAttachments.lead_id' => $lead->id, 'LeadAttachments.id NOT IN' => $attachmentIds]);
+
+                foreach( $this->request->data['attachments'] as $a ){
+                  if( $a['name'] != '' ){
+                    $attachment = $this->LeadAttachments->uploadAttachment($lead, $a);
+                    $data_attachment = [
+                      'lead_id' => $lead->id,
+                      'attachment' => $attachment
+                    ];
+                    $leadAttachment = $this->LeadAttachments->newEntity();
+                    $leadAttachment = $this->LeadAttachments->patchEntity($leadAttachment, $data_attachment);
+                    $this->LeadAttachments->save($leadAttachment);
+                  }
                 }
                 
                 //Send Email notification
+                //debug($data);exit;
                 $source_users = $this->SourceUsers->find('all')
                     ->contain(['Users'])
                     ->where(['SourceUsers.source_id' => $data['source_id']])
@@ -604,15 +649,28 @@ class LeadsController extends AppController
                       $surname          = $modifiedLead->surname != "" ? $modifiedLead->surname : "Not Specified";
                       $lead_client_name = $modifiedLead->firstname . " " . $surname;
                       $subject          = "Updated Lead - " . $source_name . " - " . $lead_client_name;              
-                      $attachment       = $modifiedLead->attachment;
-                      $attachment_folder = $this->Leads->getFolderName() . $modifiedLead->id; 
+                      $old_attachment       = $modifiedLead->attachment;
+                      $old_attachment_folder = $this->Leads->getFolderName() . $modifiedLead->id; 
+
+                      //Attachments
+                      $leadAttachments = $this->LeadAttachments->find('all')
+                        ->where(['LeadAttachments.lead_id' => $lead->id])
+                      ;
+
+                      $aAttachments = array();
+                      $attachment_folder = $this->Leads->LeadAttachments->getFolderName() . $newLead->id;
+                      foreach($leadAttachments as $a){
+                        $aAttachments[] = $a->attachment;
+                      }
+
+
                       $email_customer = new Email('cake_smtp'); //default or cake_smtp (for testing in local)
                       $email_customer->from(['websystem@holisticwebpresencecrm.com' => 'Holistic'])
                         ->template('crm_modified_leads')
                         ->emailFormat('html')          
                         ->to($users_email)                                                                                               
                         ->subject($subject)
-                        ->viewVars(['lead' => $modifiedLead->toArray(), 'lead_attachment' => $attachment, 'attachment_folder' => $attachment_folder])
+                        ->viewVars(['lead' => $modifiedLead->toArray(), 'aAttachments' => $aAttachments, 'attachment_folder' => $attachment_folder, 'old_attachment' => $old_attachment, 'old_attachment_folder' => $old_attachment_folder])
                         ->send();
                     }                    
                   }

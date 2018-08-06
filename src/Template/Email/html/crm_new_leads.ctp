@@ -27,15 +27,21 @@
 <h3 class="form-hdr" style="background-color: #222D32;color:#ffffff;padding: 10px;">Other Information</h3>
 <table>
 <tr>
-	<td>Attachment</td>
+	<td>Attachments</td>
 	<td>: 
 		<?php 
-			if( $lead_attachment != '' ){
+			foreach( $aAttachments as $a ){
+				$file = $this->Url->build("/webroot/" . $attachment_folder . '/' . $a,'true');
+				echo "<a target='_blank' href='" . $file . "'>Download Attachment - " . $a . "</a><br />";
+			}
+		?>
+		<?php 
+			/*if( $lead_attachment != '' ){
 				$file = $this->Url->build("/webroot/" . $attachment_folder . '/' . $lead_attachment,'true');
 				echo "<a target='_blank' href='" . $file . "'>Download Attachment</a>";
 			}else{
 				echo "No Attachment";
-			}
+			}*/
 		?>
 	</td>
 </tr>

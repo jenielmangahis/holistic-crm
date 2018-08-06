@@ -5,6 +5,10 @@
     color:#ffffff;
     padding: 10px;
 }
+.lead-attachments{
+     border-collapse:separate;
+    border-spacing:0 5px;
+}
 </style>
 <section class="content-header">
     <h1><?= __('Add Lead') ?></h1>
@@ -89,15 +93,15 @@
                                 </div>
                             </div>
                             </div>
+                            <h3 class="form-hdr">Attachments <a class="btn btn-info btn-small pull-right attachment-add-row" href="javascript:void(0);" style="line-height: 0px;"><i class="fa fa-plus"></i></a></h3>
+                            <table class="lead-attachments">
+                                <tr>
+                                    <td style="width:40%;">&nbsp;</td>
+                                    <td><input type="file" name="attachments[]" /></td>
+                                </tr>
+                            </table>
                             <h3 class="form-hdr">Other Information</h3>
                             <?php
-                            echo "
-                            <div class='form-group'>
-                                <label for='lead_attachment' class='col-sm-2 control-label'>" . __('Attachment') . "</label>
-                                <div class='col-sm-6'>";
-                                 echo $this->Form->input('lead_attachment', ['type' => 'file', 'id' => 'lead_attachment', 'label' => false]);                 
-                            echo "</div></div>";
-
                             echo "
                             <div class='form-group'>
                                 <label for='status_id' class='col-sm-2 control-label'>" . __('Status') . "</label>

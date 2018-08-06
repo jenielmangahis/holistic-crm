@@ -71,6 +71,10 @@ class LeadsTable extends Table
             'foreignKey' => 'last_modified_by_id',
             'joinType' => 'LEFT'
         ]);
+
+        $this->hasMany('LeadAttachments', [
+            'foreignKey' => 'lead_id'
+        ]);
     }
 
     /**

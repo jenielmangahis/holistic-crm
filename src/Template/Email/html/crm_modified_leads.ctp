@@ -30,11 +30,17 @@
 	<td>Attachment</td>
 	<td>: 
 		<?php 
-			if( $lead_attachment != '' ){
-				$file = $this->Url->build("/webroot/" . $attachment_folder . '/' . $lead_attachment,'true');
-				echo "<a target='_blank' href='" . $file . "'>Download Attachment</a>";
+			if( $old_attachment != '' ){
+				$file = $this->Url->build("/webroot/" . $old_attachment_folder . '/' . $old_attachment,'true');
+				echo "<a target='_blank' href='" . $file . "'>Download Old Attachment</a><br />";
 			}else{
-				echo "No Attachment";
+				echo "No Old Attachment <Br />";
+			}
+		?>
+		<?php 
+			foreach( $aAttachments as $a ){
+				$file = $this->Url->build("/webroot/" . $attachment_folder . '/' . $a,'true');
+				echo "<a target='_blank' href='" . $file . "'>Download Attachment - " . $a . "</a><br />";
 			}
 		?>
 	</td>
