@@ -34,7 +34,8 @@
 	<td>Action</td>
 	<td>: 
 		<?php
-			$action = str_replace('\"', "", $new_lead['lead_action']); 
+			$action = str_replace('\"', '"', $new_lead['lead_action']); 
+			$action = str_replace("\'", "'", $action);
 			echo $action; 
 		?>
 	</td>

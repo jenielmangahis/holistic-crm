@@ -573,7 +573,10 @@ class LeadsController extends AppController
                 foreach( $data['currentAttachments'] as $key => $a ){
                   $attachmentIds[] = $key;
                 }
-                $this->LeadAttachments->deleteAll(['LeadAttachments.lead_id' => $lead->id, 'LeadAttachments.id NOT IN' => $attachmentIds]);
+
+                if( $attachmentIds ){
+                  $this->LeadAttachments->deleteAll(['LeadAttachments.lead_id' => $lead->id, 'LeadAttachments.id NOT IN' => $attachmentIds]);
+                }
 
                 foreach( $this->request->data['attachments'] as $a ){
                   if( $a['name'] != '' ){

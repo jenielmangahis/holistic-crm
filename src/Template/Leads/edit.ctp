@@ -33,7 +33,7 @@ $this->LeadAttachments = TableRegistry::get('LeadAttachments');
 
                 </div>
                 <div class="box-body">
-                    <?= $this->Form->create($lead,['id' => 'frm-default-add', 'data-toggle' => 'validator', 'role' => 'form','class' => 'form-horizontal', 'enctype' => 'multipart/form-data']) ?>
+                    <?= $this->Form->create($lead,['id' => 'frm-default-add', 'type' => 'post', 'data-toggle' => 'validator', 'role' => 'form','class' => 'form-horizontal', 'enctype' => 'multipart/form-data']) ?>
                     <fieldset>        
                         <h3 class="form-hdr">Lead Personal Information</h3>
                         <div class="row">
