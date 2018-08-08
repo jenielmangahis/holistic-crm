@@ -96,7 +96,10 @@ class LeadAttachmentsTable extends Table
     {
         //Store photo
         $ext  = substr(strtolower(strrchr($file['name'], '.')), 1); 
-        $setNewFileName = 'attachment_' . time() . "_" . rand(000000, 999999) . $obj->id . '.' . $ext;
+        //$setNewFileName = 'attachment_' . time() . "_" . rand(000000, 999999) . $obj->id . '.' . $ext;
+        $setNewFileName = $file['name'];
+        $setNewFileName = str_replace(" ", "_", $setNewFileName);
+        $setNewFileName = strtolower($setNewFileName);
 
         //Create folder
         $locationPath   = self::getAttachmentFolderLocation() . $obj->id;        

@@ -13,7 +13,7 @@ use Cake\Routing\Router;
  */
 class LeadsController extends AppController
 {
-
+	public $paginate = ['order' => ['Leads.id' => 'DESC']];
     /**
      * initialize method
      *  ID : CA-01
@@ -106,59 +106,36 @@ class LeadsController extends AppController
           $sort_direction = !empty($this->request->query['direction']) ? $this->request->query['direction'] : '';
           $sort_field     = !empty($this->request->query['sort']) ? $this->request->query['sort'] : '';
           
-          /*if( !empty($this->request->query['direction']) && !empty($this->request->query['sort']) ) {
-              $leads_to_sort  = $this->Leads->find('all')
-                                  ->contain(['Statuses', 'Sources', 'LastModifiedBy'])
-                                  ->order([$sort_field => $sort_direction])
-                                  ;
-              $sort = 1;
-              foreach($leads_to_sort as $skey => $sd) {
+          if( $sort_direction != '' && $sort_field != '' ){
+          	$sort_field = str_replace("Leads.", "", $sort_field);
+          	if( $sort_field == 'source_id' ){
+          		$sort = ['Sources.name' => $sort_direction];
+          	}else{
+          		if( $sort_field == 'allocation_date' ){
+          			$sort = ['Leads.allocation_date' => $sort_direction, 'Leads.id' => 'DESC'];
+          		}else{
+          			$sort = ['Leads.' . $sort_field => $sort_direction];
+          		}
+          	}
 
-                  $a_data = $this->Leads->get($sd->id, []);
-                  $data_sort['sort'] = $sort;
-                  $a_data = $this->Leads->patchEntity($a_data, $data_sort);
-                  if ( !$this->Leads->save($a_data) ) { echo "error unlocking lead"; }                    
-
-              $sort++;
-              }
-          }*/
-          
-          /*if(!empty($sort_direction) && !empty($sort_field)) {
-            $this->paginate = ['order' => ['Leads.sort' => 'ASC']];  
-          } else {
-            $this->paginate = ['order' => ['Leads.allocation_date' => 'DESC']];
-          }*/
-          
-          
-          if( !isset($this->request->query['sort']) ){            
-            $this->paginate = ['order' => ['Leads.allocation_date' => 'DESC', 'Leads.id' => 'DESC']];
-            $leads = $this->Leads->find('all')
+          	$leads = $this->Leads->find('all')
+                ->contain(['Statuses', 'Sources', 'LastModifiedBy'])
+                ->where(['Leads.is_archive' => 'No']) 
+                ->order($sort)
+            ;
+          }else{
+          	$leads = $this->Leads->find('all')
                 ->contain(['Statuses', 'Sources', 'LastModifiedBy'])
                 ->where(['Leads.is_archive' => 'No'])
             ;
-          }else{
-
-            if($sort_field == 'source_id' || $sort_field == 'Leads.source_id') {
-              $this->paginate = ['order' => ['Sources.name' => $sort_direction]];
-            }            
-            $leads = $this->Leads->find('all')
-                ->contain(['Statuses', 'Sources', 'LastModifiedBy'])
-                ->where(['Leads.is_archive' => 'No']) 
-                //->order(['Sources.name' => 'ASC'])
-            ;  
           }
-          
       }
 
       $get = $_GET;
       if(isset($get['page'])) {
         $this->set('page', $get['page']);
-      }      
+      } 
 
-      /*$this->paginate = [
-          'contain' => ['Statuses', 'Sources']
-      ];*/
-        
       $this->set('is_admin_user', $this->user->group_id);
       $this->set('leads', $this->paginate($leads));
       $this->set('_serialize', ['leads', 'is_admin_user', 'page']);
@@ -661,7 +638,7 @@ class LeadsController extends AppController
                       ;
 
                       $aAttachments = array();
-                      $attachment_folder = $this->Leads->LeadAttachments->getFolderName() . $newLead->id;
+                      $attachment_folder = $this->Leads->LeadAttachments->getFolderName() . $lead->id;
                       foreach($leadAttachments as $a){
                         $aAttachments[] = $a->attachment;
                       }

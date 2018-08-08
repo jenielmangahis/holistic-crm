@@ -108,6 +108,9 @@ $this->Leads = TableRegistry::get('Leads');
                             }
                             echo " </div></div>";
 
+                            $action = str_replace('\"', '"', $lead->lead_action); 
+                            $action = str_replace("\'", "'", $action);
+
                             echo "
                             <div class='form-group'>
                                 <label for='status_id' class='col-sm-2 control-label'>" . __('Status') . "</label>
@@ -119,7 +122,7 @@ $this->Leads = TableRegistry::get('Leads');
                             <div class='form-group'>
                                 <label for='lead_action' class='col-sm-2 control-label'>" . __('Action') . "</label>
                                 <div class='col-sm-6'>";
-                                echo $this->Form->input('lead_action', ['value' => str_replace('\"', "", $lead->lead_action), 'class' => 'form-control', 'id' => 'lead_action', 'readonly' => 'readonly',  'type' => 'textarea', 'label' => false]);
+                                echo $this->Form->input('lead_action', ['value' => str_replace('\"', "", $action), 'class' => 'form-control', 'id' => 'lead_action', 'readonly' => 'readonly',  'type' => 'textarea', 'label' => false]);
                             echo " </div></div>"; 
 
                             echo "

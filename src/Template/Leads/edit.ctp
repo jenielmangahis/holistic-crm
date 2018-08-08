@@ -98,7 +98,7 @@ $this->LeadAttachments = TableRegistry::get('LeadAttachments');
                                 </div>
                             </div>
                             </div>
-                            <h3 class="form-hdr">Attachments <a class="btn btn-info btn-small pull-right attachment-add-row" href="javascript:void(0);" style="line-height: 0px;"><i class="fa fa-plus"></i></a></h3>
+                            <h3 class="form-hdr">Attachments <button value='edit' class="btn btn-small btn-success pull-right" style="line-height: 0px;margin-left:5px;"><i class="fa fa-save"></i> Save</button><a class="btn btn-info btn-small pull-right attachment-add-row" href="javascript:void(0);" style="line-height: 0px;"><i class="fa fa-plus"></i></a></h3>
                             <?php if( count($lead->lead_attachments) > 0){ ?>
                                 <table class="current-lead-attachments">
                                     <?php foreach($lead->lead_attachments as $a){ ?>
@@ -163,13 +163,16 @@ $this->LeadAttachments = TableRegistry::get('LeadAttachments');
                             </div>
 
                             <?php 
-                            echo "</div>";    
+                            echo "</div>";  
+
+                            $action = str_replace('\"', '"', $lead->lead_action); 
+                            $action = str_replace("\'", "'", $action);
 
                             echo "
                             <div class='form-group'>
                                 <label for='lead_action' class='col-sm-2 control-label'>" . __('Action') . "</label>
                                 <div class='col-sm-6'>";
-                                echo $this->Form->input('lead_action', ['value' => str_replace('\"', "", $lead->lead_action), 'class' => 'form-control', 'id' => 'lead_action', 'type' => 'textarea', 'label' => 
+                                echo $this->Form->input('lead_action', ['value' => str_replace('\"', "", $action), 'class' => 'form-control', 'id' => 'lead_action', 'type' => 'textarea', 'label' => 
                                 false]);
                             echo " </div></div>"; 
 

@@ -105,11 +105,14 @@
                             <?php
                             echo "</div>";    
 
+                            $action = str_replace('\"', '"', $lead->lead_action); 
+                            $action = str_replace("\'", "'", $action);
+
                             echo "
                             <div class='form-group'>
                                 <label for='lead_action' class='col-sm-2 control-label'>" . __('Action') . "</label>
                                 <div class='col-sm-6'>";
-                                echo $this->Form->input('lead_action', ['class' => 'form-control', 'id' => 'lead_action', 'type' => 'textarea', 'label' => 
+                                echo $this->Form->input('lead_action', ['value' => $action, 'class' => 'form-control', 'id' => 'lead_action', 'type' => 'textarea', 'label' => 
                                 false]);
                             echo " </div></div>"; 
 
