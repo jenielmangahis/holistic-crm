@@ -348,9 +348,11 @@ class LeadsController extends AppController
                       ;             
 
                       $aAttachments = array();
+                      $eAttachments = array();
                       $attachment_folder = $this->Leads->LeadAttachments->getFolderName() . $newLead->id;
                       foreach($leadAttachments as $a){
                         $aAttachments[] = $a->attachment;
+                        $eAttachments[] = WWW_ROOT . $attachment_folder . DS . $a->attachment;
                       }
 
                       $email_customer = new Email('cake_smtp'); //default or cake_smtp (for testing in local)
@@ -359,6 +361,7 @@ class LeadsController extends AppController
                         ->emailFormat('html')          
                         ->to($users_email)                                                                                               
                         ->subject($subject)
+                        ->attachments($eAttachments)
                         ->viewVars(['lead' => $leadData->toArray(), 'aAttachments' => $aAttachments, 'attachment_folder' => $attachment_folder])
                         ->send();
                     }
@@ -638,9 +641,11 @@ class LeadsController extends AppController
                       ;
 
                       $aAttachments = array();
+                      $eAttachments = array();
                       $attachment_folder = $this->Leads->LeadAttachments->getFolderName() . $lead->id;
                       foreach($leadAttachments as $a){
                         $aAttachments[] = $a->attachment;
+                        $eAttachments[] = WWW_ROOT . $attachment_folder . DS . $a->attachment;
                       }
 
 
@@ -650,6 +655,7 @@ class LeadsController extends AppController
                         ->emailFormat('html')          
                         ->to($users_email)                                                                                               
                         ->subject($subject)
+                        ->attachments($eAttachments)
                         ->viewVars(['lead' => $modifiedLead->toArray(), 'aAttachments' => $aAttachments, 'attachment_folder' => $attachment_folder, 'old_attachment' => $old_attachment, 'old_attachment_folder' => $old_attachment_folder])
                         ->send();
                     }                    

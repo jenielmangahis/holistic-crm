@@ -27,7 +27,7 @@
 <h3 class="form-hdr" style="background-color: #222D32;color:#ffffff;padding: 10px;">Other Information</h3>
 <table>
 <tr>
-	<td>Attachment</td>
+	<td>Old Attachment</td>
 	<td>: 
 		<?php 
 			if( $old_attachment != '' ){
@@ -38,10 +38,10 @@
 			}
 		?>
 		<?php 
-			foreach( $aAttachments as $a ){
+			/*foreach( $aAttachments as $a ){
 				$file = $this->Url->build("/webroot/" . $attachment_folder . '/' . $a,'true');
 				echo "<a target='_blank' href='" . $file . "'>Download Attachment - " . $a . "</a><br />";
-			}
+			}*/
 		?>
 	</td>
 </tr>

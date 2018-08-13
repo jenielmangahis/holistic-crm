@@ -26,14 +26,14 @@
 
 <h3 class="form-hdr" style="background-color: #222D32;color:#ffffff;padding: 10px;">Other Information</h3>
 <table>
-<tr>
+<!-- <tr>
 	<td>Attachments</td>
 	<td>: 
 		<?php 
-			foreach( $aAttachments as $a ){
+			/*foreach( $aAttachments as $a ){
 				$file = $this->Url->build("/webroot/" . $attachment_folder . '/' . $a,'true');
 				echo "<a target='_blank' href='" . $file . "'>Download Attachment - " . $a . "</a><br />";
-			}
+			}*/
 		?>
 		<?php 
 			/*if( $lead_attachment != '' ){
@@ -44,7 +44,7 @@
 			}*/
 		?>
 	</td>
-</tr>
+</tr> -->
 <tr>
 	<td>Status</td>
 	<td>: <?php echo $lead['status']['name']; ?></td>
