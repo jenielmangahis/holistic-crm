@@ -107,7 +107,8 @@ $this->LeadAttachments = TableRegistry::get('LeadAttachments');
                                                 <input type="hidden" name="currentAttachments[<?= $a->id; ?>]" value="<?= $a->id; ?>" />
                                                 <?php
                                                     $file = $this->Url->build("/webroot/" . $this->LeadAttachments->getFolderName() . $lead->id . '/' . $a->attachment);
-                                                    echo "<a class='btn btn-info' target='_blank' href='" . $file . "' >View Attachement - " . $a->attachment . "</a>";
+                                                    echo $this->Html->link('<i class="fa fa-file"></i> Download - ' . $a->attachment, ['controller' => 'lead_attachments', 'action' => 'download_file/', $a->id],['class' => 'btn btn-info', 'escape' => false]);
+                                                    //echo "<a class='btn btn-info' target='_blank' href='" . $file . "' >View Attachement - " . $a->attachment . "</a>";
                                                 ?>
                                             </td>
                                             <td><a class='btn btn-danger current-attachment-delete-row' href='javascript:void(0);'><i class='fa fa-trash'></i></a></td>

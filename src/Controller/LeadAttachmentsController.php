@@ -2,6 +2,7 @@
 namespace App\Controller;
 
 use App\Controller\AppController;
+use Cake\ORM\TableRegistry;
 
 /**
  * LeadAttachments Controller
@@ -10,6 +11,25 @@ use App\Controller\AppController;
  */
 class LeadAttachmentsController extends AppController
 {
+    /**
+     * initialize method
+     * 
+     */
+    public function initialize()
+    {
+        parent::initialize();
+        $nav_selected = ["leads"];
+        $this->set('nav_selected', $nav_selected);
+
+        $session   = $this->request->session();    
+        $user_data = $session->read('User.data');         
+        if( isset($user_data) ){
+            if( $user_data->group_id == 1 ){ //Admin
+              $this->Auth->allow();
+            }
+        }    
+        $this->user = $user_data;
+    }    
 
     /**
      * Index method
@@ -116,5 +136,29 @@ class LeadAttachmentsController extends AppController
             $this->Flash->error(__('The lead attachment could not be deleted. Please, try again.'));
         }
         return $this->redirect(['action' => 'index']);
+    }
+
+    /**
+     * Download Attachment method
+     *
+     * @param string|null $id Lead Attachment id.
+     * @return void
+     * @throws \Cake\Network\Exception\NotFoundException When record not found.
+     */
+    public function download_file($id = null)
+    {
+        $leadAttachment = $this->LeadAttachments->get($id, [
+            'contain' => ['Leads']
+        ]);
+        $file = WWW_ROOT . $this->LeadAttachments->getFolderName() . $leadAttachment->lead_id . DS . $leadAttachment->attachment;
+        //echo $file;exit;
+        $this->response->file(
+            $file, #Check $file['filename'] is full path of your download file
+            [
+               'download' => true,
+               'name' => $leadAttachment->attachment
+            ]
+        );
+        return $this->response;
     }
 }
