@@ -187,9 +187,11 @@
                     <?= $this->Form->end() ?>
                     <div class="paginator" style="text-align:center;">
                         <ul class="pagination">
-                        <?= $this->Paginator->prev('«') ?>
+                            <?= $this->Paginator->first('FIRST') ?>
+                            <?= $this->Paginator->prev('«') ?>
                             <?= $this->Paginator->numbers() ?>
                             <?= $this->Paginator->next('»') ?>
+                            <?= $this->Paginator->last('LAST') ?>
                         </ul>
                         <p class="hidden"><?= $this->Paginator->counter() ?></p>
                     </div>                     
