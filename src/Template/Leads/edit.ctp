@@ -168,6 +168,7 @@ $this->LeadAttachments = TableRegistry::get('LeadAttachments');
 
                             $action = str_replace('\"', '"', $lead->lead_action); 
                             $action = str_replace("\'", "'", $action);
+                            $action = h($action);
 
                             echo "
                             <div class='form-group'>

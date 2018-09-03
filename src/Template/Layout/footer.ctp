@@ -363,6 +363,24 @@ $(function(){
     autoclose: true
   });
 
+  $('.inline-datepicker-from').datepicker({
+    format: 'yyyy-mm-dd',
+    autoclose: true
+  });
+  $('.inline-datepicker-from').on('changeDate', function(event) { 
+    var selected_date = $(this).datepicker('getFormattedDate');
+    $(".date_from").val(selected_date);
+  });
+  $('.inline-datepicker-to').on('changeDate', function(event) { 
+    var selected_date = $(this).datepicker('getFormattedDate');
+    $(".date_to").val(selected_date);
+  });
+
+  $('.inline-datepicker-to').datepicker({
+    format: 'yyyy-mm-dd',
+    autoclose: true
+  });
+
   $('.allocation-datepicker').datepicker({
     format: 'd MM, yyyy',
     autoclose: true

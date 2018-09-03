@@ -964,7 +964,7 @@ class ReportsController extends AppController
       if ($this->request->is('post')) {        
         $data = $this->request->data;   
         
-        $report_data['s3'] = $data;          
+        $report_data['s3'] = $data;   
         $session->write('CumulativeReport.data', $report_data);      
 
         //Generate report
@@ -976,8 +976,8 @@ class ReportsController extends AppController
 
         $chart_data   = array(); 
         $chart_labels = array();
-        $date_from = $report_data['s3']['dateRange']['from'];
-        $date_to   = $report_data['s3']['dateRange']['to'];
+        $date_from = $report_data['s3']['date_from'];
+        $date_to   = $report_data['s3']['date_to'];
         switch ($information) {
           case 1: //Number of leads per month with chart                                
             $leads = $this->Leads->find('all')

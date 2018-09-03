@@ -6,6 +6,17 @@
 .box-body{
     padding:2px 26px;
 }
+.date-range-group{
+    background-color: #e6e9ed;
+    margin:10px;
+    padding: 5px;
+}
+.date-range-label{
+    background-color: #3bafda;
+    color:#ffffff;
+    padding:10px;
+    margin:0px;
+}
 </style>
 <section class="content-header">
     <h1><?= __('Reports : Leads') ?></h1>
@@ -31,30 +42,37 @@
                 <?= $this->Form->create(null,[                
                   'url' => ['action' => 'generate_cumulative_report'],
                   'class' => 'form-horizontal',
-                  'type' => 'POST',
-                  'target' => '_blank'                  
+                  'type' => 'POST'                 
                 ]) ?> 
                 <div class="box-body">
                     <h1>Please specify the date range you wish to generate report</h1>                    
-                    <div>
+                    <div class="row">
                         <div class="grp-form-date-range" style="margin-left:10px;margin-top:16px;">
-                            <div class="col-md-10">
-                                <div class='form-group'>
-                                    <input type="text" name="dateRange[from]" value="" placeholder="Date From" class="default-datepicker form-control" />
+                            <div class="col-md-4">
+                                <div class='date-range-group'>
+                                    <h3 class="date-range-label">Date From</h3>
+                                    <div class="inline-datepicker-from"></div>
+                                    <input type="hidden" name="date_from" value="" class="form-control date_from" />
                                 </div>
-                                <div class='form-group'>
-                                    <input type="text" name="dateRange[to]" value="" placeholder="Date To" class="default-datepicker form-control" />
+                            </div>
+                            <div class="col-md-4">
+                                <div class='date-range-group'>
+                                    <h3 class="date-range-label">Date To</h3>
+                                    <div class="inline-datepicker-to"></div>
+                                    <input type="hidden" name="date_to" value="" class="form-control date_to" />
                                 </div>
                             </div>
                         </div>
                     </div>
                     <hr />
+                    <div class="row">
                     <div class='form-group'>                        
                         <select class="form-control" name='report-type' style="width:20%;margin-left:25px;">
                             <option>- Select Report Type -</option>
                             <option>Excel</option>
                             <option>View in other tab</option>
                         </select>
+                    </div>
                     </div>
                     <div class="form-group" style="margin-top: 30px;">
                         <div class="col-sm-2">           

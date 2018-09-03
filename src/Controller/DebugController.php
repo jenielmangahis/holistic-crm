@@ -271,4 +271,13 @@ class DebugController extends AppController
       echo 'File has been created in ' , getcwd() , EOL;
       exit;
     }
+
+    public function testPostLeads(){
+      $_POST = json_decode(file_get_contents('php://input'), true);
+      echo 54;
+      debug($_POST);
+      $data = $this->request->data;
+      debug($data);
+      exit;
+    }
 }
