@@ -91,11 +91,13 @@
                                             ?>
                                             <div class="grp-form-date-range <?= $hidden; ?>" style="margin-left:10px;margin-top:16px;">
                                                 <div class="col-md-10">
-                                                    <div class='form-group'>
-                                                        <input type="text" name="dateRange[from]" value="<?= $date_from; ?>" placeholder="Date From" class="default-datepicker form-control" />
+                                                    <div class='form-group input-group date'>
+                                                        <input type="text" name="dateRange[from]" value="<?= $date_from; ?>" disabled="disabled" placeholder="Date From" class="form-control" />
+                                                        <span class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i></span>
                                                     </div>
-                                                    <div class='form-group'>
-                                                        <input type="text" name="dateRange[to]" value="<?= $date_to; ?>" placeholder="Date To" class="default-datepicker form-control" />
+                                                    <div class='form-group input-group date'>
+                                                        <input type="text" name="dateRange[to]" value="<?= $date_to; ?>" disabled="disabled" placeholder="Date To" class="form-control" />
+                                                        <span class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i></span>
                                                     </div>
                                                 </div>
                                             </div>
@@ -113,11 +115,13 @@
                                             ?>
                                             <div class="grp-form-date-range-all-forms <?= $hidden; ?>" style="margin-left:10px;margin-top:16px;">
                                                 <div class="col-md-10">
-                                                    <div class='form-group'>
-                                                        <input type="text" name="dateRangeAllForms[from]" value="<?= $date_from; ?>" placeholder="Date From" class="default-datepicker form-control dateRangeAllFormsFromDate" />
+                                                    <div class='form-group input-group date'>
+                                                        <input type="text" name="dateRangeAllForms[from]" value="<?= $date_from; ?>" disabled="disabled" placeholder="Date From" class="default-datepicker form-control dateRangeAllFormsFromDate" />
+                                                        <span class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i></span>
                                                     </div>
-                                                    <div class='form-group'>
-                                                        <input type="text" name="dateRangeAllForms[to]" value="<?= $date_to; ?>" placeholder="Date To" class="default-datepicker form-control dateRangeAllFormsToDate" />
+                                                    <div class='form-group input-group date'>
+                                                        <input type="text" name="dateRangeAllForms[to]" value="<?= $date_to; ?>" disabled="disabled" placeholder="Date To" class="default-datepicker form-control dateRangeAllFormsToDate" />
+                                                        <span class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i></span>
                                                     </div>
                                                     <div class='form-group'>
                                                         <div class="checkbox">

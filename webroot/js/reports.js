@@ -49,7 +49,7 @@ $(function(){
         }        
     });
 
-    $("#viewAllDateRangeAllForms").change(function(){
+    /*$("#viewAllDateRangeAllForms").change(function(){
         if ($(this).is(':checked')) {
             $(".dateRangeAllFormsFromDate").attr('disabled','disabled');
             $(".dateRangeAllFormsToDate").attr('disabled','disabled');
@@ -57,7 +57,7 @@ $(function(){
             $(".dateRangeAllFormsFromDate").removeAttr('disabled');
             $(".dateRangeAllFormsToDate").removeAttr('disabled');
         }
-    });
+    });*/
 
     $("#viewAllLeadsTelephone").change(function(){
         if ($(this).is(':checked')) {

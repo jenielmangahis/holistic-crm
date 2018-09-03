@@ -376,6 +376,8 @@ $(function(){
     $(".date_to").val(selected_date);
   });
 
+  $('.input-group.date').datepicker({format: 'yyyy-mm-dd',});
+
   $('.inline-datepicker-to').datepicker({
     format: 'yyyy-mm-dd',
     autoclose: true
