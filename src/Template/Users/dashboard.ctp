@@ -266,7 +266,7 @@ var BASE_URL = "<?php echo $base_url; ?>";
                 <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>                        
             </div>         
         </div>     
-        <div class="box-body box-links">
+        <div class="box-body">
             <table id="example_datatable" class="table table-hover table-striped table-scroll-body">
                 <thead class="thead-inverse freeze-head">
                     <tr>

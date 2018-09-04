@@ -236,8 +236,11 @@
   }
   
   if( isset($enable_jscript_datatable) ){
-    echo $this->Html->script('jquery.dataTables.min.js');
-    echo $this->Html->css('jquery.dataTables.min.css');
+    //echo $this->Html->script('jquery.dataTables.min.js');
+    //echo $this->Html->css('jquery.dataTables.min.css');
+    echo '<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.19/css/jquery.dataTables.min.css"/>';
+    echo '<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/fixedheader/3.1.5/css/fixedHeader.dataTables.min.css"/>';
+    echo '<script type="text/javascript" src="https://cdn.datatables.net/v/dt/dt-1.10.18/fc-3.2.5/fh-3.1.4/datatables.min.js"></script>';
   }
  
   /*echo $this->Html->script('dist/js/demo.js');    
@@ -252,9 +255,12 @@
 <?php if( isset($enable_jscript_datatable) ){ ?>
         <script type="text/javascript">
           $(document).ready(function() {
-              $('#example_datatable').DataTable({
-                "iDisplayLength": 100
-              });
+              var table = $('#example_datatable').DataTable( {
+                  fixedHeader: {
+                      header: true,
+                      footer: true
+                  }
+              } );
           } );    
         </script>
 <?php } ?>
