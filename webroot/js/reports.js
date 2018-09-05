@@ -59,7 +59,7 @@ $(function(){
         }
     });*/
 
-    $("#viewAllLeadsTelephone").change(function(){
+    /*$("#viewAllLeadsTelephone").change(function(){
         if ($(this).is(':checked')) {
             $(".dateRangeLeadsTelephoneFromDate").attr('disabled','disabled');
             $(".dateRangeLeadsTelephoneToDate").attr('disabled','disabled');
@@ -67,5 +67,5 @@ $(function(){
             $(".dateRangeLeadsTelephoneFromDate").removeAttr('disabled');
             $(".dateRangeLeadsTelephoneToDate").removeAttr('disabled');
         }
-    });
+    });*/
 });

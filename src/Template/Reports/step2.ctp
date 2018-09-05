@@ -92,11 +92,11 @@
                                             <div class="grp-form-date-range <?= $hidden; ?>" style="margin-left:10px;margin-top:16px;">
                                                 <div class="col-md-10">
                                                     <div class='form-group input-group date'>
-                                                        <input type="text" name="dateRange[from]" value="<?= $date_from; ?>" disabled="disabled" placeholder="Date From" class="form-control" />
+                                                        <input type="text" name="dateRange[from]" value="<?= $date_from; ?>" readonly="readonly" placeholder="Date From" class="form-control" />
                                                         <span class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i></span>
                                                     </div>
                                                     <div class='form-group input-group date'>
-                                                        <input type="text" name="dateRange[to]" value="<?= $date_to; ?>" disabled="disabled" placeholder="Date To" class="form-control" />
+                                                        <input type="text" name="dateRange[to]" value="<?= $date_to; ?>" readonly="readonly" placeholder="Date To" class="form-control" />
                                                         <span class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i></span>
                                                     </div>
                                                 </div>
@@ -116,11 +116,11 @@
                                             <div class="grp-form-date-range-all-forms <?= $hidden; ?>" style="margin-left:10px;margin-top:16px;">
                                                 <div class="col-md-10">
                                                     <div class='form-group input-group date'>
-                                                        <input type="text" name="dateRangeAllForms[from]" value="<?= $date_from; ?>" disabled="disabled" placeholder="Date From" class="default-datepicker form-control dateRangeAllFormsFromDate" />
+                                                        <input type="text" name="dateRangeAllForms[from]" value="<?= $date_from; ?>" readonly="readonly" placeholder="Date From" class="form-control dateRangeAllFormsFromDate" />
                                                         <span class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i></span>
                                                     </div>
                                                     <div class='form-group input-group date'>
-                                                        <input type="text" name="dateRangeAllForms[to]" value="<?= $date_to; ?>" disabled="disabled" placeholder="Date To" class="default-datepicker form-control dateRangeAllFormsToDate" />
+                                                        <input type="text" name="dateRangeAllForms[to]" value="<?= $date_to; ?>" readonly="readonly" placeholder="Date To" class="form-control dateRangeAllFormsToDate" />
                                                         <span class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i></span>
                                                     </div>
                                                     <div class='form-group'>
@@ -144,11 +144,13 @@
                                             ?>
                                             <div class="grp-form-date-range-leads-telephone <?= $hidden; ?>" style="margin-left:10px;margin-top:16px;">
                                                 <div class="col-md-10">
-                                                    <div class='form-group'>
-                                                        <input type="text" name="dateRangeLeadsTelephone[from]" value="<?= $date_from; ?>" placeholder="Date From" class="default-datepicker form-control dateRangeLeadsTelephoneFromDate" />
+                                                    <div class='form-group input-group date'>
+                                                        <input type="text" name="dateRangeLeadsTelephone[from]" value="<?= $date_from; ?>" readonly="readonly" placeholder="Date From" class="default-datepicker form-control dateRangeLeadsTelephoneFromDate" />
+                                                        <span class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i></span>
                                                     </div>
-                                                    <div class='form-group'>
-                                                        <input type="text" name="dateRangeLeadsTelephone[to]" value="<?= $date_to; ?>" placeholder="Date To" class="default-datepicker form-control dateRangeLeadsTelephoneToDate" />
+                                                    <div class='form-group input-group date'>
+                                                        <input type="text" name="dateRangeLeadsTelephone[to]" value="<?= $date_to; ?>" readonly="readonly" placeholder="Date To" class="default-datepicker form-control dateRangeLeadsTelephoneToDate" />
+                                                        <span class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i></span>
                                                     </div>
                                                     <div class='form-group'>
                                                         <div class="checkbox">

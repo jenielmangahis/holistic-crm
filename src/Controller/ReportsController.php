@@ -225,7 +225,6 @@ class ReportsController extends AppController
           foreach( $report_data['s1']['sources'] as $key => $value ){
             $sources[$key] = $key;
           }         
-
           //Query generator           
           switch ($information) {
             case 2: //How many leads we've received in specific date range   
