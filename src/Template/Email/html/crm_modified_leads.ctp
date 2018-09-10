@@ -55,6 +55,8 @@
 		<?php
 			$action = str_replace('\"', '"', $lead['lead_action']); 
 			$action = str_replace("\'", "'", $action);
+			$action = h($action);
+			$action = str_replace("&#039;", "'", $action);
 			echo $action; 
 		?>
 	</td>
