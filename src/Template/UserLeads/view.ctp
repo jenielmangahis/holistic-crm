@@ -91,6 +91,8 @@
                             $action = h($action);
                             $action = str_replace("&#039;", "'", $action);
                             $action = str_replace("&quot;", '"', $action);
+                            $action = str_replace("&amp;amp;", '&&', $action);
+                            $action = str_replace("&amp;", '&', $action);
 
                             echo "
                             <div class='form-group'>
