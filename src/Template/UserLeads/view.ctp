@@ -85,9 +85,12 @@
                                 <div class='col-sm-6'>";
                                 echo '<input type="text" id="status_id" class="form-control" name="status_id" value="' . $lead->status->name . '" readonly="readonly" />';
                             echo " </div></div>";
-
+                            
                             $action = str_replace('\"', '"', $lead->lead_action); 
                             $action = str_replace("\'", "'", $action);
+                            $action = h($action);
+                            $action = str_replace("&#039;", "'", $action);
+                            $action = str_replace("&quot;", '"', $action);
 
                             echo "
                             <div class='form-group'>

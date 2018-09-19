@@ -107,9 +107,12 @@ $this->Leads = TableRegistry::get('Leads');
                                 echo "<div class='alert alert-warning'>No Attachment</div>";
                             }
                             echo " </div></div>";
-
+                            
                             $action = str_replace('\"', '"', $lead->lead_action); 
                             $action = str_replace("\'", "'", $action);
+                            $action = h($action);
+                            $action = str_replace("&#039;", "'", $action);
+                            $action = str_replace("&quot;", '"', $action);
 
                             echo "
                             <div class='form-group'>
