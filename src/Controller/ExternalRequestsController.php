@@ -108,7 +108,8 @@ class ExternalRequestsController extends AppController
               //Send email notification
               $leadData = $this->Leads->get($new_lead->id, [
                   'contain' => ['Statuses', 'Sources', 'LeadTypes','InterestTypes']
-              ]);  
+              ]);
+              $leadData = santizeLeadsData($leadData);
 
               $source           = $this->Sources->get($data['lead-source-id']); 
               $source_name      = !empty($source->name) ? $source->name : "";

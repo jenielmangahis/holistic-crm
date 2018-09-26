@@ -208,7 +208,9 @@ class LeadsController extends AppController
            ->contain(['Statuses', 'Sources', 'LeadTypes', 'InterestTypes', 'LastModifiedBy'])
            ->where(['Leads.id' => $id])
            ->first()
-        ;       
+        ;
+        
+        $lead = santizeLeadsData($lead);       
 
         $back_url = Router::url( $this->referer(), true );
         $this->set('back_url', $back_url);
@@ -495,7 +497,9 @@ class LeadsController extends AppController
 
         $lead = $this->Leads->get($id, [
             'contain' => ['LastModifiedBy', 'LeadAttachments']
-        ]);        
+        ]);   
+
+        $lead = santizeLeadsData($lead);     
 
         if ($this->request->is(['patch', 'post', 'put'])) {          
             $data = $this->request->data;

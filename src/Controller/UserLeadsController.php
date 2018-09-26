@@ -180,6 +180,8 @@ class UserLeadsController extends AppController
         $lead = $this->Leads->get($id, [
             'contain' => ['Statuses', 'Sources', 'LeadTypes', 'InterestTypes', 'LastModifiedBy']
         ]);
+        
+        $lead = santizeLeadsData($lead);
 
         $this->set('lead', $lead);
         $this->set('_serialize', ['lead']);
@@ -353,7 +355,9 @@ class UserLeadsController extends AppController
 
         $lead = $this->Leads->get($id, [
             'contain' => ['LastModifiedBy']
-        ]);        
+        ]);  
+
+        $lead = santizeLeadsData($lead);      
 
         if ($this->request->is(['patch', 'post', 'put'])) {
             $data = $this->request->data;

@@ -165,15 +165,6 @@ $this->LeadAttachments = TableRegistry::get('LeadAttachments');
 
                             <?php 
                             echo "</div>";  
-
-                            $action = str_replace('\"', '"', $lead->lead_action); 
-                            $action = str_replace("\'", "'", $action);
-                            $action = h($action);
-                            $action = str_replace("&#039;", "'", $action);
-                            $action = str_replace("&quot;", '"', $action);
-                            $action = str_replace("&amp;amp;", '&&', $action);
-                            $action = str_replace("&amp;", '&', $action);
-
                             echo "
                             <div class='form-group'>
                                 <label for='lead_action' class='col-sm-2 control-label'>" . __('Action') . "</label>

@@ -331,4 +331,30 @@ function getRealIPAddress() {
     
   }
   return $ip;
-}    
+}
+
+function santizeLeadsData( $lead ) {
+    if( !empty($lead) ){
+        $lead->firstname = sanitizeString($lead->firstname);
+        $lead->surname   = sanitizeString($lead->surname);
+        $lead->address   = sanitizeString($lead->address);
+        $lead->lead_action = sanitizeString($lead->lead_action);
+        $lead->city      = sanitizeString($lead->city);
+        $lead->state     = sanitizeString($lead->state);
+        $lead->followup_notes = sanitizeString($lead->followup_notes);
+        $lead->followup_action_notes = sanitizeString($lead->followup_action_notes);
+        $lead->notes = sanitizeString($lead->notes);
+    }
+    return $lead;
+}  
+
+function sanitizeString( $string ) {
+    $newString = str_replace('\"', '"', $string); 
+    $newString = str_replace("\'", "'", $newString);
+    $newString = h($newString);
+    $newString = str_replace("&#039;", "'", $newString);
+    $newString = str_replace("&quot;", '"', $newString);
+    $newString = str_replace("&amp;amp;", '&&', $newString);
+    $newString = str_replace("&amp;", '&', $newString);
+    return $newString;
+}
