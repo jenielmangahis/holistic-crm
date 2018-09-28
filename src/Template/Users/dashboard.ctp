@@ -153,7 +153,7 @@ var BASE_URL = "<?php echo $base_url; ?>";
                                   </ul>
                               </div>                                               
                           </td>                          
-                          <td><?= h($lead->firstname . ' ' . $lead->surname) ?></td>
+                          <td><?= h(sanitizeString($lead->firstname) . ' ' . sanitizeString($lead->surname)) ?></td>
                           <td>
                               <?php if($lead->is_lock == 1){ ?>
                                       <div class="btn btn-warning">Lock by: <strong><?php echo $lead->last_modified_by->username; ?></strong> </div>
@@ -198,7 +198,7 @@ var BASE_URL = "<?php echo $base_url; ?>";
                                   </ul>
                               </div>                                               
                           </td>                          
-                          <td><?= h($flead->firstname . ' ' . $flead->surname) ?></td>                                                                        
+                          <td><?= h(sanitizeString($flead->firstname) . ' ' . sanitizeString($flead->surname)) ?></td>                                                                        
                           <td>
                               <?php if($flead->is_lock == 1){ ?>
                                       <div class="btn btn-warning">Lock by: <strong><?php echo $flead->last_modified_by->username; ?></strong> </div>

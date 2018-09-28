@@ -152,8 +152,8 @@
                                 <td><?= $lead->status['name']; ?></td>
                                 <td><?= $lead->source['name'] ?></td>                                
                                 <td><?= date("d F, Y", strtotime($lead->allocation_date)); ?></td>                          
-                                <td><?= $lead->firstname ?></td>                          
-                                <td><?= $lead->surname ?></td>
+                                <td><?= sanitizeString($lead->firstname) ?></td>                          
+                                <td><?= sanitizeString($lead->surname) ?></td>
                                 <td>
                                     <?php if($lead->is_lock == 1){ ?>
                                             <div class="btn btn-warning">Lock by: <strong><?php echo $lead->last_modified_by->username; ?></strong> </div>
