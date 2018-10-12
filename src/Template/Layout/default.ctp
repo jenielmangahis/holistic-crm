@@ -1,3 +1,12 @@
+<?php 
+// server should keep session data for AT LEAST 1 hour
+ini_set('session.gc_maxlifetime', 28800);
+
+// each client should remember their session id for EXACTLY 1 hour
+session_set_cookie_params(28800);
+
+session_start(); // ready to go!
+?>
 <?php include('header.ctp'); ?>
 <style>
 .menu-notification{
