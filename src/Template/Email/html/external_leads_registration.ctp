@@ -36,7 +36,7 @@
 		<?php
 			$action = str_replace('\"', '"', $new_lead['lead_action']); 
 			$action = str_replace("\'", "'", $action);
-			$action = h($action);
+			//$action = h($action);
 			$action = str_replace("&#039;", "'", $action);
             $action = str_replace("&quot;", '"', $action);
             $action = str_replace("&amp;amp;", '&&', $action);
