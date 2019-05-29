@@ -138,6 +138,12 @@ $this->LeadAttachments = TableRegistry::get('LeadAttachments');
                                 }
                             echo "</div></div>";
 
+                            echo "
+                            <div class='form-group'>
+                                <label for='status_id' class='col-sm-2 control-label'>" . __('Date Lead Entered') . "</label>
+                                <div class='col-sm-6'>";
+                                 echo $this->Form->input('lead_entered', ['value' => date("d F, Y", strtotime($lead->created)), 'class' => 'form-control', 'readonly' => 'readonly', 'disabled' => 'disabled', 'label' => false]);                 
+                            echo " </div></div>";
 
                             echo "
                             <div class='form-group'>
@@ -165,11 +171,21 @@ $this->LeadAttachments = TableRegistry::get('LeadAttachments');
 
                             <?php 
                             echo "</div>";  
+                            /*$action = str_replace('&#039;', "'", $lead->lead_action); 
+                            $action = str_replace('\"', '"', $action); 
+                            $action = str_replace("\'", "'", $action);
+                            $action = h($action);
+                            $action = str_replace("&quot;", '"', $action);
+                            $action = str_replace("&amp;amp;", '&&', $action);
+                            $action = str_replace("&amp;", '&', $action);
+                            //$action = sanitizeString($action);
+                            $action = str_replace("&gt;", ">", $action);*/
+
                             echo "
                             <div class='form-group'>
                                 <label for='lead_action' class='col-sm-2 control-label'>" . __('Action') . "</label>
                                 <div class='col-sm-6'>";
-                                echo $this->Form->input('lead_action', ['value' => str_replace('\"', "", $action), 'class' => 'form-control', 'id' => 'lead_action', 'type' => 'textarea', 'label' => 
+                                echo $this->Form->input('lead_action', ['value' => str_replace('\"', "", $lead->lead_action), 'escape' => false, 'class' => 'form-control', 'id' => 'lead_action', 'type' => 'textarea', 'label' => 
                                 false]);
                             echo " </div></div>"; 
 

@@ -162,11 +162,17 @@ class ExternalRequestsController extends AppController
           $source_url = $data['lead-url'];
         }
 
+        $address = "";
+        if( isset($data['lead-address']) ){
+          $address = $data['lead-address'];
+        }
+
         $data_leads = [
           'firstname' => $data['lead-firstname'],
           'surname' => $data['lead-lastname'],
           'email' => $data['lead-email'],
           'phone' => $data['lead-phone'],
+          'address' => $address,
           'city' => $data['lead-city'],
           'state' => $data['lead-state'],
           'source_id' => $data['lead-source-id'],
@@ -181,6 +187,18 @@ class ExternalRequestsController extends AppController
         ];
         $lead = $this->Leads->patchEntity($lead, $data_leads);        
         if ($new_lead = $this->Leads->save($lead)) {
+            $enable_attach_csv = false;
+
+            $source = $this->Sources->find()
+              ->where(['Sources.id' => $data['lead-source-id']])
+              ->first()
+            ;
+
+            if( $source ){
+              if( $source->enable_csv_attachment == 1 ){
+                $enable_attach_csv = true;
+              }
+            }
 
             $source_users = $this->SourceUsers->find('all')
                 ->contain(['Users'])
@@ -225,15 +243,46 @@ class ExternalRequestsController extends AppController
               $surname          = $leadData->surname != "" ? $leadData->surname : "Not Specified";
               $lead_client_name = $leadData->firstname . " " . $surname;
               $subject          = "New Lead - " . $source_name . " - " . $lead_client_name; 
+
+              $email_customer = new Email('default');
+
+              if( $enable_attach_csv ){
+                $csv_content = ['id,firstname,lastname,email,phone', $new_lead->id . ',' . $new_lead->firstname . ',' . $new_lead->surname . ',' . $new_lead->email . ',' . $new_lead->phone];
+                $filename = 'lead.csv';
+                $file_path = ROOT . DS . 'webroot' . DS . 'csv'  . DS . $filename; 
+                $file = fopen($file_path,"w");
+                foreach ($csv_content as $line){
+                  fputcsv($file,explode(',',$line));
+                }
+                fclose($file);
+
+                $email_customer->from(['websystem@holisticwebpresencecrm.com' => 'Holistic'])
+                  ->template('external_leads_registration')
+                  ->emailFormat('html')          
+                  ->cc($users_email)                                                                                               
+                  ->subject($subject)
+                  ->viewVars(['new_lead' => $leadData->toArray()])
+                  ->attachments([
+                      $filename => [
+                          'file' => $file_path,
+                          'mimetype' => $fileatt_type,
+                          'contentId' => 'my-unique-id'
+                      ]
+                  ])
+                  ->send();
+              }else{
+                $email_customer->from(['websystem@holisticwebpresencecrm.com' => 'Holistic'])
+                  ->template('external_leads_registration')
+                  ->emailFormat('html')          
+                  ->cc($users_email)                                                                                               
+                  ->subject($subject)
+                  ->viewVars(['new_lead' => $leadData->toArray()])
+                  ->send();
+              }
               
-              $email_customer = new Email('cake_smtp'); //default or cake_smtp (for testing in local)
-              $email_customer->from(['websystem@holisticwebpresencecrm.com' => 'Holistic'])
-                ->template('external_leads_registration')
-                ->emailFormat('html')          
-                ->cc($users_email)                                                                                               
-                ->subject($subject)
-                ->viewVars(['new_lead' => $leadData->toArray()])
-                ->send();
+              
+              //$email_customer = new Email('cake_smtp'); //default or cake_smtp (for testing in local)
+              
             }
             
           $json['is_success'] = true;
@@ -244,5 +293,4 @@ class ExternalRequestsController extends AppController
       echo json_encode($json);
       exit;
     }
-       
 }

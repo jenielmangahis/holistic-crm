@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Nixser - Reset Password</title>
+    <title>Holistic - Reset Password</title>
     <?php
             echo $this->Html->meta('icon');
             echo $this->Html->css('bootstrap.min'); 

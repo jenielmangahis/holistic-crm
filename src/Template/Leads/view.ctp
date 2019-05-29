@@ -110,6 +110,13 @@ $this->Leads = TableRegistry::get('Leads');
 
                             echo "
                             <div class='form-group'>
+                                <label for='status_id' class='col-sm-2 control-label'>" . __('Date Lead Entered') . "</label>
+                                <div class='col-sm-6'>";
+                                 echo $this->Form->input('lead_entered', ['value' => date("d F, Y", strtotime($lead->created)), 'class' => 'form-control', 'readonly' => 'readonly', 'disabled' => 'disabled', 'label' => false]);                 
+                            echo " </div></div>";
+
+                            echo "
+                            <div class='form-group'>
                                 <label for='status_id' class='col-sm-2 control-label'>" . __('Status') . "</label>
                                 <div class='col-sm-6'>";
                                 echo '<input type="text" id="status_id" class="form-control" name="status_id" value="' . $lead->status->name . '" readonly="readonly" />';
@@ -119,7 +126,7 @@ $this->Leads = TableRegistry::get('Leads');
                             <div class='form-group'>
                                 <label for='lead_action' class='col-sm-2 control-label'>" . __('Action') . "</label>
                                 <div class='col-sm-6'>";
-                                echo $this->Form->input('lead_action', ['value' => str_replace('\"', "", $action), 'class' => 'form-control', 'id' => 'lead_action', 'readonly' => 'readonly',  'type' => 'textarea', 'label' => false]);
+                                echo $this->Form->input('lead_action', ['value' => str_replace('\"', "", $lead->lead_action), 'escape' => false, 'class' => 'form-control', 'id' => 'lead_action', 'readonly' => 'readonly',  'type' => 'textarea', 'label' => false]);
                             echo " </div></div>"; 
 
                             echo "

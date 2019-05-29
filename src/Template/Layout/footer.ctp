@@ -286,6 +286,13 @@ $(function(){
       confirmKeys: [188],
       allowDuplicates: false,
       trimValue: true
+    });
+
+    $('#csv-recipient').tagsinput({
+      itemText: 'Type Email',
+      confirmKeys: [188],
+      allowDuplicates: false,
+      trimValue: true
     }); 
 
     $('#tags-emails').tagsinput({

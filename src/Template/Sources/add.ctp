@@ -17,22 +17,28 @@
 
                 </div>
                 <div class="box-body">
-                    <?= $this->Form->create($source,['id' => 'frm-default-add', 'data-toggle' => 'validator', 'role' => 'form','class' => 'form-horizontal']) ?>
+                    <?= $this->Form->create($source,['id' => 'frm-default-add', 'type' => 'POST', 'data-toggle' => 'validator', 'role' => 'form','class' => 'form-horizontal']) ?>
                     <fieldset>        
                         <?php
                             echo "
-                                    <div class='form-group'>
-                                        <label for='name' class='col-sm-2 control-label'>" . __('Name') . "</label>
-                                        <div class='col-sm-6'>";
-                                        echo $this->Form->input('name', ['class' => 'form-control', 'id' => 'name', 'label' => false]);                
-                                    echo " </div></div>";  
+                            <div class='form-group'>
+                                <label for='name' class='col-sm-2 control-label'>" . __('Name') . "</label>
+                                <div class='col-sm-6'>";
+                                echo $this->Form->input('name', ['class' => 'form-control', 'id' => 'name', 'label' => false]);                
+                            echo " </div></div>";  
 
                             echo "
-                                    <div class='form-group'>
-                                        <label for='email' class='col-sm-2 control-label'>" . __('Emails') . "</label>
-                                        <div class='col-sm-6'>";
-                                        echo $this->Form->input('emails', ['class' => 'form-control', 'id' => 'tags-emails', 'data-role' => 'tagsinput', 'label' => false, 'default' => ' ']);                
-                                    echo " </div></div>";
+                            <div class='form-group'>
+                                <label for='email' class='col-sm-2 control-label'>" . __('Emails') . "</label>
+                                <div class='col-sm-6'>";
+                                echo $this->Form->input('emails', ['class' => 'form-control', 'id' => 'tags-emails', 'data-role' => 'tagsinput', 'label' => false, 'default' => ' ']);                
+                            echo " </div></div>";
+                            echo "
+                            <div class='form-group'>
+                                <label for='email' class='col-sm-2 control-label'>" . __('Enable CSV Attachment') . "</label>
+                                <div class='col-sm-6'>";
+                                echo $this->Form->select('enable_csv_attachment',["0" => "No", "1" => "Yes"],['class' => 'form-control', 'id' => 'enable_csv_attachment', 'label' => false]); 
+                            echo " </div></div>"; 
                         ?>
                     </fieldset>
                     <div class="form-group" style="margin-top: 80px;">

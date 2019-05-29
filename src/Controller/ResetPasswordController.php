@@ -67,20 +67,20 @@ class ResetPasswordController extends AppController
                             $this->Users->save($user);
                             
                             //SEND EMAIL NOTIFICATION                            
-                            $edata = [
+                            /*$edata = [
                                 'user_name' => $user->firstname,
                                 'new_password' => $data['password']
                             ];
 
                             $recipient = $user->email;                     
                             $email_smtp = new Email('cake_smtp');
-                            $email_smtp->from(['websystem@nixstage.com' => 'WebSystem'])
+                            $email_smtp->from(['websystem@holistic.com' => 'WebSystem'])
                                 ->template('reset_password')
                                 ->emailFormat('html')
                                 ->to($recipient)                                                                                                     
-                                ->subject('Nixser : New Password')
+                                ->subject('Holistic : New Password')
                                 ->viewVars(['edata' => $edata])
-                                ->send();
+                                ->send();*/
 
                             //REDIRECT TO LOGIN
                             $this->Flash->success(__('Password was successfully updated.')); 

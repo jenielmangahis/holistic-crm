@@ -122,7 +122,8 @@ class SourcesController extends AppController
         if ($this->request->is('post')) {
             $data = $this->request->data;      
             //debug($data);
-            $data['emails'] = str_replace(",", ";", $this->request->data['emails']);             
+            $data['emails'] = str_replace(",", ";", $this->request->data['emails']);  
+            $data['csv_recipient'] = str_replace(",", ";", $this->request->data['csvrecipient']);             
             $source = $this->Sources->patchEntity($source, $data);           
             if ($newSource = $this->Sources->save($source)) {
 

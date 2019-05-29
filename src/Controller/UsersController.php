@@ -496,7 +496,7 @@ class UsersController extends AppController
 
                 $recipient = $user->email;                     
                 $email_smtp = new Email('cake_smtp');
-                $email_smtp->from(['websystem@holistic.com' => 'WebSystem'])
+                $email_smtp->from(['websystem@holisticwebpresencecrm.com' => 'Holistic'])
                     ->template('request_forgot_password')
                     ->emailFormat('html')
                     ->to($recipient)                                                                                                     

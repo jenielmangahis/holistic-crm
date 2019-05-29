@@ -29,7 +29,7 @@ class ProfileController extends AppController
         $nav_selected = [""];
 
         $this->set('nav_selected', $nav_selected);        
-        //$this->Auth->allow();
+        $this->Auth->allow();
     }
 
     /**
@@ -157,19 +157,19 @@ class ProfileController extends AppController
                 if( $this->Users->save($user) ){
 
                     //Send email
-                    $edata = [
+                    /*$edata = [
                         'user_name' => $user->firstname,
                         'password' => $data['password']                        
                     ];
                     $recipient = $user_session->email;                     
                     $email_smtp = new Email('cake_smtp');
-                    $email_smtp->from(['websystem@nixstage.com' => 'WebSystem'])
+                    $email_smtp->from(['websystem@holistic.com' => 'WebSystem'])
                         ->template('change_password')
                         ->emailFormat('html')
                         ->to($recipient)                                                                                                     
                         ->subject('Nixser : Change Password')
                         ->viewVars(['edata' => $edata])
-                        ->send();
+                        ->send();*/
 
                     $this->Flash->success(__('Your password has been changed.'));
                     return $this->redirect(['controller' => 'profile', 'action' => 'index']);

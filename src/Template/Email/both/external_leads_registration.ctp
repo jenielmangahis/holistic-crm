@@ -1,6 +1,3 @@
-<?php 
-use Cake\View\Helper\TextHelper;
-?>
 <p>Hi,</p>
 <p>A new lead has been entered into the Holistic CRM. To update any details regarding this lead login here: <a href="http://holisticwebpresencecrm.com">http://holisticwebpresencecrm.com</a></p>
 <h3 class="form-hdr" style="background-color: #222D32;color:#ffffff;padding: 10px;">Lead Personal Information</h3>
@@ -44,7 +41,6 @@ use Cake\View\Helper\TextHelper;
             $action = str_replace("&quot;", '"', $action);
             $action = str_replace("&amp;amp;", '&&', $action);
             $action = str_replace("&amp;", '&', $action);
-            $action = $this->Text->autoParagraph($action);
 			echo $action; 
 		?>
 	</td>

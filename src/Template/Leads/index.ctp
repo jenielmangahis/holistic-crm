@@ -95,6 +95,8 @@
                                             <?php if($is_admin_user == 1 && $lead->is_lock == 1){ ?>
                                                     <li role="presentation"><?= $this->Html->link('<i class="fa fa-unlock"></i> Unlock', '#unlock-modal-'.$lead->id,['data-toggle' => 'modal','escape' => false]) ?></li>
                                             <?php } ?>
+
+                                            <li role="presentation"><?= $this->Html->link('<i class="fa fa-envelope"></i> Email Messages', ['controller' => 'lead_email_messages', 'action' => 'list', $lead->id],['escape' => false]) ?></li>
                                         </ul>
                                     </div>   
 

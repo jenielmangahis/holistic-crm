@@ -17,29 +17,35 @@
 
                 </div>
                 <div class="box-body">
-                    <?= $this->Form->create($source,['id' => 'frm-default-add', 'data-toggle' => 'validator', 'role' => 'form','class' => 'form-horizontal']) ?>
+                    <?= $this->Form->create($source,['id' => 'frm-default-add', 'type' => 'POST', 'data-toggle' => 'validator', 'role' => 'form','class' => 'form-horizontal']) ?>
                     <fieldset>        
                         <?php
                             echo "
-                                    <div class='form-group'>
-                                        <label for='name' class='col-sm-2 control-label'>" . __('Name') . "</label>
-                                        <div class='col-sm-6'>";
-                                        echo $this->Form->input('name', ['class' => 'form-control', 'id' => 'name', 'label' => false]);                
-                                    echo " </div></div>";    
+                            <div class='form-group'>
+                                <label for='name' class='col-sm-2 control-label'>" . __('Name') . "</label>
+                                <div class='col-sm-6'>";
+                                echo $this->Form->input('name', ['class' => 'form-control', 'id' => 'name', 'label' => false]);                
+                            echo " </div></div>";    
                             $source_emails = str_replace(";", ",", $source->emails);
                             echo "
-                                    <div class='form-group'>
-                                        <label for='email' class='col-sm-2 control-label'>" . __('Emails') . "</label>
-                                        <div class='col-sm-6'>";
-                                        echo $this->Form->input('emails', ['class' => 'form-control tags-emails', 'data-role' => 'tagsinput', 'value' => $source_emails, 'label' => false, 'default' => ' ']);  
-                                    echo " </div></div>"; 
+                            <div class='form-group'>
+                                <label for='email' class='col-sm-2 control-label'>" . __('Emails') . "</label>
+                                <div class='col-sm-6'>";
+                                echo $this->Form->input('emails', ['class' => 'form-control tags-emails', 'data-role' => 'tagsinput', 'value' => $source_emails, 'label' => false, 'default' => ' ']);  
+                            echo " </div></div>";
+                            echo "
+                            <div class='form-group'>
+                                <label for='email' class='col-sm-2 control-label'>" . __('Enable CSV Attachment') . "</label>
+                                <div class='col-sm-6'>";
+                                echo $this->Form->select('enable_csv_attachment',["1" => "Yes", "0" => "No"],['class' => 'form-control', 'id' => 'enable_csv_attachment', 'label' => false]); 
+                            echo " </div></div>"; 
                                     
                         ?>
                     </fieldset>
                     <div class="form-group" style="margin-top: 80px;">
                         <div class="col-sm-offset-2 col-sm-10">                            
                             <?= $this->Form->button('<i class="fa fa-save"></i> ' . __('Save'),['name' => 'save', 'value' => 'save', 'class' => 'btn btn-success', 'escape' => false]) ?>
-                            <?= $this->Form->button('<i class="fa fa-edit"></i> ' . __('Save and Continue adding'),['name' => 'save', 'value' => 'edit', 'class' => 'btn btn-info', 'escape' => false]) ?>
+                            <?= $this->Form->button('<i class="fa fa-edit"></i> ' . __('Save and Continue editing'),['name' => 'save', 'value' => 'edit', 'class' => 'btn btn-info', 'escape' => false]) ?>
                             <?= $this->Html->link('<i class="fa fa-angle-left"> </i> ' . __('Back To list'), ['action' => 'index'],['class' => 'btn btn-warning', 'escape' => false]) ?>                            
                         </div>
                     </div>

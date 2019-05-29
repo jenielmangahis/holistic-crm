@@ -280,4 +280,138 @@ class DebugController extends AppController
       debug($data);
       exit;
     }
+
+    public function testEmail()
+    {
+      $action = "
+      Hi
+
+      I got a interesting thing today which i want to get your opinion
+
+      I am running small market in fountain valley
+      Today one of my customer came to Market and he told me that on his receipt it shows extra ,
+
+      He sopped yesterday and when he went home he calculate the receipt amount
+      which shows as
+      0.85
+      0.39
+      1.38
+      1.04
+      3.94
+      0.91
+      4.40
+
+      and total = 16.85
+
+      when you calculate all , it shows $12.91 not $16.85
+
+      so basicly we got extra 3.94 from customer yesterday
+
+      He came today and was yelling us which he was right
+
+      So my quastion is , do we have right to sue the POS system
+
+      because this is basicly their foult , and i do not know it happen before or not
+
+      i have the receipt with me
+      BTW POS system is 10 years old
+
+      pls let me know what do u think
+
+      thanks / Subject : test subject
+
+      ";
+      $email = 'bryan.yobi@gmail.com';
+      $email_customer = new Email('default');
+      $email_customer->from(['websystem@holisticwebpresencecrm.com' => 'Holistic'])
+        ->template('debug')
+        ->emailFormat('html')          
+        ->to($email)                                                                                               
+        ->subject('Debug New Leads')
+        ->viewVars(['action' => $action])
+        ->send();
+
+
+    exit;
+    }
+
+    public function forgotPw()
+    {
+      $this->Users = TableRegistry::get('Users');
+      
+      $data['email_username'] = 'bryan.yobi@gmail.com';        
+      $user = $this->Users->find()
+          ->where(['Users.email' => $data['email_username']])
+          ->first()
+      ;
+
+      if($user) {
+          $randChar   = rand() . $user->id;                
+          $reset_code = md5(uniqid($randChar, true));  
+
+          //Save verification code
+          $user->reset_code = $reset_code;
+          $this->Users->save($user);
+
+          //Send email notification to customer                
+          $edata = [
+              'user_name' => $user->firstname,
+              'reset_code' => $reset_code
+          ];
+
+          $recipient = $user->email;                     
+          $email_smtp = new Email('cake_smtp');
+          $email_smtp->from(['websystem@holisticwebpresencecrm.com' => 'Holistic'])
+              ->template('request_forgot_password')
+              ->emailFormat('html')
+              ->to($recipient)                                                                                                     
+              ->subject('Holistic : Forgot Password')
+              ->viewVars(['edata' => $edata])
+              ->send();
+
+          $json['message'] = "An email has been sent to your e-mail address for confirmation.";
+          $json['is_success'] = true;          
+      }else{
+          $json['message'] = "Invalid form entry";
+          $json['is_success'] = false;    
+      }
+
+      exit;
+    }
+
+    public function emailCSV()
+    {
+
+      $fileatt_type = "text/csv";
+      
+      $list = ['id,name,contact', '1,test1,test2', '2,test2,test2'];
+
+      $filename = 'contacts.csv';
+      $file_path = ROOT . DS . 'webroot' . DS . 'csv'  . DS . $filename; 
+      $file = fopen($file_path,"w");
+
+      foreach ($list as $line)
+        {
+        fputcsv($file,explode(',',$line));
+        }
+
+      fclose($file); 
+      $recipient = 'bryan.yobi@gmail.com';
+
+      $email_smtp = new Email('cake_smtp');
+      $email_smtp->from(['websystem@holisticwebpresencecrm.com' => 'Holistic'])
+          ->template('lead_csv')
+          ->emailFormat('html')
+          ->to($recipient)                                                                                                     
+          ->subject('Holistic : Forgot Password')
+          ->attachments([
+              $filename => [
+                  'file' => $file_path,
+                  'mimetype' => $fileatt_type,
+                  'contentId' => 'my-unique-id'
+              ]
+          ])
+          ->send();
+          exit;
+    }
 }

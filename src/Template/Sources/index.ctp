@@ -81,7 +81,8 @@ div.box-body{
                                 <th class="actions"></th>                                
                                 <th><?= $this->Paginator->sort('name', __("Name") . "<i class='fa fa-sort pull-right'> </i>", array('escape' => false)) ?></th>                                
                                 <th><?= __("Users") ?></th>   
-                                <th><?= __('Form URL') ?></th>                                                                                                
+                                <th><?= __('Form URL') ?></th>    
+                                <th><?= __('Enable CSV Attachment') ?></th>                                                                                                
                             </tr>
                         </thead>
                         <tbody>
@@ -175,7 +176,16 @@ div.box-body{
                                     <?php } ?>
                                     </ul>
                                     <?php } ?>
-                                </td>                       
+                                </td>  
+                                <td>
+                                    <?php 
+                                        if( $source->enable_csv_attachment == 1 ){
+                                            echo "<label class='label label-success'>Yes</label>";
+                                        }else{
+                                            echo "<label class='label label-danger'>No</label>";
+                                        }
+                                    ?>
+                                </td>                     
                             </tr>
                             <?php } ?>
                         </tbody>

@@ -46,6 +46,7 @@
                                 <th><?= $this->Paginator->sort('status_id', __("Status") . "<i class='fa fa-sort pull-right'> </i>", array('escape' => false)) ?></th>
                                 <!-- <th><?= $this->Paginator->sort('source_id', __("Source") . "<i class='fa fa-sort pull-right'> </i>", array('escape' => false)) ?></th> -->
                                 <th><?= $this->Paginator->sort('allocation_date', __("Allocation Date") . "<i class='fa fa-sort pull-right'> </i>", array('escape' => false)) ?></th>
+                                <th><?= $this->Paginator->sort('created', __("Date Lead Entered") . "<i class='fa fa-sort pull-right'> </i>", array('escape' => false)) ?></th>
                                 <th><?= $this->Paginator->sort('modified', __("Last Modified") . "<i class='fa fa-sort pull-right'> </i>", array('escape' => false)) ?></th>
                                 <th><?= $this->Paginator->sort('firstname', __("Firstname") . "<i class='fa fa-sort pull-right'> </i>", array('escape' => false)) ?></th>
                                 <th><?= $this->Paginator->sort('surname', __("Surname") . "<i class='fa fa-sort pull-right'> </i>", array('escape' => false)) ?></th>
@@ -137,6 +138,7 @@
                                 <td><?= $lead->status['name']; ?></td>
                                 <!-- <td><?= $lead->source['name'] ?></td> -->
                                 <td><?= date("d F, Y", strtotime($lead->allocation_date)); ?></td>
+                                <td><?= date("d F, Y", strtotime($lead->created)); ?></td>
                                 <td><?= date("d F, Y", strtotime($lead->modified)); ?></td>
                                 <td><?= $lead->firstname ?></td>
                                 <td><?= $lead->surname ?></td>

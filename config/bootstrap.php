@@ -354,6 +354,8 @@ function sanitizeString( $string ) {
     $newString = h($newString);
     $newString = str_replace("&#039;", "'", $newString);
     $newString = str_replace("&quot;", '"', $newString);
+    $newString = str_replace("&gt;", ">", $newString);
+    $newString = str_replace("&lt;", "<", $newString);
     $newString = str_replace("&amp;amp;", '&&', $newString);
     $newString = str_replace("&amp;", '&', $newString);
     return $newString;
