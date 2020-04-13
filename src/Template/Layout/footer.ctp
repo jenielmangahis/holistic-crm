@@ -333,6 +333,118 @@ $(function(){
   });
   */
 
+  $("#send_secondary_email_notification").change(function() {
+    /*if(this.checked) {
+      $(".source-users").removeClass("hidden");
+    }else{
+      $(".source-users").addClass("hidden");
+    }*/
+  });
+
+   $("#send_specific_notification").change(function() {
+    if(this.checked) {
+      var source_id = $("#source_id").val();
+      ajax_load_source_users(source_id);
+    }else{
+      $(".source-users").html("");
+    }
+  });
+
+  $(".followup-lead-recipient-list").click(function(){    
+    var source_id = $("#source_id").val();
+    var lead_id   = $("#lead_id").val();
+    var url = base_url + "source_users/ajax_load_followup_source_users";
+    $(".followup-source-users").html("loading source users...");
+    $.ajax({
+           type: "POST",
+           url: url,     
+           data: {"source_id":source_id, "lead_id":lead_id}, 
+           success: function(o)
+           {
+              $(".followup-source-users").html(o);
+           }
+    });
+  });
+
+  $("#source_id").change(function(){
+    var source_id = $(this).val();
+    source_settings(source_id);
+    $("#send_specific_notification").prop("checked", false);
+    $(".source-users").html("");
+    
+  });
+
+  $(".opt-willing-to-review").change(function(){
+    var selected = $(this).val();
+    if( selected == 1 ){
+      $(".grp-willing-review-date").removeClass("hidden");
+    }else{
+      $(".grp-willing-review-date").addClass("hidden");
+    }
+  });
+
+  function source_settings( source_id ){
+    var url = base_url + "sources/json_get_source_settings";
+    $.ajax({
+           type: "POST",
+           url: url,     
+           data: {"source_id":source_id}, 
+           dataType: 'json', 
+           success: function(o)
+           {
+              $('#send_secondary_email_notification').attr('checked', false);              
+              if( o.is_enabled_secondary_notification == 1 ){
+                $("#send_secondary_email_notification").removeAttr("disabled");
+              }else{
+                $("#send_secondary_email_notification").attr("disabled", true);
+              }
+
+              if( o.is_va == 1 ){
+                $(".va-group").removeClass("hidden");
+              }else{
+                $(".va-group").addClass("hidden");
+              }
+           }
+    });
+  }
+
+  function enable_disable_secondary_email_notification( source_id ){
+    var url = base_url + "sources/json_enable_disable_secondary_email";
+    $.ajax({
+           type: "POST",
+           url: url,     
+           data: {"source_id":source_id}, 
+           dataType: 'json', 
+           success: function(o)
+           {
+              $('#send_secondary_email_notification').attr('checked', false);              
+              if( o.is_enabled == 1 ){
+                $("#send_secondary_email_notification").removeAttr("disabled");
+              }else{
+                $("#send_secondary_email_notification").attr("disabled", true);
+              }
+           }
+    });
+  }
+
+  function ajax_load_source_users( source_id ){
+    var url = base_url + "source_users/ajax_load_source_users";
+    $(".source-users").html("loading source users...");
+    $.ajax({
+           type: "POST",
+           url: url,     
+           data: {"source_id":source_id}, 
+           success: function(o)
+           {
+              $(".source-users").html(o);
+           }
+    });
+  }
+
+  <?php if( isset($load_source_users) ){ ?>
+    ajax_load_source_users( $("#source_id").val() );
+  <?php } ?>
+
   $(".attachment-add-row").click(function(){
     var rowCount = $('.lead-attachments tr').length + 1;
     if ( $(".lead-attachments tr").hasClass("rowAttachment" + rowCount) ) {
@@ -368,11 +480,20 @@ $(function(){
     }  
   });
 
+  $(".btn-show-more-users").click(function(){   
+    var data_id = 'user-item-' + $(this).attr('data-id'); 
+    if( $("." + data_id).hasClass("hidden") ){
+      $("." + data_id).removeClass("hidden"); 
+    }else{
+      $("." + data_id).addClass("hidden"); 
+    }  
+  });
+
   
 
   //Date picker       
   $('.default-datepicker').datepicker({
-    format: 'yyyy-mm-dd',
+    format: 'd MM, yyyy',
     autoclose: true
   });
 
@@ -474,7 +595,18 @@ $(function(){
             $("#status_note").show();
             $("#hide_note").show();
             $("#show_note").hide();           
-        });        
+        });  
+
+        $("#hide_enotif_history").click(function(){
+            $("#email_notif_history").hide();
+            $("#hide_enotif_history").hide();
+            $("#show_enotif_history").show();             
+        });  
+        $("#show_enotif_history").click(function(){
+            $("#email_notif_history").show();
+            $("#hide_enotif_history").show();
+            $("#show_enotif_history").hide();           
+        });
     });
 
 });

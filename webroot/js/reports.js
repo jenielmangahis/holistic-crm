@@ -26,26 +26,37 @@ $(function(){
             $(".grp-form-date-range").addClass("hidden");
             $(".grp-form-date-range-all-forms").addClass("hidden");
             $(".grp-form-date-range-leads-telephone").addClass("hidden");
+            $(".grp-specific-user-leads").addClass("hidden");
         }else if( infoSelected == 2 ){
             $(".grp-form-date-range").removeClass("hidden");
             $(".grp-form-types").addClass("hidden");
             $(".grp-form-date-range-all-forms").addClass("hidden");
             $(".grp-form-date-range-leads-telephone").addClass("hidden");
+            $(".grp-specific-user-leads").addClass("hidden");
         }else if( infoSelected == 6 ){
             $(".grp-form-date-range-all-forms").removeClass("hidden");
             $(".grp-form-date-range").addClass("hidden");
             $(".grp-form-types").addClass("hidden");            
             $(".grp-form-date-range-leads-telephone").addClass("hidden");
+            $(".grp-specific-user-leads").addClass("hidden");
         }else if( infoSelected == 8 ){
             $(".grp-form-date-range-leads-telephone").removeClass("hidden");
             $(".grp-form-date-range-all-forms").addClass("hidden");
             $(".grp-form-date-range").addClass("hidden");
             $(".grp-form-types").addClass("hidden"); 
+            $(".grp-specific-user-leads").addClass("hidden");
+        }else if( infoSelected == 9 ){
+            $(".grp-specific-user-leads").removeClass("hidden");
+            $(".grp-form-date-range-leads-telephone").addClass("hidden");
+            $(".grp-form-date-range-all-forms").addClass("hidden");
+            $(".grp-form-date-range").addClass("hidden");
+            $(".grp-form-types").addClass("hidden");             
         }else{
             $(".grp-form-types").addClass("hidden");
             $(".grp-form-date-range").addClass("hidden");
             $(".grp-form-date-range-all-forms").addClass("hidden");
             $(".grp-form-date-range-leads-telephone").addClass("hidden");
+            $(".grp-specific-user-leads").addClass("hidden");
         }        
     });
 

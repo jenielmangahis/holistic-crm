@@ -22,6 +22,9 @@ use Cake\Validation\Validator;
 class SourcesTable extends Table
 {
 
+    const OPTIONS_IS_VA_YES = 1;
+    const OPTIONS_IS_VA_NO  = 0;
+
     /**
      * Initialize method
      *
@@ -68,5 +71,49 @@ class SourcesTable extends Table
             ->allowEmpty('emails');             
 
         return $validator;
+    }
+
+    public function optionsIsVa()
+    {
+        $options = [
+            self::OPTIONS_IS_VA_NO => 'No',
+            self::OPTIONS_IS_VA_YES => 'Yes'
+        ];
+
+        return $options;
+    }
+
+    public function isVa()
+    {
+        return self::OPTIONS_IS_VA_YES;
+    }
+
+    public function isNotVa()
+    {
+        return self::OPTIONS_IS_VA_NO;
+    }
+
+    public function sourceToCooling( $source_id = 0 )
+    {
+        $sources = [
+            61 => 79, //CWC Las Vegas
+            12 => 80, //CWC Los Angeles
+            18 => 81, //CWC Miami
+            58 => 82, //CWC Vancouver
+            27 => 83, //CWC Florida
+            9 => 78, //CWC Florida 
+            59 => 84, //CWC Austin
+            53 => 85, //CWC Denver
+            51 => 86, //CWC Houston
+            50 => 87, //CWC New Jersey
+            56 => 77 //CWC WC Designers Group
+        ];
+
+        $new_source_id = $source_id;
+        if( array_key_exists($source_id, $sources) ){
+            $new_source_id = $sources[$source_id];
+        }
+
+        return $new_source_id;
     }
 }

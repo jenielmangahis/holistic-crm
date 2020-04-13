@@ -212,6 +212,8 @@ const NOT_STARTED = "Not Started";
 const GOOD = "Good";
 const MISSING = "Missing";
 
+const LEAD_EMAIL_SENDER = 'leads@holisticwebpresencecrm.com';
+
 /* ENCRYPTION */
 function encrypt($string, $salt = '') 
 { 
@@ -359,4 +361,9 @@ function sanitizeString( $string ) {
     $newString = str_replace("&amp;amp;", '&&', $newString);
     $newString = str_replace("&amp;", '&', $newString);
     return $newString;
+}
+
+function dbg( $data = array() ){
+    echo "<pre>";
+    print_r($data);
 }

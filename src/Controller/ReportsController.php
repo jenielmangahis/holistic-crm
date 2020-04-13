@@ -56,7 +56,8 @@ class ReportsController extends AppController
                     default:            
                         break;
                 }                
-                $this->Auth->allow($authorized_modules);
+                //$this->Auth->allow($authorized_modules);
+                $this->Auth->allow();
             }
         }         
         $this->user = $user_data;
@@ -104,6 +105,10 @@ class ReportsController extends AppController
           $source_ids[$su->source_id] = $su->source_id;
         }
 
+        if( empty($source_ids) ){
+          $source_ids[0] = 0;
+        }
+
         $sources = $this->Sources->find('all')
           ->where(['Sources.id IN' => $source_ids])
           ->order(['Sources.name' => 'ASC'])
@@ -124,7 +129,9 @@ class ReportsController extends AppController
      */
     public function step2()
     {
-      $this->FormLocations = TableRegistry::get('FormLocations');
+      $this->FormLocations = TableRegistry::get('FormLocations');      
+      $this->UserAssignedSpecificUsers = TableRegistry::get('UserAssignedSpecificUsers');
+      $this->Users = TableRegistry::get('Users');
 
       $session     = $this->request->session(); 
       $report_data = $session->read('Report.data'); 
@@ -146,6 +153,27 @@ class ReportsController extends AppController
         }        
       }
 
+      $session   = $this->request->session();    
+      $user_data = $session->read('User.data');         
+      $userAssignedSpecificUsers = $this->UserAssignedSpecificUsers->find()
+        ->where(['UserAssignedSpecificUsers.user_id' => $user_data->id])
+        ->first()
+      ;
+
+      $user_ids = array();
+      $userIds  = unserialize($userAssignedSpecificUsers->userids);
+      foreach( $userIds as $s ){
+        $user_ids[$s] = $s;
+      } 
+
+      if( empty($user_ids) ){
+        $user_ids[0] = 0;
+      }
+
+      $userSpecificUsers = $this->Users->find('all')
+        ->where(['Users.id IN' => $user_ids])
+      ;
+
       $optionInformation = [
         //1 => "How many leads we've received (total)",
         2 => "How many leads we've received in specific date range",
@@ -154,7 +182,8 @@ class ReportsController extends AppController
         5 => "How many leads are dead/spam?",
         6 => "How many leads came through the website (all source forms)?",
         7 => "How many leads came through a specific form",
-        8 => "How many leads came through the telephone"
+        8 => "How many leads came through the telephone",
+        9 => "Assigned leads to Specific Users"
       ];
 
       $optionFormLocations = array();
@@ -173,7 +202,8 @@ class ReportsController extends AppController
         'optionFormLocations' => $optionFormLocations,
         'optionInformation' => $optionInformation,
         'report_data' => $report_data['s2'],
-        'sources' => $sources
+        'sources' => $sources,
+        'userSpecificUsers' => $userSpecificUsers
       ]);
     }
 
@@ -209,6 +239,9 @@ class ReportsController extends AppController
 
     public function generate_leads_report()
     {
+      $this->LeadLeadTypes = TableRegistry::get('LeadLeadTypes');
+      $this->SpecificUserLeads = TableRegistry::get('SpecificUserLeads');
+
       $session     = $this->request->session(); 
       $report_data = $session->read('Report.data'); 
 
@@ -225,7 +258,7 @@ class ReportsController extends AppController
           foreach( $report_data['s1']['sources'] as $key => $value ){
             $sources[$key] = $key;
           }         
-          //Query generator           
+          //Query generator  
           switch ($information) {
             case 2: //How many leads we've received in specific date range   
               $date_from = $report_data['s2']['dateRange']['from'];
@@ -285,22 +318,57 @@ class ReportsController extends AppController
                 ; 
               break;
 
-            case 8: //How many leads came through the telephone
-              if( isset($report_data['s2']['viewAllLeadsTelephone']) ){
+            case 8: //How many leads came through the telephone        
+                $leadTypes = $this->LeadLeadTypes->find('all')
+                  ->where(['LeadLeadTypes.lead_type_id' => 2])
+                ;
+                $leadIds = array();
+                foreach( $leadTypes as $lt ){
+                  $leadIds[$lt->lead_id] = $lt->lead_id;
+                }    
+              if( isset($report_data['s2']['viewAllLeadsTelephone']) ){                
                 $leads = $this->Leads->find('all')
                   ->contain(['Statuses', 'Sources', 'InterestTypes', 'LeadTypes'])
-                  ->where(['Leads.source_id IN' => $sources, 'Leads.lead_type_id' => 2, 'Leads.is_archive' => 'No'])
+                  ->where(['Leads.source_id IN' => $sources, 'Leads.id IN' => $leadIds, 'Leads.is_archive' => 'No'])
                 ;  
               }else{
                 $date_from = $report_data['s2']['dateRangeLeadsTelephone']['from'];
                 $date_to   = $report_data['s2']['dateRangeLeadsTelephone']['to'];
                 $leads = $this->Leads->find('all')
                   ->contain(['Statuses', 'Sources', 'InterestTypes', 'LeadTypes'])
-                  ->where(['Leads.source_id IN' => $sources, 'Leads.lead_type_id' => 2, 'Leads.allocation_date >=' => $date_from, 'Leads.allocation_date <=' => $date_to, 'Leads.is_archive' => 'No'])
+                  ->where(['Leads.source_id IN' => $sources, 'Leads.id IN' => $leadIds, 'Leads.allocation_date >=' => $date_from, 'Leads.allocation_date <=' => $date_to, 'Leads.is_archive' => 'No'])
                 ;    
               }
               break;
+            case 9:
+              $user_ids = array();
+              foreach( $report_data['s2']['specificUsers'] as $key => $value ){
+                $user_ids[$value] = $value;
+              }
 
+              if( empty($user_ids) ){
+                $user_ids[0] = 0;
+              }
+
+              $specificUserLeads = $this->SpecificUserLeads->find('all')
+                ->where(['SpecificUserLeads.user_id IN' => $user_ids])
+              ;
+
+              $specific_leads_id = array();
+              foreach( $specificUserLeads as $sl ){
+                $specific_leads_id[$sl->lead_id] = $sl->lead_id;
+              }
+
+              if( empty($specific_leads_id) ){
+                $specific_leads_id[0] = 0;
+              }
+
+              $leads = $this->Leads->find('all')
+                ->contain(['Statuses', 'Sources', 'InterestTypes', 'LeadTypes'])
+                ->where(['Leads.source_id IN' => $sources, 'Leads.id IN' => $specific_leads_id, 'Leads.is_archive' => 'No'])
+              ;
+
+              break;
             default:              
               break;
           }
@@ -320,7 +388,16 @@ class ReportsController extends AppController
                 }elseif($key == 'status_id') {
                   $excelFields[] = $l->status->name;
                 }elseif($key == 'lead_type_id') {
-                  $excelFields[] = $l->lead_type->name;
+                  $leadLeadTypes = $this->LeadLeadTypes->find('all')
+                    ->contain(['LeadTypes'])
+                    ->where(['LeadLeadTypes.lead_id' => $l->id])
+                  ;
+                  $leadTypes = array();
+                  foreach($leadLeadTypes as $lt){
+                    $leadTypes[$lt->lead_type->name] = $lt->lead_type->name;
+                  }
+                  $lead_types = implode(",", $leadTypes);
+                  $excelFields[] = $lead_types;
                 }elseif($key == 'interest_type_id'){
                   $excelFields[] = $l->interest_type->name;
                 }else{                
@@ -600,6 +677,7 @@ class ReportsController extends AppController
      */
     public function generate_report()
     { 
+      $this->LeadLeadTypes = TableRegistry::get('LeadLeadTypes');
       $data   = $this->request->data; 
       //debug($data); exit;
       if($data['report_type'] == 'excel_download') {
@@ -621,12 +699,15 @@ class ReportsController extends AppController
                   if($key == 'date_created' ){                   
                     //$query_builder[] = ['DATE_FORMAT(Leads.created, "%Y-%m-%d") >=' => $value['value']['from'], 'DATE_FORMAT(Leads.created, "%Y-%m-%d") <=' => $value['value']['to']];
                     if( $value['value']['from'] != '' && $value['value']['to'] != '' ){
-                      $query_builder[] = ['Leads.created >=' => $value['value']['from'], 'Leads.created <=' => $value['value']['to']];
+                      $query_builder[] = ['Leads.created >=' => date("Y-m-d",strtotime($value['value']['from'])) . " 00:00:00", 'Leads.created <=' => date("Y-m-d",strtotime($value['value']['to'])) . " 23:59:59"];
                     }
                   }else{
                     $operator    = trim($value['operator']);
                     $query_value = trim($value['value']);
                     if($operator != '' && $query_value != ''){           
+                        if( $key == 'allocation_date' ){
+                          $query_value = date("Y-m-d", strtotime($query_value));
+                        }
                         switch ($key) {
                           case 'source':                                                                    
                             if( $operator == 'LIKE' ){                                
@@ -634,7 +715,18 @@ class ReportsController extends AppController
                             }else{
                                 $query_builder[] = ['Leads.source_id ' . $operator => $query_value];
                             }                            
-                            break;                                                                             
+                            break;  
+                          case 'lead_type_id':                              
+                              $leadLeadTypes = $this->LeadLeadTypes->find('all')
+                                ->contain(['LeadTypes'])
+                                ->where(['LeadLeadTypes.lead_type_id' => $query_value])
+                              ;      
+                              $leadIds = array();
+                              foreach( $leadLeadTypes as $lt ){
+                                $leadIds[$lt->lead_id] = $lt->lead_id;
+                              }    
+                              $query_builder[] = ['Leads.id IN ' => $leadIds];
+                              break;                                                                           
                           default:
                             if( $operator == 'LIKE' ){                                
                                 $query_builder[] = ['Leads.' . $key . " " . $operator . " '%" . $query_value . "%'"];
@@ -644,10 +736,11 @@ class ReportsController extends AppController
                             break;     
                         }
                     }
+
                   }                    
                 }
                 $leads = $this->Leads->find('all')                  
-                    ->contain(['Statuses', 'Sources', 'InterestTypes', 'LeadTypes'])
+                    ->contain(['Statuses', 'Sources', 'InterestTypes'])
                     ->where($query_builder)                   
                     ->order(['Leads.firstname' => 'ASC'])                                 
                 ;
@@ -673,7 +766,16 @@ class ReportsController extends AppController
                 }elseif($key == 'status_id') {
                   $excelFields[] = $l->status->name;
                 }elseif($key == 'lead_type_id') {
-                  $excelFields[] = $l->lead_type->name;
+                  $leadLeadTypes = $this->LeadLeadTypes->find('all')
+                    ->contain(['LeadTypes'])
+                    ->where(['LeadLeadTypes.lead_id' => $l->id])
+                  ;
+                  $leadTypes = array();
+                  foreach($leadLeadTypes as $lt){
+                    $leadTypes[$lt->lead_type->name] = $lt->lead_type->name;
+                  }
+                  $lead_types = implode(",", $leadTypes);
+                  $excelFields[] = $lead_types;
                 }else{                
                   $excelFields[] = $l->{$key};
                 }              
@@ -767,26 +869,39 @@ class ReportsController extends AppController
           if( isset($data['filter-leads-report']) ){
               $query_builder = array();
               $query_builder[] = ['Leads.is_archive' => 'No'];
-              $or_query_builder = array();              
+              $or_query_builder = array();                            
               foreach( $data['search'] as $key => $value ){
                 if($key == 'date_created' ){                   
                   //$query_builder[] = ['DATE_FORMAT(Leads.created, "%Y-%m-%d") >=' => $value['value']['from'], 'DATE_FORMAT(Leads.created, "%Y-%m-%d") <=' => $value['value']['to']];
                   if( $value['value']['from'] != '' && $value['value']['to'] != '' ){
-                    $query_builder[] = ['Leads.created >=' => $value['value']['from'], 'Leads.created <=' => $value['value']['to']];
-                  }                   
+                    $query_builder[] = ['Leads.created >=' => date("Y-m-d",strtotime($value['value']['from'])) . " 00:00:00", 'Leads.created <=' => date("Y-m-d",strtotime($value['value']['to'])) . " 23:59:59"];
+                  }                                     
                 }else{
                   $operator    = trim($value['operator']);
                   $query_value = trim($value['value']);
                   if($operator != '' && $query_value != ''){           
+                      if( $key == 'allocation_date' ){
+                        $query_value = date("Y-m-d", strtotime($query_value));
+                      }
                       switch ($key) {
-                        
                         case 'source':                                                                    
                           if( $operator == 'LIKE' ){                                
                               $query_builder[] = ['Source.name ' . $operator . " '%" . $query_value . "%'"];
                           }else{
                               $query_builder[] = ['Leads.source_id ' . $operator => $query_value];
                           }                            
-                          break;                                                                             
+                          break; 
+                        case 'lead_type_id':                              
+                              $leadLeadTypes = $this->LeadLeadTypes->find('all')
+                                ->contain(['LeadTypes'])
+                                ->where(['LeadLeadTypes.lead_type_id' => $query_value])
+                              ;      
+                              $leadIds = array();
+                              foreach( $leadLeadTypes as $lt ){
+                                $leadIds[$lt->lead_id] = $lt->lead_id;
+                              }    
+                              $query_builder[] = ['Leads.id IN ' => $leadIds];
+                              break;
                         default:
                           if( $operator == 'LIKE' ){                                
                               $query_builder[] = ['Leads.' . $key . " " . $operator . " '%" . $query_value . "%'"];
@@ -798,9 +913,8 @@ class ReportsController extends AppController
                   }
                 }                    
               }
-
               $leads = $this->Leads->find('all')                  
-                  ->contain(['Statuses', 'Sources', 'InterestTypes', 'LeadTypes'])
+                  ->contain(['Statuses', 'Sources', 'InterestTypes'])
                   ->where($query_builder)                   
                   ->order(['Leads.firstname' => 'ASC'])                                 
               ;

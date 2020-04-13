@@ -139,16 +139,53 @@ class AppController extends Controller
     {
         $this->Auth->allow('login');
 
-        $this->Leads = TableRegistry::get('Leads');   
-        $total_leads_followup = $this->Leads->find('all')
-            ->where(['Leads.followup_date' => date("Y-m-d")])
-            ->count();
-        $total_new_leads = $this->Leads->find('all')
-            ->where(['DATE_FORMAT(Leads.created,"%Y-%m-%d")' => date("Y-m-d")])
-            ->order(['Leads.id' => 'DESC'])
-            ->limit(5)
-            ->count()
-        ;            
+        $this->Leads = TableRegistry::get('Leads');
+        $this->SourceUsers = TableRegistry::get('SourceUsers');           
+
+        $session   = $this->request->session();    
+        $user_data = $session->read('User.data');   
+
+        if( $user_data->group_id == 1 ){            
+
+            $total_new_leads = $this->Leads->find('all')
+                ->where(['DATE_FORMAT(Leads.created,"%Y-%m-%d")' => date("Y-m-d")])
+                ->order(['Leads.id' => 'DESC'])
+                ->limit(5)
+                ->count()
+            ;
+
+            $total_leads_followup = $this->Leads->find('all')
+                ->where(['Leads.followup_date' => date("Y-m-d")])
+                ->count()
+            ;
+        }else{            
+
+            $source_user = $this->SourceUsers->find('all')
+                ->contain(['Sources', 'Users'])
+                ->where(['SourceUsers.user_id' => $user_data->id])
+            ;        
+
+            $rids = array();
+            foreach($source_user as $su) {
+                $rids[] = $su->source_id;
+            }
+
+            if( empty($rids) ){
+                $rids[0] = 0;
+            }
+
+            $total_new_leads = $this->Leads->find('all')                
+                ->where(['DATE_FORMAT(Leads.created,"%Y-%m-%d")' => date("Y-m-d"), 'Leads.source_id IN' => $rids])
+                ->order(['Leads.id' => 'DESC']) 
+                ->count()
+            ;
+
+            $total_leads_followup = $this->Leads->find('all')
+                ->where(['Leads.followup_date' => date("Y-m-d"), 'Leads.source_id IN' => $rids])
+                ->count()
+            ;
+        }
+                    
 
         $this->set('total_new_leads', $total_new_leads);
         $this->set('total_leads_followup', $total_leads_followup);

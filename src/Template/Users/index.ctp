@@ -2,6 +2,8 @@
 <?php 
 use Cake\ORM\TableRegistry;
 $this->SourceUsers = TableRegistry::get('SourceUsers');
+$this->UserAssignedSpecificUsers = TableRegistry::get('UserAssignedSpecificUsers');
+$this->Users = TableRegistry::get('Users');
 ?>
 <style>
 .label{
@@ -77,7 +79,8 @@ div.box-body{
                                 <th class="actions"></th>                                                                
                                 <th style=""><?= $this->Paginator->sort('username', __("Username") . "<i class='fa fa-sort pull-right'> </i>", array('escape' => false)) ?></th>
                                 <th><?= $this->Paginator->sort('group_id', __("Group Name") . "<i class='fa fa-sort pull-right'> </i>", array('escape' => false)) ?></th>
-                                <th><?= __('Sources') ?></th>                                                                                            
+                                <th><?= __('Sources') ?></th>
+                                <th><?= __('Assigned Users') ?></th>                                                        
                             </tr>
                         </thead>
                         <tbody>
@@ -92,6 +95,8 @@ div.box-body{
                                             <li role="presentation"><?= $this->Html->link('<i class="fa fa-eye"></i> View', ['action' => 'view', $user->id],['escape' => false]) ?></li>                                            
                                             <li role="presentation"><?= $this->Html->link('<i class="fa fa-pencil"></i> Edit', ['action' => 'edit', $user->id],['escape' => false]) ?></li>
                                             <li role="presentation"><?= $this->Html->link('<i class="fa fa-lock"></i> Change Password', ['action' => 'change_password', $user->id],['escape' => false]) ?></li>                                           
+                                            <li role="presentation"><?= $this->Html->link('<i class="fa fa-globe"></i> Assign Source', ['action' => 'assign_source', $user->id],['escape' => false]) ?></li>
+                                            <li role="presentation"><?= $this->Html->link('<i class="fa fa-users"></i> Assign Users', ['action' => 'assign_specific_users', $user->id],['escape' => false]) ?></li>                                           
                                             <li role="presentation"><?= $this->Html->link('<i class="fa fa-trash"></i> Delete', '#modal-'.$user->id,['data-toggle' => 'modal','escape' => false]) ?></li>
                                         </ul>
                                     </div>   
@@ -174,6 +179,43 @@ div.box-body{
                                             }else{
                                                 echo "-"; 
                                             }
+                                        }
+                                    ?>
+                                </td>
+
+                                <td>
+                                    <?php
+                                        $userAssignedSpecificUsers = $this->UserAssignedSpecificUsers->find()
+                                            ->where(['UserAssignedSpecificUsers.user_id' => $user->id])
+                                            ->first()
+                                        ;
+
+                                        if( $userAssignedSpecificUsers && $userAssignedSpecificUsers->userids != 'N;' ){
+                                            $user_ids = unserialize($userAssignedSpecificUsers->userids);
+                                            $users    = $this->Users->find('all')
+                                                ->where(['Users.id IN' => $user_ids])
+                                            ;
+
+                                            $counter_list = 1;
+                                            echo "<ul class='user-allocations'>";
+                                            foreach( $users as $u ){
+                                                $add_list_class = '';
+                                                $add_icon = '';
+                                                if( $counter_list > 1 ){                                                        
+                                                    $add_list_class = 'hidden';
+                                                    $li_class = 'user-item-' . $user->id;
+                                                }else{
+                                                    $li_class = 'user-item-' . $user->id . '-1';
+                                                    if( $users->count() > 1 ){
+                                                        $add_icon = "<a href='javascript:void(0);' data-id=" . $user->id . " class='btn btn-default btn-xs btn-show-more-users'><i class='fa fa-plus'></i> View More</a>";
+                                                    }
+                                                }
+                                                echo "<li class='{$li_class} {$add_list_class}'>" . $u->firstname . " " . $u->lastname . " {$add_icon}</li>";
+                                                $counter_list++;
+                                            }
+                                            echo "</ul>";
+                                        }else{
+                                            echo "-";
                                         }
                                     ?>
                                 </td>                                                                                           

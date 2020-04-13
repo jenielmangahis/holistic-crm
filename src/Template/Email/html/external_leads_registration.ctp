@@ -2,7 +2,7 @@
 use Cake\View\Helper\TextHelper;
 ?>
 <p>Hi,</p>
-<p>A new lead has been entered into the Holistic CRM. To update any details regarding this lead login here: <a href="http://holisticwebpresencecrm.com">http://holisticwebpresencecrm.com</a></p>
+<p>A new lead has been entered into the Holistic CRM. To update any details regarding this lead login here: <a href="https://www.holisticwebpresencecrm.com/leads/edit/<?= $new_lead['id']; ?>">http://holisticwebpresencecrm.com</a></p>
 <h3 class="form-hdr" style="background-color: #222D32;color:#ffffff;padding: 10px;">Lead Personal Information</h3>
 <table>
 <tr>
@@ -39,7 +39,7 @@ use Cake\View\Helper\TextHelper;
 		<?php
 			$action = str_replace('\"', '"', $new_lead['lead_action']); 
 			$action = str_replace("\'", "'", $action);
-			$action = h($action);
+			//$action = h($action);
 			$action = str_replace("&#039;", "'", $action);
             $action = str_replace("&quot;", '"', $action);
             $action = str_replace("&amp;amp;", '&&', $action);
@@ -58,8 +58,8 @@ use Cake\View\Helper\TextHelper;
 	<td>: <?php echo $new_lead['source_url']; ?></td>
 </tr>
 <tr>
-	<td>Lead Type</td>
-	<td>: <?php echo $new_lead['lead_type']['name']; ?></td>
+	<td>Lead Source</td>
+	<td>: <?php echo $string_lead_types; ?></td>
 </tr>
 <tr>
 	<td>Allocation Date</td>

@@ -38,7 +38,19 @@
                                 <label for='email' class='col-sm-2 control-label'>" . __('Enable CSV Attachment') . "</label>
                                 <div class='col-sm-6'>";
                                 echo $this->Form->select('enable_csv_attachment',["1" => "Yes", "0" => "No"],['class' => 'form-control', 'id' => 'enable_csv_attachment', 'label' => false]); 
+                            echo " </div></div>";
+                            echo "
+                            <div class='form-group'>
+                                <label for='email' class='col-sm-2 control-label'>" . __('Enable Secondary Email Notifcation') . "</label>
+                                <div class='col-sm-6'>";
+                                echo $this->Form->select('enable_secondary_notification',["1" => "Yes", "0" => "No"],['class' => 'form-control', 'id' => 'enable_secondary_notification', 'label' => false]); 
                             echo " </div></div>"; 
+                            echo "
+                            <div class='form-group'>
+                                <label for='is_va' class='col-sm-2 control-label'>" . __('Is VA') . "</label>
+                                <div class='col-sm-6'>";
+                                echo $this->Form->select('is_va', $options_va , ['class' => 'form-control', 'id' => 'is_va', 'label' => false]); 
+                            echo " </div></div>";
                                     
                         ?>
                     </fieldset>

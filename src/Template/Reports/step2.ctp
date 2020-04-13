@@ -159,6 +159,16 @@
                                                     </div>
                                                 </div>
                                             </div>
+                                        <?php }elseif( $key == 9 ){ ?>
+                                            <div class="grp-specific-user-leads <?= $hidden; ?>">   
+                                                <ul class="list-group">                                                                                                        
+                                                    <?php foreach($userSpecificUsers as $su){ ?>
+                                                        <li class="list-group-item" style="border:none;margin:4px;font-size:13px;">
+                                                            <label><input type="checkbox" value="<?= $su->id; ?>" name="specificUsers[<?= $su->id; ?>]" /> <?= $su->firstname . ' ' . $su->lastname; ?></label>
+                                                        </li>
+                                                    <?php } ?>
+                                                </ul>
+                                            </div>
                                         <?php } ?>
                                     </div>                                    
                                 </li>

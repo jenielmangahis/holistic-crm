@@ -47,13 +47,20 @@ session_start(); // ready to go!
                 <!-- inner menu: contains the actual data -->
                 <ul class="menu menu-notification">                  
                   <li>
-                    <a href="#">
-                      <i class="fa fa-users text-aqua"></i> <?php echo $total_new_leads; ?> new leads were created today
+                    <?php 
+                      if( $hdr_user_data->group_id == 1 ){
+                        $url = $this->Url->build("/users/dashboard");
+                      }else{
+                        $url = $this->Url->build("/users/user_dashboard");
+                      }
+                    ?>
+                    <a href="<?= $url; ?>">
+                      <i class="fa fa-users text-aqua"></i> Today's new leads : <?php echo $total_new_leads; ?>
                     </a>
                   </li>
                   <li>
-                    <a href="#">
-                      <i class="fa fa-warning text-yellow"></i> <?php echo $total_leads_followup; ?> leads need to followup today
+                    <a href="<?= $url; ?>">
+                      <i class="fa fa-warning text-yellow"></i> Today's leads need for followup : <?php echo $total_leads_followup; ?> 
                     </a>
                   </li>                                    
                 </ul>

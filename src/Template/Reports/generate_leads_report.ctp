@@ -1,3 +1,5 @@
+<?php use Cake\ORM\TableRegistry; ?>
+<?php $this->LeadLeadTypes = TableRegistry::get('LeadLeadTypes'); ?>
 <style>
 th{
 	background-color: #374850;
@@ -61,7 +63,21 @@ td{
 	                                	<?php }elseif($key == 'interest_type_id') { ?>
 	                                			<td><?php echo $s->interest_type->name; ?></td> 
 	                                	<?php }elseif($key == 'lead_type_id') { ?>
-	                                			<td><?php echo $s->lead_type->name; ?></td> 
+	                                			<td>
+	                                				<?php 
+	                                					$leadLeadTypes = $this->LeadLeadTypes->find('all')
+	                                						->contain(['LeadTypes'])
+	                                						->where(['LeadLeadTypes.lead_id' => $s->id])
+	                                					;
+
+	                                					$leadTypes = array();
+	                                					foreach($leadLeadTypes as $lt){
+	                                						$leadTypes[$lt->lead_type->name] = $lt->lead_type->name;
+	                                					}
+
+	                                					echo implode(",", $leadTypes);
+	                                				?>
+	                                			</td> 
 	                                	<?php }elseif($key == 'lead_action') { ?>
 	                                			<td>
 												  	<div style="width:350px;"><?php echo substr($s->lead_action,0,100); ?></div>

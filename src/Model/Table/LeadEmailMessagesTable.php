@@ -43,11 +43,7 @@ class LeadEmailMessagesTable extends Table
         $this->primaryKey('id');
 
         $this->addBehavior('Timestamp');
-
-        $this->belongsTo('Users', [
-            'foreignKey' => 'user_id',
-            'joinType' => 'INNER'
-        ]);
+        
         $this->belongsTo('Leads', [
             'foreignKey' => 'lead_id',
             'joinType' => 'INNER'
@@ -70,10 +66,10 @@ class LeadEmailMessagesTable extends Table
             ->requirePresence('subject', 'create')
             ->notEmpty('subject');
 
-        $validator
+        /*$validator
             ->date('date')
             ->requirePresence('date', 'create')
-            ->notEmpty('date');
+            ->notEmpty('date');*/
 
         $validator
             ->requirePresence('content', 'create')
@@ -91,7 +87,6 @@ class LeadEmailMessagesTable extends Table
      */
     public function buildRules(RulesChecker $rules)
     {
-        $rules->add($rules->existsIn(['user_id'], 'Users'));
         $rules->add($rules->existsIn(['lead_id'], 'Leads'));
 
         return $rules;
@@ -119,5 +114,11 @@ class LeadEmailMessagesTable extends Table
         $dir = new Folder($locationPath, true, 0755);
         move_uploaded_file($file['tmp_name'], $locationPath . "/" . $new_file_name);
         return $new_file_name;
+    }
+
+    public function generateSubject( $source_name, $lead_id, $subject )
+    {
+        $subject = "HOLISTIC CRM [" . $source_name . '-' . $lead_id . "] - " . $subject;
+        return $subject;
     }
 }

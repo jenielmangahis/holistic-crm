@@ -440,11 +440,12 @@ class UsersController extends AppController
                 $session->write('User.data', $u);                                               
                 $_SESSION['KCEDITOR']['disabled'] = false;
                 $_SESSION['KCEDITOR']['uploadURL'] = Router::url('/')."webroot/upload";
-                if( $u->group_id == 1 ){
+                /*if( $u->group_id == 1 ){
                     return $this->redirect(['action' => 'dashboard']);
                 }else{
                     return $this->redirect(['action' => 'user_dashboard']);
-                }                
+                }*/
+                return $this->redirect($this->Auth->redirectUrl());                
             }
             $this->Flash->error(__('Invalid username or password, try again'));
         }
@@ -519,6 +520,11 @@ class UsersController extends AppController
         exit;
     }
 
+    /**
+     * Change Password Password
+     * ID : CA-12
+     * @return void
+     */
     public function change_password($id = null)
     {      
         $this->Users = TableRegistry::get('Users');
@@ -561,7 +567,139 @@ class UsersController extends AppController
         $this->set(['user' => $user]);
     }    
 
+    /**
+     * Test No Access
+     * ID : CA-13
+     * @return void
+     */
     public function no_access() {
         $this->set(['message' => '']);
+    }
+
+     /**
+     * Assign Source method
+     * ID : CA-14
+     * @param string|null $id User id.
+     * @return void Redirects on successful edit, renders view otherwise.
+     * @throws \Cake\Network\Exception\NotFoundException When record not found.
+     */
+    public function assign_source( $user_id ) {
+        $this->Sources = TableRegistry::get('Sources');
+        $this->SourceUsers = TableRegistry::get('SourceUsers');
+        
+        $user = $this->Users->find()
+            ->where(['Users.id' => $user_id])
+            ->first()
+        ;
+
+        if( $user ){
+
+            if ($this->request->is(['patch', 'post', 'put'])) {
+                
+                $this->SourceUsers->deleteAll(['user_id' => $user_id]);
+
+                $data_source_users = array();
+                foreach( $this->request->data['source_users'] as $key => $value ){
+                    $data_source_users[] = [
+                        'source_id' => $key,
+                        'user_id' => $user_id
+                    ];
+                }
+
+                if( !empty($data_source_users) ){
+                    //Bulk insert  Data
+                    $sourceUsers       = $this->SourceUsers->newEntities($data_source_users);
+                    $resultSourceUsers = $this->SourceUsers->saveMany($sourceUsers);
+                }
+
+                $this->Flash->success(__('Record Updated'));
+            }
+
+            $sourceUsers = $this->SourceUsers->find('all')
+                ->where(['SourceUsers.user_id' => $user_id])
+            ;
+
+            $a_source_users = array();
+            foreach( $sourceUsers as $su ){
+                $a_source_users[$su->source_id] = $su->source_id;
+            }
+
+            $sources = $this->Sources->find('all')
+                ->order(['Sources.name' => 'ASC'])
+            ;
+
+            $this->set(['user' => $user, 'a_source_users' => $a_source_users, 'sources' => $sources]);
+        }else{
+            $this->Flash->error(__('User not found.'));
+            return $this->redirect(['controller' => 'users', 'action' => 'index']);
+        }        
+    }
+
+    /**
+     * Assign Specific User method
+     * ID : CA-14
+     * @param string|null $id User id.
+     * @return void Redirects on successful edit, renders view otherwise.
+     * @throws \Cake\Network\Exception\NotFoundException When record not found.
+     */
+    public function assign_specific_users( $user_id ) {
+        $this->UserAssignedSpecificUsers = TableRegistry::get('UserAssignedSpecificUsers');        
+
+        $user = $this->Users->find()
+            ->where(['Users.id' => $user_id])
+            ->first()
+        ;
+
+        if( $user ){
+
+            if ($this->request->is(['patch', 'post', 'put'])) {    
+                $a_users = $this->request->data['specificUsers'];
+                $a_users = serialize($a_users);
+                    
+                $specifcUser = $this->UserAssignedSpecificUsers->find()
+                    ->where(['UserAssignedSpecificUsers.user_id' => $user->id])
+                    ->first()
+                ;
+
+                if( $specifcUser ){
+                    if( !empty($this->request->data['specificUsers']) ){
+                        $specifcUser->userids = $a_users;
+                        $this->UserAssignedSpecificUsers->save($specifcUser);
+                    }else{
+                        $this->UserAssignedSpecificUsers->delete($specifcUser);
+                    }                    
+                }else{
+                    if( !empty($this->request->data['specificUsers']) ){
+                        $data_specific_user = ['user_id' => $user->id, 'userids' => $a_users];
+                        $userAssignedSpecificUsers = $this->UserAssignedSpecificUsers->newEntity();
+                        $userAssignedSpecificUsers = $this->UserAssignedSpecificUsers->patchEntity($userAssignedSpecificUsers, $data_specific_user);
+                        $this->UserAssignedSpecificUsers->save($userAssignedSpecificUsers);
+                    }                    
+                }                         
+                
+                $this->Flash->success(__('Record Updated'));
+            }
+
+            $specifcUser = $this->UserAssignedSpecificUsers->find()
+                ->where(['UserAssignedSpecificUsers.user_id' => $user->id])
+                ->first()
+            ;
+
+            $a_users = array();
+            if( $specifcUser ){
+                $a_users = $specifcUser->userids;
+                $a_users = unserialize($a_users);
+            }
+
+            $users = $this->Users->find('all')
+                ->where(['Users.group_id <>' => 1, 'Users.id <>' => $user->id])
+                ->order(['Users.firstname' => 'ASC'])
+            ;
+
+            $this->set(['users' => $users, 'user' => $user, 'a_users' => $a_users]);
+        }else{
+            $this->Flash->error(__('User not found.'));
+            return $this->redirect(['controller' => 'users', 'action' => 'index']);
+        }
     }
 }

@@ -20,7 +20,7 @@
                           'type' => 'GET'
                         ]) ?>                         
                         <div class="input-group input-group-sm">
-                            <input class="form-control" name="query" type="text" placeholder="Enter query to search">
+                            <input class="form-control" name="query" type="text" placeholder="Enter query to search" value="<?= $query; ?>">
                             <span class="input-group-btn">
                                 <?= $this->Form->button('<i class="fa fa-search"></i>',['name' => 'search', 'value' => 'search', 'class' => 'btn btn-info btn-flat', 'escape' => false]) ?>                                    
                                 <?= $this->Html->link(__('Reset'), ['action' => 'index'],['class' => 'btn btn-success btn-flat', 'escape' => false]) ?>                            
@@ -96,7 +96,7 @@
                                                     <li role="presentation"><?= $this->Html->link('<i class="fa fa-unlock"></i> Unlock', '#unlock-modal-'.$lead->id,['data-toggle' => 'modal','escape' => false]) ?></li>
                                             <?php } ?>
 
-                                            <li role="presentation"><?= $this->Html->link('<i class="fa fa-envelope"></i> Email Messages', ['controller' => 'lead_email_messages', 'action' => 'list', $lead->id],['escape' => false]) ?></li>
+                                            <li role="presentation"><?= $this->Html->link('<i class="fa fa-envelope"></i> Email Messages', ['controller' => 'lead_email_messages', 'action' => 'list_leads', $lead->id],['escape' => false]) ?></li>
                                         </ul>
                                     </div>   
 

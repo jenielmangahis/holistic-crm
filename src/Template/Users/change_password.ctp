@@ -16,7 +16,7 @@
 
                 </div>
                 <div class="box-body">
-                    <?= $this->Form->create($user,['id' => 'frm-default-add', 'data-toggle' => 'validator', 'role' => 'form','class' => 'form-horizontal']) ?>
+                    <?= $this->Form->create($user,['id' => 'frm-default-add', 'type' => 'POST', 'data-toggle' => 'validator', 'role' => 'form','class' => 'form-horizontal']) ?>
                     <fieldset>        
                         <?php
                             echo "

@@ -57,11 +57,23 @@ class AuditTrailsController extends AppController
      */
     public function index()
     {
-        $this->paginate = [
-            'contain' => ['Users'],
-            'order' => ['AuditTrails.id' => 'DESC']
-        ];        
-        $this->set('auditTrails', $this->paginate($this->AuditTrails));
+        if( isset( $this->request->query['query'] ) ) {
+
+            $query = trim($this->request->query['query']);
+            $auditTrails = $this->AuditTrails->find('all')
+                ->contain(['Users'])
+                ->where(['AuditTrails.details LIKE' => '%' . $query . '%'])                
+                ->order(['AuditTrails.id' => 'DESC'])
+            ;
+
+        }else{
+            $auditTrails = $this->AuditTrails->find('all')
+                ->contain(['Users'])
+                ->order(['AuditTrails.id' => 'DESC'])
+            ;
+        }
+            
+        $this->set('auditTrails', $this->paginate($auditTrails));
         $this->set('_serialize', ['auditTrails']);
     }
 

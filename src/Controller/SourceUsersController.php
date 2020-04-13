@@ -36,15 +36,16 @@ class SourceUsersController extends AppController
                 $rights = $this->default_group_actions['sources'];                
                 switch ($rights) {
                     case 'View Only':
-                        $authorized_modules = ['index', 'view'];
+                        $authorized_modules = ['index', 'view', 'ajax_load_source_users', 'ajax_load_followup_source_users'];
                         break;
                     case 'View and Edit':
-                        $authorized_modules = ['index', 'view', 'edit', 'add', 'add_user', 'edit_user', 'assign_user', 'change_password'];
+                        $authorized_modules = ['index', 'view', 'edit', 'add', 'add_user', 'edit_user', 'assign_user', 'change_password', 'ajax_load_source_users', 'ajax_load_followup_source_users'];
                         break;
                     case 'View, Edit and Delete':
-                        $authorized_modules = ['index', 'view', 'edit', 'add', 'delete', 'add_user', 'edit_user', 'assign_user', 'change_password'];
+                        $authorized_modules = ['index', 'view', 'edit', 'add', 'delete', 'add_user', 'edit_user', 'assign_user', 'change_password', 'ajax_load_source_users', 'ajax_load_followup_source_users'];
                         break;        
-                    default:            
+                    default:  
+                        $authorized_modules = ['ajax_load_source_users', 'ajax_load_followup_source_users'];          
                         break;
                 }                
                 $this->Auth->allow($authorized_modules);
@@ -289,12 +290,14 @@ class SourceUsersController extends AppController
      */
     public function assign_user( $id = null )
     {
-        $source     = $this->SourceUsers->Sources->get($id);        
-        $sourceUser = $this->SourceUsers->newEntity();
+        $this->SourceSecondaryUsers = TableRegistry::get('SourceSecondaryUsers');
+
+        $source     = $this->SourceUsers->Sources->get($id);
         if ($this->request->is('post')) {
             $data = $this->request->data;
             $total_added = 0;
             
+            $this->SourceUsers->deleteAll(['source_id' => $source->id]);
             foreach( $data['source_users'] as $key => $value ){
                 $data_source_users = [
                     'source_id' => $source->id,
@@ -307,8 +310,23 @@ class SourceUsersController extends AppController
                     $total_added++;
                 }
             }
+
+            $this->SourceSecondaryUsers->deleteAll(['source_id' => $source->id]);
+            foreach( $data['source_secondary_users'] as $key => $value ){
+                $data_source_secondary_users = [
+                    'source_id' => $source->id,
+                    'user_id' => $key
+                ];
+
+                $sourceSecondaryUser = $this->SourceSecondaryUsers->newEntity();
+                $sourceSecondaryUser = $this->SourceSecondaryUsers->patchEntity($sourceSecondaryUser, $data_source_secondary_users);
+                if ($this->SourceSecondaryUsers->save($sourceSecondaryUser)) {
+                    $total_added++;
+                }
+            }
+
             $this->Flash->success($total_added . ' Users was successfully assigned to this source.');       
-            return $this->redirect(['action' => 'user_list', $source->id]);
+            return $this->redirect(['action' => 'assign_user', $source->id]);
         }
 
         $a_source_users = array();
@@ -320,21 +338,25 @@ class SourceUsersController extends AppController
             $a_source_users[$au->user_id] = $au->user_id;
         }
 
-        if( !empty($a_source_users) ){
-            $users = $this->SourceUsers->Users->find('all')
-                //->where(['Users.group_id' => 2, 'Users.id NOT IN' => $a_source_users])
-                ->where(['Users.id NOT IN' => $a_source_users])
-                ->order(['Users.firstname' => 'ASC'])
-                ->toArray()
-            ;    
-        }else{
-            $users = $this->SourceUsers->Users->find('all')
-                //->where(['Users.group_id' => 2])
-                ->order(['Users.firstname' => 'ASC'])
-                ->toArray()
-            ;    
+        $a_source_secondary_users = array();
+        $source_secondary_users = $this->SourceSecondaryUsers->find('all')
+             ->select(['SourceSecondaryUsers.user_id'])
+            ->where(['SourceSecondaryUsers.source_id' => $id])
+        ;
+        foreach( $source_secondary_users as $au ){
+            $a_source_secondary_users[$au->user_id] = $au->user_id;
         }
+
+        $users = $this->SourceUsers->Users->find('all')
+            //->where(['Users.group_id' => 2])
+            ->order(['Users.firstname' => 'ASC'])
+            ->toArray()
+        ;
         
+        $this->set([
+            'a_source_users' => $a_source_users,
+            'a_source_secondary_users' => $a_source_secondary_users
+        ]);
         $this->set(compact('sourceUser', 'source', 'users'));
         $this->set('_serialize', ['sourceUser']);
     }
@@ -380,4 +402,44 @@ class SourceUsersController extends AppController
 
         $this->set(['user' => $user, 'source_id' => $source_id]);
     }     
+
+    public function ajax_load_source_users()
+    {
+        $source_id = $this->request->data['source_id'];
+        $sourceUsers = $this->SourceUsers->find('all')
+            ->contain(['Sources', 'Users']) 
+            ->where(['SourceUsers.source_id' => $source_id])
+            ->order(['Users.firstname' => 'ASC'])           
+        ;
+        $this->set('sourceUsers', $sourceUsers);
+        $this->set('_serialize', ['sourceUsers']);
+        $this->viewBuilder()->layout('');
+    }
+
+    public function ajax_load_followup_source_users()
+    {
+        $this->LeadFollowupEmails = TableRegistry::get('LeadFollowupEmails');
+
+        $source_id = $this->request->data['source_id'];
+        $lead_id   = $this->request->data['lead_id'];
+
+        $followupEmails = $this->LeadFollowupEmails->find('all')
+            ->where(['LeadFollowupEmails.lead_id' => $lead_id])
+        ;
+
+        $users_followup_email_ids = array();
+        foreach( $followupEmails as $f ){
+            $users_followup_email_ids[$f->user_id] = $f->user_id;
+        }
+        
+        $sourceUsers = $this->SourceUsers->find('all')
+            ->contain(['Sources', 'Users']) 
+            ->where(['SourceUsers.source_id' => $source_id])
+            ->order(['Users.firstname' => 'ASC'])           
+        ;
+        $this->set(['users_followup_email_ids' => $users_followup_email_ids]);
+        $this->set('sourceUsers', $sourceUsers);
+        $this->set('_serialize', ['sourceUsers']);
+        $this->viewBuilder()->layout('');
+    }
 }

@@ -31,7 +31,8 @@ class LeadsController extends AppController
         }*/
 
         $session   = $this->request->session();    
-        $user_data = $session->read('User.data');         
+        $user_data = $session->read('User.data');   
+        $this->user_data = $user_data;      
         if( isset($user_data) ){
             if( $user_data->group_id == 1 ){ //Admin
               $this->Auth->allow();
@@ -87,20 +88,18 @@ class LeadsController extends AppController
         //$this->leads_unlock();        
         $this->unlock_lead_check();
       }
-
+      
+      $query = '';  
       if( isset($this->request->query['query']) ){
           $query = trim($this->request->query['query']);
           $leads = $this->Leads->find('all')
-              ->contain(['Statuses', 'Sources'])
-              ->where(['Leads.is_archive' => 'No']) 
-              ->andWhere([
-                'OR' => [
-                  'Leads.firstname LIKE' => '%' . $query . '%',
-                  'Leads.surname LIKE' => '%' . $query . '%',
-                  'Leads.email LIKE' => '%' . $query . '%'
-                ]
-              ])
-          ;
+                ->contain(['Statuses', 'Sources', 'LastModifiedBy'])
+                ->where(['Leads.is_archive' => 'No']) 
+                ->andWhere(['OR' => [
+                    'Leads.firstname LIKE' => '%' . $query . '%',
+                    'Leads.surname LIKE' => '%' . $query . '%'
+                ]])                                
+            ;
       }else{
 
           $sort_direction = !empty($this->request->query['direction']) ? $this->request->query['direction'] : '';
@@ -136,6 +135,7 @@ class LeadsController extends AppController
         $this->set('page', $get['page']);
       } 
 
+      $this->set(['query' => $query]);
       $this->set('is_admin_user', $this->user->group_id);
       $this->set('leads', $this->paginate($leads));
       $this->set('_serialize', ['leads', 'is_admin_user', 'page']);
@@ -204,10 +204,17 @@ class LeadsController extends AppController
      */
     public function view($id = null)
     {
+        $this->UserLeadFollowupNotes = TableRegistry::get('UserLeadFollowupNotes');
+
         $lead = $this->Leads->find()
-           ->contain(['Statuses', 'Sources', 'LeadTypes', 'InterestTypes', 'LastModifiedBy'])
+           ->contain(['Users', 'Statuses', 'Sources', 'LeadTypes', 'InterestTypes', 'LastModifiedBy', 'LeadLeadTypes' => ['LeadTypes']])
            ->where(['Leads.id' => $id])
            ->first()
+        ;
+
+        $leadFollowupNotes = $this->UserLeadFollowupNotes->find('all')
+          ->contain(['Users'])
+          ->where(['UserLeadFollowupNotes.lead_id' => $id])
         ;
         
         $lead = santizeLeadsData($lead);       
@@ -215,6 +222,7 @@ class LeadsController extends AppController
         $back_url = Router::url( $this->referer(), true );
         $this->set('back_url', $back_url);
         $this->set('lead', $lead);
+        $this->set(['leadFollowupNotes' => $leadFollowupNotes]);
         $this->set('_serialize', ['lead']);
     }
 
@@ -243,25 +251,107 @@ class LeadsController extends AppController
         $this->Statuses    = TableRegistry::get('Statuses');
         $this->AuditTrails = TableRegistry::get('AuditTrails');
         $this->LeadAttachments = TableRegistry::get('LeadAttachments');
+        $this->LeadsEmailNotificationHistory = TableRegistry::get('LeadsEmailNotificationHistory');
+        $this->SourceSecondaryUsers = TableRegistry::get('SourceSecondaryUsers');
+        $this->Users = TableRegistry::get('Users');
+        $this->LeadLeadTypes = TableRegistry::get('LeadLeadTypes');
+        $this->LeadFollowupEmails = TableRegistry::get('LeadFollowupEmails');
+        $this->UserLeadFollowupNotes = TableRegistry::get('UserLeadFollowupNotes');
 
         $p = $this->default_group_actions;
         if( $p && $p['leads'] == 'View Only' ){
             return $this->redirect(['controller' => 'users', 'action' => 'no_access']);
         } 
 
-        if(isset($this->request->data['allocation_date']) || isset($this->request->data['followup_date']) || isset($this->request->data['followup_action_reminder_date'])) {
+        /*if(isset($this->request->data['allocation_date']) || isset($this->request->data['followup_date']) || isset($this->request->data['followup_action_reminder_date'])) {
           //$this->request->data['allocation_date']               = empty($this->request->data['allocation_date']) ? date('Y-m-d') : date("Y-m-d", strtotime($this->request->data['allocation_date']));
           $this->request->data['allocation_date']               = date("Y-m-d");
           $this->request->data['followup_date']                 = date("Y-m-d", strtotime($this->request->data['followup_date']));
           $this->request->data['followup_action_reminder_date'] = date("Y-m-d", strtotime($this->request->data['followup_action_reminder_date']));
-        }
+        }*/
 
         $lead = $this->Leads->newEntity();
         if ($this->request->is('post')) {
-
+            $this->request->data['allocation_date']               = date("Y-m-d");
+            $this->request->data['followup_date']                 = date("Y-m-d", strtotime($this->request->data['followup_date']));
+            $this->request->data['followup_action_reminder_date'] = date("Y-m-d");    
+            $this->request->data['lead_type_id'] = 1;
+            $followup_notes = $this->request->data['followup_notes'];        
+            $this->request->data['followup_notes'] = '';        
             $data = $this->request->data;
+            //debug($data);exit;
+            $data['user_id'] = $this->user_data->id;
+            $options_va = $this->Sources->optionsIsVa();
+            
+            $source = $this->Sources->get($data['source_id']); 
+            if( $source->is_va == $this->Sources->isNotVa() ){
+              $data['va_request_form_completed'] = '';
+              $data['va_deposit_paid'] = 0;
+              $data['va_name'] = '';
+              $data['va_start_date'] = '';
+              $data['va_exit_date'] = '';
+            }else{
+              $data['va_request_form_completed'] = date("Y-m-d", strtotime($data['va_request_form_completed']));
+              $data['va_start_date'] = date("Y-m-d", strtotime($data['va_start_date']));
+              $data['va_exit_date'] = date("Y-m-d", strtotime($data['va_exit_date']));
+            }   
+
+            if( $data['willing_to_review'] == 1 ){
+              $data['willing_to_review_date'] = date("Y-m-d",strtotime($data['willing_to_review_date']));
+            }else{
+              $data['willing_to_review_date'] = '';
+            }
+
             $lead = $this->Leads->patchEntity($lead, $data);
             if ($newLead = $this->Leads->save($lead)) {
+                //Save lead notes
+                if( $followup_notes != '' ){
+                  $data_lead_notes = [
+                    'lead_id' => $newLead->id,
+                    'user_id' => $this->user_data->id,
+                    'date_posted' => date("Y-m-d H:i:s"),
+                    'notes' => $followup_notes
+                  ];
+                  $fnotes = $this->UserLeadFollowupNotes->newEntity();
+                  $fnotes = $this->UserLeadFollowupNotes->patchEntity($fnotes, $data_lead_notes);
+                  $this->UserLeadFollowupNotes->save($fnotes);
+                }                  
+
+                //Save followup notification email
+                foreach( $data['followup_source_users'] as $key => $value ){
+                  $data_followup_email[] = [
+                    'lead_id' => $newLead->id,
+                    'user_id' => $key,
+                    'followup_date' => $data['followup_date'],
+                    'is_sent' => 0
+                  ];
+                }
+
+                if( !empty($data_followup_email) ){
+                  $newLeadFollowupEmail    = $this->LeadFollowupEmails->newEntities($data_followup_email);
+                  $resultLeadFollowupEmail = $this->LeadFollowupEmails->saveMany($newLeadFollowupEmail);
+                }                
+                
+                //Save Lead Types
+                $a_lead_types = array();
+                foreach( $data['leadTypeIds'] as $key => $value ){
+                  $data_lead_type = [
+                    'lead_id' => $newLead->id,
+                    'lead_type_id' => $key
+                  ];
+
+                  $leadLeadType = $this->LeadLeadTypes->newEntity();
+                  $leadLeadType = $this->LeadLeadTypes->patchEntity($leadLeadType, $data_lead_type);
+                  $this->LeadLeadTypes->save($leadLeadType);
+
+                  $leadType = $this->Leads->LeadTypes->find()
+                    ->where(['LeadTypes.id' => $key])
+                    ->first()
+                  ;
+                  $a_lead_types[] = $leadType->name;
+                } 
+                $string_lead_types = implode(", ", $a_lead_types);
+
                 foreach( $this->request->data['attachments'] as $a ){
                   if( $a['name'] != '' ){
                     $attachment = $this->LeadAttachments->uploadAttachment($newLead, $a);
@@ -312,8 +402,7 @@ class LeadsController extends AppController
                 }    
                 //add other emails to be sent - end 
 
-                //add other emails from sources - start
-                $source = $this->Sources->get($data['source_id']);        
+                //add other emails from sources - start                    
                 if( !empty($source->emails) || $source->emails != '' ) {
                   $other_source_email = explode(";", $source->emails);
                   foreach($other_source_email as $oekey => $emr) {
@@ -333,6 +422,17 @@ class LeadsController extends AppController
                   //Send email notification  
                   if($this->enable_email_sending) {
                     if( isset($data['send_email_notification']) ){
+                      $data_lead_email_notification = [
+                        'user_id' => $this->user_data->id,
+                        'lead_id' => $newLead->id,
+                        'email_type' => 1,
+                        'date_time' => date("Y-m-d H:i:s")
+                      ];
+
+                      $newLeadEmailNotification = $this->LeadsEmailNotificationHistory->newEntity();
+                      $newLeadEmailNotification = $this->LeadsEmailNotificationHistory->patchEntity($newLeadEmailNotification, $data_lead_email_notification);
+                      $this->LeadsEmailNotificationHistory->save($newLeadEmailNotification);
+
                       $leadData = $this->Leads->get($newLead->id, [
                           'contain' => ['Statuses', 'Sources', 'LastModifiedBy','LeadTypes','InterestTypes']
                       ]);                           
@@ -364,9 +464,131 @@ class LeadsController extends AppController
                         ->to($users_email)                                                                                               
                         ->subject($subject)
                         ->attachments($eAttachments)
-                        ->viewVars(['lead' => $leadData->toArray(), 'aAttachments' => $aAttachments, 'attachment_folder' => $attachment_folder])
+                        ->viewVars(['lead' => $leadData->toArray(), 'aAttachments' => $aAttachments, 'attachment_folder' => $attachment_folder, 'source' => $source, 'options_va' => $options_va, 'string_lead_types' => $string_lead_types])
                         ->send();
                     }
+                  }
+                }
+
+                /*Specific source users*/
+                if( isset($data['send_specific_notification']) ){
+                  $data_lead_email_notification = [
+                    'user_id' => $this->user_data->id,
+                    'lead_id' => $newLead->id,
+                    'email_type' => 3, //Specific users
+                    'date_time' => date("Y-m-d H:i:s")
+                  ];
+
+                  $newLeadEmailNotification = $this->LeadsEmailNotificationHistory->newEntity();
+                  $newLeadEmailNotification = $this->LeadsEmailNotificationHistory->patchEntity($newLeadEmailNotification, $data_lead_email_notification);
+                  $this->LeadsEmailNotificationHistory->save($newLeadEmailNotification);
+
+                  $modifiedLead = $this->Leads->get($newLead->id, [
+                      'contain' => ['Statuses', 'Sources', 'LastModifiedBy','LeadTypes','InterestTypes']
+                  ]); 
+
+                  $source_name      = !empty($source->name) ? $source->name : "";
+                  $surname          = $modifiedLead->surname != "" ? $modifiedLead->surname : "Not Specified";
+                  $lead_client_name = $modifiedLead->firstname . " " . $surname;
+                  $subject          = "**LEAD NEEDS ATTENTION**";              
+                  $old_attachment       = $modifiedLead->attachment;
+                  $old_attachment_folder = $this->Leads->getFolderName() . $modifiedLead->id; 
+
+                  //Attachments
+                  $leadAttachments = $this->LeadAttachments->find('all')
+                    ->where(['LeadAttachments.lead_id' => $lead->id])
+                  ;
+
+                  $aAttachments = array();
+                  $eAttachments = array();
+                  $attachment_folder = $this->Leads->LeadAttachments->getFolderName() . $lead->id;
+                  foreach($leadAttachments as $a){
+                    $aAttachments[] = $a->attachment;
+                    $eAttachments[] = WWW_ROOT . $attachment_folder . DS . $a->attachment;
+                  }
+
+                  $specific_users = array();
+                  foreach( $data['source_users'] as $key => $value ){
+                    $user = $this->Users->find()
+                      ->where(['Users.id' => $key])
+                      ->first()
+                    ;
+
+                    if( $user ){
+                      $specific_users[$user->email] = $user->email;
+                    }
+                  }
+
+                  if( !empty($specific_users) ){
+                    $email_customer = new Email('cake_smtp'); //default or cake_smtp (for testing in local)
+                    $email_customer->from(['websystem@holisticwebpresencecrm.com' => 'Holistic'])
+                      ->template('crm_modified_leads')
+                      ->emailFormat('html')          
+                      ->to($specific_users)                                                                                               
+                      ->subject($subject)
+                      ->attachments($eAttachments)
+                      ->viewVars(['lead' => $modifiedLead->toArray(), 'aAttachments' => $aAttachments, 'attachment_folder' => $attachment_folder, 'old_attachment' => $old_attachment, 'old_attachment_folder' => $old_attachment_folder, 'source' => $source, 'options_va' => $options_va, 'string_lead_types' => $string_lead_types])
+                      ->send();
+                  }
+                }
+
+                /*Secondary email*/
+                if( isset($data['send_secondary_email_notification']) && $source->enable_secondary_notification == 1 ){
+                  $data_lead_email_notification = [
+                    'user_id' => $this->user_data->id,
+                    'lead_id' => $newLead->id,
+                    'email_type' => 2,
+                    'date_time' => date("Y-m-d H:i:s")
+                  ];
+
+                  $newLeadEmailNotification = $this->LeadsEmailNotificationHistory->newEntity();
+                  $newLeadEmailNotification = $this->LeadsEmailNotificationHistory->patchEntity($newLeadEmailNotification, $data_lead_email_notification);
+                  $this->LeadsEmailNotificationHistory->save($newLeadEmailNotification);
+
+                  $modifiedLead = $this->Leads->get($newLead->id, [
+                      'contain' => ['Statuses', 'Sources', 'LastModifiedBy','LeadTypes','InterestTypes']
+                  ]); 
+
+                  $source_name      = !empty($source->name) ? $source->name : "";
+                  $surname          = $modifiedLead->surname != "" ? $modifiedLead->surname : "Not Specified";
+                  $lead_client_name = $modifiedLead->firstname . " " . $surname;
+                  $subject          = "**LEAD NEEDS ATTENTION**";              
+                  $old_attachment       = $modifiedLead->attachment;
+                  $old_attachment_folder = $this->Leads->getFolderName() . $modifiedLead->id; 
+
+                  //Attachments
+                  $leadAttachments = $this->LeadAttachments->find('all')
+                    ->where(['LeadAttachments.lead_id' => $lead->id])
+                  ;
+
+                  $aAttachments = array();
+                  $eAttachments = array();
+                  $attachment_folder = $this->Leads->LeadAttachments->getFolderName() . $lead->id;
+                  foreach($leadAttachments as $a){
+                    $aAttachments[] = $a->attachment;
+                    $eAttachments[] = WWW_ROOT . $attachment_folder . DS . $a->attachment;
+                  }
+
+                  $secondaryRecipients = $this->SourceSecondaryUsers->find('all')
+                    ->contain(['Users'])
+                    ->where(['SourceSecondaryUsers.source_id' => $source->id])
+                  ;
+
+                  $secondary_recipients = array();
+                  foreach( $secondaryRecipients as $sr ){
+                    $secondary_recipients[$sr->user->email] = $sr->user->email;
+                  }
+
+                  if( !empty($secondary_recipients) ){
+                    $email_customer = new Email('cake_smtp'); //default or cake_smtp (for testing in local)
+                    $email_customer->from(['websystem@holisticwebpresencecrm.com' => 'Holistic'])
+                      ->template('crm_modified_leads')
+                      ->emailFormat('html')          
+                      ->to($secondary_recipients)                                                                                               
+                      ->subject($subject)
+                      ->attachments($eAttachments)
+                      ->viewVars(['lead' => $modifiedLead->toArray(), 'aAttachments' => $aAttachments, 'attachment_folder' => $attachment_folder, 'old_attachment' => $old_attachment, 'old_attachment_folder' => $old_attachment_folder, 'source' => $source, 'options_va' => $options_va, 'string_lead_types' => $string_lead_types])
+                      ->send();
                   }
                 }
 
@@ -418,13 +640,17 @@ class LeadsController extends AppController
             }
         }
 
+        $option_va_deposit_paid = $this->Leads->optionVADepositPaid();
+        $options_cooling_repair = $this->Leads->optionsCoolingRepair();
+        $user_fullname = $this->user_data->firstname . ' ' . $this->user_data->lastname;
         $this->set('source_id', $source_id);
         $status_list = $this->Statuses->find('all', ['order' => ['Statuses.sort' => 'ASC']]);
         $statuses = $this->Leads->Statuses->find('list', ['order' => ['Statuses.sort' => 'ASC']]);
         $sources  = $this->Leads->Sources->find('list', ['order' => ['Sources.sort' => 'ASC']]);        
         $interestTypes = $this->Leads->InterestTypes->find('list', ['order' => ['InterestTypes.sort' => 'ASC']]);
         $leadTypes = $this->Leads->LeadTypes->find('list', ['order' => ['LeadTypes.sort' => 'ASC']]);
-        $this->set(compact('lead', 'statuses', 'sources', 'interestTypes', 'leadTypes','status_list'));
+        $optionsWillToReview = $this->Leads->optionsWillToReview();
+        $this->set(compact('lead', 'statuses', 'sources', 'interestTypes', 'leadTypes','status_list', 'options_cooling_repair', 'option_va_deposit_paid', 'user_fullname', 'optionsWillToReview'));
         $this->set('_serialize', ['lead']);
     }
 
@@ -442,6 +668,13 @@ class LeadsController extends AppController
         $this->Statuses    = TableRegistry::get('Statuses');
         $this->AuditTrails = TableRegistry::get('AuditTrails');
         $this->LeadAttachments = TableRegistry::get('LeadAttachments');
+        $this->Users =  TableRegistry::get('Users');
+        $this->LeadsEmailNotificationHistory = TableRegistry::get('LeadsEmailNotificationHistory');
+        $this->SourceSecondaryUsers = TableRegistry::get('SourceSecondaryUsers');
+        $this->LeadLeadTypes = TableRegistry::get('LeadLeadTypes');
+        $this->LeadFollowupEmails = TableRegistry::get('LeadFollowupEmails');
+        $this->UserLeadFollowupNotes = TableRegistry::get('UserLeadFollowupNotes');        
+        $this->SpecificUserLeads = TableRegistry::get('SpecificUserLeads');
 
         $p = $this->default_group_actions;
         if( $p && $p['leads'] == 'View Only' ){
@@ -496,23 +729,39 @@ class LeadsController extends AppController
         } 
 
         $lead = $this->Leads->get($id, [
-            'contain' => ['LastModifiedBy', 'LeadAttachments']
-        ]);   
+            'contain' => ['LastModifiedBy', 'LeadAttachments', 'Users', 'Sources', 'LeadLeadTypes']
+        ]); 
 
+        $leadTypeIds = array();
+        foreach( $lead->lead_lead_types as $l ){
+          $leadTypeIds[$l->lead_type_id] = $l->lead_type_id;
+        }  
         $lead = santizeLeadsData($lead);     
 
+        $leadEmailNotificationHistory = $this->LeadsEmailNotificationHistory->find('all')
+          ->contain(['Users'])
+          ->where(['LeadsEmailNotificationHistory.lead_id' => $lead->id])
+        ;
+        
         if ($this->request->is(['patch', 'post', 'put'])) {          
-            $data = $this->request->data;
-
+            $data = $this->request->data;            
+            $this->request->data['user_id'] = $lead->user_id;
+            $options_va = $this->Sources->optionsIsVa();            
+            $source = $this->Sources->get($data['source_id']); 
+            if( $source->is_va == $this->Sources->isNotVa() ){
+              $this->request->data['va_request_form_completed'] = '';
+              $this->request->data['va_deposit_paid'] = 0;
+              $this->request->data['va_name'] = '';
+              $this->request->data['va_start_date'] = '';
+              $this->request->data['va_exit_date'] = '';
+            }else{
+              $this->request->data['va_request_form_completed'] = date("Y-m-d", strtotime($this->request->data['va_request_form_completed']));
+              $this->request->data['va_start_date'] = date("Y-m-d", strtotime($this->request->data['va_start_date']));
+              $this->request->data['va_exit_date'] = date("Y-m-d", strtotime($this->request->data['va_exit_date']));
+            }
             $fields_changes = array();
             foreach ($data as $dkey => $lu) {
               if ($dkey != 'save') {
-
-                /*if ($lead->{$dkey} != $data[$dkey]) {
-                  $fields_changes[$dkey]['old'] = $lead->{$dkey};
-                  $fields_changes[$dkey]['new'] = $data[$dkey];
-                }*/
-
                 if ($dkey == "followup_date") {
                   if (date( "Y-m-d", strtotime($lead->{$dkey})) != $data[$dkey]) {
                     $fields_changes[$dkey]['old'] = $lead->{$dkey};
@@ -530,7 +779,14 @@ class LeadsController extends AppController
                   }
                 }
               }
+            }
 
+            $followup_notes = $this->request->data['followup_notes'];
+            $this->request->data['followup_notes'] = $lead->followup_notes;
+            if( $data['willing_to_review'] == 1 ){
+              $this->request->data['willing_to_review_date'] = date("Y-m-d",strtotime($this->request->data['willing_to_review_date']));
+            }else{
+              $this->request->data['willing_to_review_date'] = '';
             }
 
             $lead = $this->Leads->patchEntity($lead, $this->request->data);
@@ -545,6 +801,66 @@ class LeadsController extends AppController
             }            
 
             if ($this->Leads->save($lead)) {
+                //Update Specific User Leads
+                $this->SpecificUserLeads->deleteAll(['lead_id' => $lead->id]);
+                $specific_user_leads_bulk_data = array();
+                foreach( $data['specificUser'] as $key => $keyId ){
+                  $specific_user_leads_bulk_data[] = ['user_id' => $keyId, 'lead_id' => $lead->id];
+                }
+
+                if( !empty($specific_user_leads_bulk_data) ){
+                  $specificUserLeads = $this->SpecificUserLeads->newEntities($specific_user_leads_bulk_data);
+                  $this->SpecificUserLeads->saveMany($specificUserLeads);                    
+                }     
+
+                if( $followup_notes != '' ){
+                  //Save lead notes
+                  $data_lead_notes = [
+                    'lead_id' => $lead->id,
+                    'user_id' => $this->user_data->id,
+                    'date_posted' => date("Y-m-d H:i:s"),
+                    'notes' => $followup_notes
+                  ];
+                  $fnotes = $this->UserLeadFollowupNotes->newEntity();
+                  $fnotes = $this->UserLeadFollowupNotes->patchEntity($fnotes, $data_lead_notes);
+                  $this->UserLeadFollowupNotes->save($fnotes);
+                }        
+
+                //Save followup notification email
+                $this->LeadFollowupEmails->deleteAll(['lead_id' => $lead->id]);
+                foreach( $data['followup_source_users'] as $key => $value ){
+                  $data_followup_email[] = [
+                    'lead_id' => $lead->id,
+                    'user_id' => $key,
+                    'followup_date' => $data['followup_date'],
+                    'is_sent' => 0
+                  ];
+                }
+                if( !empty($data_followup_email) ){
+                  $newLeadFollowupEmail    = $this->LeadFollowupEmails->newEntities($data_followup_email);
+                  $resultLeadFollowupEmail = $this->LeadFollowupEmails->saveMany($newLeadFollowupEmail);  
+                }
+                
+                //Save Lead Types
+                $this->Leads->LeadLeadTypes->deleteAll(['lead_id' => $lead->id]);
+                $a_lead_types = array();
+                foreach( $data['leadTypeIds'] as $key => $value ){
+                  $data_lead_type = [
+                    'lead_id' => $lead->id,
+                    'lead_type_id' => $key
+                  ];
+
+                  $leadLeadType = $this->Leads->LeadLeadTypes->newEntity();
+                  $leadLeadType = $this->Leads->LeadLeadTypes->patchEntity($leadLeadType, $data_lead_type);
+                  $this->Leads->LeadLeadTypes->save($leadLeadType);
+
+                  $leadType = $this->Leads->LeadTypes->find()
+                    ->where(['LeadTypes.id' => $key])
+                    ->first()
+                  ;
+                  $a_lead_types[] = $leadType->name;
+                } 
+                $string_lead_types = implode(", ", $a_lead_types);
 
                 /*if( $this->request->data['lead_attachment']['name'] != '' ){
                   //Save attachement
@@ -587,6 +903,18 @@ class LeadsController extends AppController
                     $users_email[$users->user->email] = $users->user->email;            
                 }
 
+                //Lead specific users
+                $leadSpecificUser =  $this->SpecificUserLeads->find('all')
+                  ->contain(['Users'])
+                  ->where(['SpecificUserLeads.lead_id' => $lead->id])
+                ;
+
+                foreach( $leadSpecificUser as $lu ){
+                  if( !array_key_exists($lu->user->email, $users_email) ){
+                      $users_email[$lu->user->email] = $lu->user->email;    
+                  }
+                }
+
                 //add other emails to be sent - start
                 foreach($source_users as $users){            
                     $other_email_to_explode = $users->user->other_email;
@@ -609,7 +937,6 @@ class LeadsController extends AppController
                 //add other emails to be sent - end  
 
                 //add other emails from sources - start
-                $source = $this->Sources->get($data['source_id']);        
                 if( !empty($source->emails) || $source->emails != '' ) {
                   $other_source_email = explode(";", $source->emails);
                   foreach($other_source_email as $oekey => $emr) {
@@ -628,6 +955,18 @@ class LeadsController extends AppController
 
                   if($this->enable_email_sending) {
                     if( isset($data['send_email_notification']) ){
+
+                      $data_lead_email_notification = [
+                        'user_id' => $this->user_data->id,
+                        'lead_id' => $lead->id,
+                        'email_type' => 1,
+                        'date_time' => date("Y-m-d H:i:s")
+                      ];
+
+                      $newLeadEmailNotification = $this->LeadsEmailNotificationHistory->newEntity();
+                      $newLeadEmailNotification = $this->LeadsEmailNotificationHistory->patchEntity($newLeadEmailNotification, $data_lead_email_notification);
+                      $this->LeadsEmailNotificationHistory->save($newLeadEmailNotification);
+
                       $modifiedLead = $this->Leads->get($id, [
                           'contain' => ['Statuses', 'Sources', 'LastModifiedBy','LeadTypes','InterestTypes']
                       ]); 
@@ -652,7 +991,6 @@ class LeadsController extends AppController
                         $eAttachments[] = WWW_ROOT . $attachment_folder . DS . $a->attachment;
                       }
 
-
                       $email_customer = new Email('cake_smtp'); //default or cake_smtp (for testing in local)
                       $email_customer->from(['websystem@holisticwebpresencecrm.com' => 'Holistic'])
                         ->template('crm_modified_leads')
@@ -660,12 +998,140 @@ class LeadsController extends AppController
                         ->to($users_email)                                                                                               
                         ->subject($subject)
                         ->attachments($eAttachments)
-                        ->viewVars(['lead' => $modifiedLead->toArray(), 'aAttachments' => $aAttachments, 'attachment_folder' => $attachment_folder, 'old_attachment' => $old_attachment, 'old_attachment_folder' => $old_attachment_folder])
+                        ->viewVars(['lead' => $modifiedLead->toArray(), 'aAttachments' => $aAttachments, 'attachment_folder' => $attachment_folder, 'old_attachment' => $old_attachment, 'old_attachment_folder' => $old_attachment_folder, 'source' => $source, 'options_va' => $options_va, 'string_lead_types' => $string_lead_types])
                         ->send();
                     }                    
                   }
+                }  
 
-                }     
+                /*Specific source users*/
+                if( isset($data['send_specific_notification']) ){
+                  $data_lead_email_notification = [
+                    'user_id' => $this->user_data->id,
+                    'lead_id' => $lead->id,
+                    'email_type' => 3, //Specific users
+                    'date_time' => date("Y-m-d H:i:s")
+                  ];
+
+                  $newLeadEmailNotification = $this->LeadsEmailNotificationHistory->newEntity();
+                  $newLeadEmailNotification = $this->LeadsEmailNotificationHistory->patchEntity($newLeadEmailNotification, $data_lead_email_notification);
+                  $this->LeadsEmailNotificationHistory->save($newLeadEmailNotification);
+
+                  $modifiedLead = $this->Leads->get($lead->id, [
+                      'contain' => ['Statuses', 'Sources', 'LastModifiedBy','LeadTypes','InterestTypes']
+                  ]); 
+
+                  $source_name      = !empty($source->name) ? $source->name : "";
+                  $surname          = $modifiedLead->surname != "" ? $modifiedLead->surname : "Not Specified";
+                  $lead_client_name = $modifiedLead->firstname . " " . $surname;
+                  $subject          = "**LEAD NEEDS ATTENTION**";              
+                  $old_attachment       = $modifiedLead->attachment;
+                  $old_attachment_folder = $this->Leads->getFolderName() . $modifiedLead->id; 
+
+                  //Attachments
+                  $leadAttachments = $this->LeadAttachments->find('all')
+                    ->where(['LeadAttachments.lead_id' => $lead->id])
+                  ;
+
+                  $aAttachments = array();
+                  $eAttachments = array();
+                  $attachment_folder = $this->Leads->LeadAttachments->getFolderName() . $lead->id;
+                  foreach($leadAttachments as $a){
+                    $aAttachments[] = $a->attachment;
+                    $eAttachments[] = WWW_ROOT . $attachment_folder . DS . $a->attachment;
+                  }
+
+                  $specific_users = array();
+                  foreach( $data['source_users'] as $key => $value ){
+                    $user = $this->Users->find()
+                      ->where(['Users.id' => $key])
+                      ->first()
+                    ;
+
+                    if( $user ){
+                      $specific_users[$user->email] = $user->email;
+                    }
+                  }
+
+                  //Lead Specific Users
+                  foreach( $leadSpecificUser as $lu ){
+                    if( !array_key_exists($lu->user->email, $specific_users) ){
+                        $specific_users[$lu->user->email] = $lu->user->email;    
+                    }
+                  }
+
+                  if( !empty($specific_users) ){
+                    $email_customer = new Email('cake_smtp'); //default or cake_smtp (for testing in local)
+                    $email_customer->from(['websystem@holisticwebpresencecrm.com' => 'Holistic'])
+                      ->template('crm_modified_leads')
+                      ->emailFormat('html')          
+                      ->to($specific_users)                                                                                               
+                      ->subject($subject)
+                      ->attachments($eAttachments)
+                      ->viewVars(['lead' => $modifiedLead->toArray(), 'aAttachments' => $aAttachments, 'attachment_folder' => $attachment_folder, 'old_attachment' => $old_attachment, 'old_attachment_folder' => $old_attachment_folder, 'source' => $source, 'options_va' => $options_va, 'string_lead_types' => $string_lead_types])
+                      ->send();
+                  }
+                }
+
+                /*Secondary email*/
+                if( isset($data['send_secondary_email_notification']) && $source->enable_secondary_notification == 1 ){
+                  $data_lead_email_notification = [
+                    'user_id' => $this->user_data->id,
+                    'lead_id' => $lead->id,
+                    'email_type' => 2,
+                    'date_time' => date("Y-m-d H:i:s")
+                  ];
+
+                  $newLeadEmailNotification = $this->LeadsEmailNotificationHistory->newEntity();
+                  $newLeadEmailNotification = $this->LeadsEmailNotificationHistory->patchEntity($newLeadEmailNotification, $data_lead_email_notification);
+                  $this->LeadsEmailNotificationHistory->save($newLeadEmailNotification);
+
+                  $modifiedLead = $this->Leads->get($id, [
+                      'contain' => ['Statuses', 'Sources', 'LastModifiedBy','LeadTypes','InterestTypes']
+                  ]); 
+
+                  $source_name      = !empty($source->name) ? $source->name : "";
+                  $surname          = $modifiedLead->surname != "" ? $modifiedLead->surname : "Not Specified";
+                  $lead_client_name = $modifiedLead->firstname . " " . $surname;
+                  $subject          = "**LEAD NEEDS ATTENTION**";              
+                  $old_attachment       = $modifiedLead->attachment;
+                  $old_attachment_folder = $this->Leads->getFolderName() . $modifiedLead->id; 
+
+                  //Attachments
+                  $leadAttachments = $this->LeadAttachments->find('all')
+                    ->where(['LeadAttachments.lead_id' => $lead->id])
+                  ;
+
+                  $aAttachments = array();
+                  $eAttachments = array();
+                  $attachment_folder = $this->Leads->LeadAttachments->getFolderName() . $lead->id;
+                  foreach($leadAttachments as $a){
+                    $aAttachments[] = $a->attachment;
+                    $eAttachments[] = WWW_ROOT . $attachment_folder . DS . $a->attachment;
+                  }
+
+                  $secondaryRecipients = $this->SourceSecondaryUsers->find('all')
+                    ->contain(['Users'])
+                    ->where(['SourceSecondaryUsers.source_id' => $source->id])
+                  ;
+
+                  $secondary_recipients = array();
+                  foreach( $secondaryRecipients as $sr ){
+                    $secondary_recipients[$sr->user->email] = $sr->user->email;
+                  }
+
+                  if( !empty($secondary_recipients) ){
+                    $email_customer = new Email('cake_smtp'); //default or cake_smtp (for testing in local)
+                    $email_customer->from(['websystem@holisticwebpresencecrm.com' => 'Holistic'])
+                      ->template('crm_modified_leads')
+                      ->emailFormat('html')          
+                      ->to($secondary_recipients)                                                                                               
+                      ->subject($subject)
+                      ->attachments($eAttachments)
+                      ->viewVars(['lead' => $modifiedLead->toArray(), 'aAttachments' => $aAttachments, 'attachment_folder' => $attachment_folder, 'old_attachment' => $old_attachment, 'old_attachment_folder' => $old_attachment_folder, 'source' => $source, 'options_va' => $options_va, 'string_lead_types' => $string_lead_types])
+                      ->send();
+                  }
+                }   
 
                 $this->Flash->success(__('The lead has been saved.'));
                 $action = $this->request->data['save'];
@@ -739,16 +1205,47 @@ class LeadsController extends AppController
         }
 
         $back_url = Router::url( $this->referer(), true );
+        $option_va_deposit_paid = $this->Leads->optionVADepositPaid();
+        $options_cooling_repair = $this->Leads->optionsCoolingRepair();
+        if( $lead->user_id > 0 ){
+          $user_fullname = $lead->user->firstname . ' ' . $lead->user->lastname;
+        }else{
+          $user_fullname = '';
+        }        
+
+        //Lead Specific Users
+        $specificUserLeads = $this->SpecificUserLeads->find('all')
+          ->where(['SpecificUserLeads.lead_id' => $id])
+        ;
+
+        $a_specific_user_leads = array();
+        foreach( $specificUserLeads as $ls ){
+          $a_specific_user_leads[$ls->user_id] = $ls->user_id;
+        }
+
+        $nonAdminUsers = $this->Users->find('all')
+          ->where(['Users.group_id <>' => 1])
+          ->order(['Users.firstname' => 'ASC'])
+        ;
 
         $this->set('back_url', $back_url);
         $this->set('redir', $redir);
         $this->set('source_id', $source_id);
+        $this->set('leadEmailNotificationHistory', $leadEmailNotificationHistory);
+        $this->set('nonAdminUsers', $nonAdminUsers);
+        $this->set('a_specific_user_leads', $a_specific_user_leads);
+        //$this->set('load_source_users', true);
         $statuses = $this->Leads->Statuses->find('list', ['order' => ['Statuses.sort' => 'ASC']]);
         $status_list = $this->Statuses->find('all', ['order' => ['Statuses.sort' => 'ASC']]);
         $sources = $this->Leads->Sources->find('list', ['order' => ['Sources.sort' => 'ASC']]);        
         $interestTypes = $this->Leads->InterestTypes->find('list', ['order' => ['InterestTypes.sort' => 'ASC']]);
         $leadTypes = $this->Leads->LeadTypes->find('list', ['order' => ['LeadTypes.sort' => 'ASC']]);
-        $this->set(compact('lead', 'statuses', 'sources', 'interestTypes', 'leadTypes', 'status_list'));
+        $leadFollowupNotes = $this->UserLeadFollowupNotes->find('all')
+          ->contain(['Users'])
+          ->where(['UserLeadFollowupNotes.lead_id' => $id])
+        ;
+        $optionsWillToReview = $this->Leads->optionsWillToReview();
+        $this->set(compact('lead', 'statuses', 'sources', 'interestTypes', 'leadTypes', 'status_list', 'options_cooling_repair', 'user_fullname', 'option_va_deposit_paid', 'leadTypeIds', 'leadFollowupNotes', 'optionsWillToReview'));
         $this->set('_serialize', ['lead']);
     }
 

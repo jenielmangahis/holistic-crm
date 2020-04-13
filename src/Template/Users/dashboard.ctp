@@ -58,7 +58,7 @@ var BASE_URL = "<?php echo $base_url; ?>";
 
         <div class="info-box-content">
           <span class="info-box-text">Total Leads</span>
-          <span class="info-box-number"><?php echo number_format($total_leads,2); ?></span>
+          <span class="info-box-number"><?php echo number_format($total_leads,0); ?></span>
         </div>
         <!-- /.info-box-content -->
       </div>
@@ -70,7 +70,7 @@ var BASE_URL = "<?php echo $base_url; ?>";
 
         <div class="info-box-content">
           <span class="info-box-text">Total Leads for followup today</span>
-          <span class="info-box-number"><?php echo number_format($total_leads_followup,2); ?></span>
+          <span class="info-box-number"><?php echo number_format($total_leads_followup,0); ?></span>
         </div>
         <!-- /.info-box-content -->
       </div>
@@ -84,7 +84,7 @@ var BASE_URL = "<?php echo $base_url; ?>";
 
         <div class="info-box-content">
           <span class="info-box-text">Total Users</span>
-          <span class="info-box-number"><?php echo number_format($total_users,2); ?></span>
+          <span class="info-box-number"><?php echo number_format($total_users,0); ?></span>
         </div>
         <!-- /.info-box-content -->
       </div>

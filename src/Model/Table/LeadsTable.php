@@ -32,6 +32,13 @@ class LeadsTable extends Table
 
     const FOLDER_NAME = 'upload/leads_attachments/';
 
+    const OPTION_COOLING_SYSTEM_REPAIR_YES = 1;
+    const OPTION_COOLING_SYSTEM_REPAIR_NO  = 0;
+
+    const OPTION_VA_DEPOSIT_PAID_YES = 1;
+    const OPTION_VA_DEPOSIT_PAID_NO  = 0;
+
+
     /**
      * Initialize method
      *
@@ -72,7 +79,16 @@ class LeadsTable extends Table
             'joinType' => 'LEFT'
         ]);
 
+         $this->belongsTo('Users', [
+            'foreignKey' => 'user_id',
+            'joinType' => 'LEFT'
+        ]);
+
         $this->hasMany('LeadAttachments', [
+            'foreignKey' => 'lead_id'
+        ]);
+
+        $this->hasMany('LeadLeadTypes', [
             'foreignKey' => 'lead_id'
         ]);
     }
@@ -123,10 +139,10 @@ class LeadsTable extends Table
             ->requirePresence('state', 'create')
             ->notEmpty('state');*/
 
-        $validator
+        /*$validator
             ->date('followup_date')
             ->requirePresence('followup_date', 'create')
-            ->notEmpty('followup_date');
+            ->notEmpty('followup_date');*/
 
        /* $validator
             ->date('followup_action_reminder_date')
@@ -187,5 +203,36 @@ class LeadsTable extends Table
         $dir = new Folder($locationPath, true, 0755);
         move_uploaded_file($file['tmp_name'], $locationPath . "/" . $setNewFileName);
         return $setNewFileName;
+    }
+
+    public function optionsCoolingRepair()
+    {
+        $options = [            
+            self::OPTION_COOLING_SYSTEM_REPAIR_NO => 'No',
+            self::OPTION_COOLING_SYSTEM_REPAIR_YES => 'Yes'
+        ];
+
+        return $options;
+    }
+
+    public function optionVADepositPaid()
+    {
+        $options = [
+            self::OPTION_VA_DEPOSIT_PAID_NO => 'No',
+            self::OPTION_VA_DEPOSIT_PAID_YES => 'Yes'
+        ];
+
+        return $options;
+    }
+
+    public function optionsWillToReview()
+    {
+        $options = [
+            0 => "Not Asked",
+            1 => "Yes",
+            2 => "No"
+        ];
+
+        return $options;
     }
 }

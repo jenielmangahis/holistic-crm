@@ -20,7 +20,7 @@
                           'type' => 'GET'
                         ]) ?>                         
                         <div class="input-group input-group-sm">
-                            <input class="form-control" name="query" type="text" placeholder="Enter query to search">
+                            <input class="form-control" name="query" type="text" placeholder="Enter query to search" value="<?= $query; ?>">
                             <span class="input-group-btn">
                                 <?= $this->Form->button('<i class="fa fa-search"></i>',['name' => 'search', 'value' => 'search', 'class' => 'btn btn-info btn-flat', 'escape' => false]) ?>                                    
                                 <?= $this->Html->link(__('Reset'), ['action' => 'index'],['class' => 'btn btn-success btn-flat', 'escape' => false]) ?>                            
@@ -31,7 +31,9 @@
 
                     <div class="box-tools" style="top:9px;">    
                         <?php if( $default_group_actions && $default_group_actions['leads'] != 'View Only' ){ ?>
-                                    <?= $this->Html->link('<i class="fa fa-plus"></i> Add New', ['action' => 'add'],['class' => 'btn btn-box-tool', 'escape' => false]) ?>
+                            <?php if($enable_add){ ?>
+                                <?= $this->Html->link('<i class="fa fa-plus"></i> Add New', ['action' => 'add'],['class' => 'btn btn-box-tool', 'escape' => false]) ?>
+                            <?php } ?>
                         <?php } ?>                                                                 
                         <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>                        
                     </div>                    

@@ -414,4 +414,45 @@ class DebugController extends AppController
           ->send();
           exit;
     }
+
+    public function patternChecking()
+    {
+      $subject = "Re: HOLISTIC CRM [CWC San Francisco-2334] - Sam333ple CRM";
+      $pattern = "HOLISTIC CRM [";
+      if (strpos($subject, $pattern) !== false) {
+        echo 'Pattern exists';
+      }else{
+        echo  'Does not exists';
+      }
+      echo "<br />";
+      echo "Subject : " . $subject . "<br />";
+      $pos_a = strpos($subject, "[");
+      $pos_b = strpos($subject, "]");
+      $pattern = substr($subject, $pos_a, $pos_b - ($pos_a - 1));
+      echo "Extracted Pattern : " . $pattern . "<Br />";
+      $pattern = str_replace("[", "", $pattern);
+      $pattern = str_replace("]", "", $pattern);
+      $a_pattern = explode("-", $pattern);
+      debug($a_pattern);
+      exit;
+    }
+
+    public function fixLeadTypes()
+    {
+    	$this->Leads = TableRegistry::get('Leads');
+    	$this->LeadLeadTypes = TableRegistry::get('LeadLeadTypes');
+
+    	$leads = $this->Leads->find('all')
+    		->order(['Leads.id' => 'ASC'])    		
+    	;
+
+    	foreach( $leads as $l ){
+    		$data_lead_type = ['lead_id' => $l->id, 'lead_type_id' => $l->lead_type_id];
+    		$leadLeadType = $this->LeadLeadTypes->newEntity();
+    		$leadLeadType = $this->LeadLeadTypes->patchEntity($leadLeadType, $data_lead_type);
+    		$this->LeadLeadTypes->save($leadLeadType);
+    	}
+
+    	exit;
+    }
 }

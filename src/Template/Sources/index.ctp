@@ -82,7 +82,8 @@ div.box-body{
                                 <th><?= $this->Paginator->sort('name', __("Name") . "<i class='fa fa-sort pull-right'> </i>", array('escape' => false)) ?></th>                                
                                 <th><?= __("Users") ?></th>   
                                 <th><?= __('Form URL') ?></th>    
-                                <th><?= __('Enable CSV Attachment') ?></th>                                                                                                
+                                <th style="width: 5%"><?= __('Enable CSV Attachment') ?></th>     
+                                <th style="width: 5%"><?= __('Enable Secondary Email') ?></th>                                                                                               
                             </tr>
                         </thead>
                         <tbody>
@@ -96,7 +97,7 @@ div.box-body{
                                         <ul class="dropdown-menu" role="menu" aria-labelledby="drpdwn">
                                             <li role="presentation"><?= $this->Html->link('<i class="fa fa-eye"></i> View', ['action' => 'view', $source->id],['escape' => false]) ?></li>
                                             <li role="presentation"><?= $this->Html->link('<i class="fa fa-pencil"></i> Edit', ['action' => 'edit', $source->id],['escape' => false]) ?></li>
-                                            <li role="presentation"><?= $this->Html->link('<i class="fa fa-users"></i> Users', ['controller' => 'source_users', 'action' => 'user_list', $source->id],['escape' => false]) ?></li>
+                                            <li role="presentation"><?= $this->Html->link('<i class="fa fa-users"></i> Users', ['controller' => 'source_users', 'action' => 'assign_user', $source->id],['escape' => false]) ?></li>
                                             <li role="presentation"><?= $this->Html->link('<i class="fa fa-trash"></i> Delete', '#modal-'.$source->id,['data-toggle' => 'modal','escape' => false]) ?></li>
                                         </ul>
                                     </div>   
@@ -180,6 +181,15 @@ div.box-body{
                                 <td>
                                     <?php 
                                         if( $source->enable_csv_attachment == 1 ){
+                                            echo "<label class='label label-success'>Yes</label>";
+                                        }else{
+                                            echo "<label class='label label-danger'>No</label>";
+                                        }
+                                    ?>
+                                </td>
+                                <td>
+                                    <?php 
+                                        if( $source->enable_secondary_notification == 1 ){
                                             echo "<label class='label label-success'>Yes</label>";
                                         }else{
                                             echo "<label class='label label-danger'>No</label>";

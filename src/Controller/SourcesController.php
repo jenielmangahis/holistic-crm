@@ -32,15 +32,16 @@ class SourcesController extends AppController
                 $rights = $this->default_group_actions['sources'];                
                 switch ($rights) {
                     case 'View Only':
-                        $authorized_modules = ['index', 'view'];
+                        $authorized_modules = ['index', 'view', 'json_get_source_settings'];
                         break;
                     case 'View and Edit':
-                        $authorized_modules = ['index', 'view', 'edit', 'add'];
+                        $authorized_modules = ['index', 'view', 'edit', 'add', 'json_get_source_settings'];
                         break;
                     case 'View, Edit and Delete':
-                        $authorized_modules = ['index', 'view', 'edit', 'delete', 'add'];
+                        $authorized_modules = ['index', 'view', 'edit', 'delete', 'add', 'json_get_source_settings'];
                         break;        
-                    default:            
+                    default:    
+                        $authorized_modules = ['json_get_source_settings'];        
                         break;
                 }                
                 $this->Auth->allow($authorized_modules);
@@ -160,6 +161,8 @@ class SourcesController extends AppController
             }
         }
 
+        $options_va = $this->Sources->optionsIsVa();
+        $this->set('options_va', $options_va);
         $this->set('enable_tags_input', true);
         $this->set(compact('source'));
         $this->set('_serialize', ['source']);
@@ -236,7 +239,8 @@ class SourcesController extends AppController
         }
 
         //$allocations = $this->Sources->Allocations->find('list', ['order' => ['Allocations.sort' => 'ASC']]);
-
+        $options_va = $this->Sources->optionsIsVa();
+        $this->set('options_va', $options_va);
         $this->set('enable_tags_input', true);
         $this->set(compact('source'));
         $this->set('_serialize', ['source']);
@@ -259,5 +263,50 @@ class SourcesController extends AppController
             $this->Flash->error(__('The source could not be deleted. Please, try again.'));
         }
         return $this->redirect(['action' => 'index']);
+    }
+
+    public function json_enable_disable_secondary_email()
+    {
+        $json_data['is_enabled'] = 0;
+        $source_id = $this->request->data['source_id'];
+
+        $source = $this->Sources->find()
+            ->where(['Sources.id' => $source_id])
+            ->first()
+        ;
+
+        if( $source ){
+            if( $source->enable_secondary_notification == 1 ){
+                $json_data['is_enabled'] = 1;
+            }
+        }
+
+        echo json_encode($json_data);
+        exit;
+    }
+
+    public function json_get_source_settings()
+    {
+        $json_data['is_enabled_secondary_notification'] = 0;
+        $json_data['is_va'] = 0;
+        $source_id = $this->request->data['source_id'];
+
+        $source = $this->Sources->find()
+            ->where(['Sources.id' => $source_id])
+            ->first()
+        ;
+
+        if( $source ){
+            if( $source->enable_secondary_notification == 1 ){
+                $json_data['is_enabled_secondary_notification'] = 1;
+            }
+
+            if( $source->is_va == $this->Sources->isVa() ){
+                $json_data['is_va'] = 1;
+            }
+        }
+
+        echo json_encode($json_data);
+        exit;
     }
 }

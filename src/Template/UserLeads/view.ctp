@@ -4,6 +4,21 @@
     color:#ffff;
     padding: 10px;
 }
+.lead-type-list{
+    padding: 0px;
+}
+.lead-type-list li{
+    display: inline-block;
+    width: 22%;
+}
+.followup-notes-bubble{
+    display: block;
+    padding: 10px;
+    border-radius: 10px;
+    margin: 0px 0px;
+    background-color: #0074D9;
+    color: #ffffff;
+}
 </style>
 <section class="content-header">
     <h1><?= __('View Lead') ?></h1>
@@ -110,11 +125,18 @@
 
                             echo "
                             <div class='form-group'>
-                                <label for='lead_type_id' class='col-sm-2 control-label'>" . __('Lead Type') . "</label>
+                                <label for='lead_type_id' class='col-sm-2 control-label'>" . __('Lead Source') . "</label>
                                 <div class='col-sm-6'>";
-                                if(isset($lead->lead_type->name)) { $lead_type_value = $lead->lead_type->name; } else { $lead_type_value = 'NA'; }
-                                echo '<input type="text" id="lead_type_id" class="form-control" name="lead_type_id" value="' . $lead_type_value . '" readonly="readonly" />';
-                            echo " </div></div>";    
+                                echo "<ul class='lead-type-list'>";
+                                foreach( $lead->lead_lead_types as $lt ){
+                                    echo "<li>";
+                                    echo "<div class='checkbox'>";
+                                        echo "<label><input type='checkbox' checked=\"checked\" readonly=\"readonly\" disabled=\"disabled\" />" . $lt->lead_type->name . "</label>";
+                                    echo "</div>";
+                                    echo "</li>";
+                                }
+                                echo "</ul>";
+                            echo " </div></div>";     
 
                             echo "
                             <div class='form-group'>
@@ -142,16 +164,45 @@
                                 <div class='col-sm-6'>";
                                 echo $this->Form->input('lead-followup-date', ['type' => 'text', 'value' => date("d F, Y"), 'class' => 'form-control', 'id' => '', 'readonly' => 'readonly', 'label' => false]);                
                             echo " </div></div>";    
+                            ?>
 
-                            echo "
-                            <div class='form-group'>
-                                <label for='followup_notes' class='col-sm-2 control-label'>" . __('Followup Notes') . "</label>
-                                <div class='col-sm-6'>";
-                                echo "<textarea rows='4' cols='79' class='form-control' readonly='readonly'>";
-                                echo strip_tags($lead->followup_notes);
-                                echo "</textarea>";                                
-                            echo " </div></div>";                            
-                            
+                            <div class="lead-followup-notes">
+                                <div class='form-group'>
+                                    <label class='col-sm-2 control-label'></label>
+                                    <div class="col-sm-6">
+                                        <table class="table">
+                                            <tbody>
+                                                <?php if( $lead->followup_notes != '' ){ ?>
+                                                <tr>
+                                                    <td>
+                                                        <div class="followup-notes-bubble"> 
+                                                            <small><i class="fa fa-user"></i> Posted By : <?= $lead->user->firstname . ' ' . $lead->user->lastname; ?></small><br />
+                                                            <small><i class="fa fa-calendar"></i> Date Posted : <?= $lead->created->format("Y-m-d H:i:s"); ?></small><br />
+                                                            <hr />                                                           
+                                                            <?= $lead->followup_notes; ?>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                                <?php } ?>
+                                            <?php foreach($leadFollowupNotes as $lf){ ?>
+                                                <tr>
+                                                    <td>
+                                                        <div class="followup-notes-bubble">
+                                                            <small><i class="fa fa-user"></i> Posted By : <?= $lf->user->firstname . ' ' . $lf->user->lastname; ?></small><br />
+                                                            <small><i class="fa fa-calendar"></i> Date Posted : <?= $lf->date_posted->format("Y-m-d H:i:s"); ?></small><br />
+                                                            <hr />
+                                                            <?= $lf->notes; ?>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                            <?php } ?>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>                                
+                            </div>
+
+                            <?php                            
                             echo "
                             <div class='form-group'>
                                 <label for='followup_action_reminder_date' class='col-sm-2 control-label'>" . __('Followup Action Reminder Date') . "</label>

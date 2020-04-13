@@ -61,7 +61,7 @@ class LeadEmailMessagesController extends AppController
     public function view($id = null)
     {
         $leadEmailMessage = $this->LeadEmailMessages->get($id, [
-            'contain' => ['Users', 'Leads']
+            'contain' => ['Leads']
         ]);
         $this->set('leadEmailMessage', $leadEmailMessage);
         $this->set('_serialize', ['leadEmailMessage']);
@@ -156,7 +156,7 @@ class LeadEmailMessagesController extends AppController
      * @param string|null $id Lead id.
      * @return \Cake\Network\Response|null Redirects to index.
      */
-    public function list($id = null )
+    public function list_leads($id = null )
     {
         $this->Leads = TableRegistry::get('Leads');
 
@@ -167,9 +167,9 @@ class LeadEmailMessagesController extends AppController
 
         if( $lead ){
             $leadEmails = $this->LeadEmailMessages->find('all')
-                ->contain(['Leads', 'Users'])
+                ->contain(['Leads'])
                 ->where(['LeadEmailMessages.lead_id' => $id])
-                ->order(['LeadEmailMessages.date' => 'DESC'])
+                ->order(['LeadEmailMessages.date_time' => 'DESC'])
             ;
             
             $this->set(['lead' => $lead]);
@@ -200,9 +200,9 @@ class LeadEmailMessagesController extends AppController
 
         if( $lead ){
             $leadEmails = $this->LeadEmailMessages->find('all')
-                ->contain(['Leads', 'Users'])
+                ->contain(['Leads'])
                 ->where(['LeadEmailMessages.lead_id' => $id])
-                ->order(['LeadEmailMessages.date' => 'DESC'])
+                ->order(['LeadEmailMessages.date_time' => 'DESC'])
             ;
 
             $this->set(['lead' => $lead, 'leadEmailMessage' => $leadEmailMessage]);
@@ -213,6 +213,13 @@ class LeadEmailMessagesController extends AppController
         }
     }
 
+    /**
+     * Post Send Email method
+     *  ID : CA-09
+     *
+     * @param string|null $id Lead id.
+     * @return \Cake\Network\Response|null Redirects to index.
+     */
     public function post_send_mail()
     {
         $this->LeadEmailAttachments = TableRegistry::get('LeadEmailAttachments');
@@ -221,17 +228,18 @@ class LeadEmailMessagesController extends AppController
         if ($this->request->is(['patch', 'post', 'put'])) {
 
             $lead = $this->Leads->find()
+                ->contain(['Sources'])
                 ->where(['Leads.id' => $this->request->data['lead_id']])
                 ->first()
             ;
 
             if( $lead ){
                 $data_email = [
-                    'user_id' => $this->user_data->id,
+                    'sender' => LEAD_EMAIL_SENDER,
                     'lead_id' => $this->request->data['lead_id'],
                     'recipient' => $lead->email,
                     'subject' => $this->request->data['subject'],
-                    'date' => date("Y-m-d"),
+                    'date_time' => date("Y-m-d H:i:s"),
                     'content' => $this->request->data['content']
                 ];
                 $leadEmail = $this->LeadEmailMessages->newEntity();
@@ -258,8 +266,8 @@ class LeadEmailMessagesController extends AppController
 
                     //Send Email
                     $email_smtp = new Email('holistic_mailer_a');
-                    $recipient = $lead->email;
-                    $subject   = $this->request->data['subject'];
+                    $recipient = $lead->email;                    
+                    $subject   = $this->LeadEmailMessages->generateSubject($lead->source->name, $lead->id, $this->request->data['subject']);
                     $content   = $this->request->data['content'];
                     if( !empty($attachments) ){
                         $email_smtp->from(['websystem@holisticwebpresencecrm.com' => 'Holistic'])
@@ -290,6 +298,113 @@ class LeadEmailMessagesController extends AppController
             }
         }
 
-        return $this->redirect(['controller' => 'lead_email_messages', 'action' => 'list', $lead->id]);  
+        return $this->redirect(['controller' => 'lead_email_messages', 'action' => 'list_leads', $lead->id]);  
+    }
+
+    /**
+     * View Email method
+     *  ID : CA-10
+     *
+     * @param string|null $id Lead Email Message id.
+     * @return \Cake\Network\Response|null Redirects to index.
+     */
+    public function view_email($id = null )
+    {
+      $leadEmailMessage = $this->LeadEmailMessages->find()
+        ->contain(['Leads'])
+        ->where(['LeadEmailMessages.id' => $id])
+        ->first()
+      ;
+
+      $this->set(['leadEmailMessage' => $leadEmailMessage]);
+    }
+
+    /**
+     * Post Send Email Reply method
+     *  ID : CA-11
+     *
+     * @param string|null $id Lead id.
+     * @return \Cake\Network\Response|null Redirects to index.
+     */
+    public function post_send_mail_reply()
+    {
+        $this->LeadEmailAttachments = TableRegistry::get('LeadEmailAttachments');
+        $this->Leads = TableRegistry::get('Leads');
+
+        if ($this->request->is(['patch', 'post', 'put'])) {
+          if( $this->request->data['lead_id'] > 0 && $this->request->data['lead_email_message_id'] > 0 ){
+            $leadEmailMessage = $this->LeadEmailMessages->find()
+              ->where(['LeadEmailMessages.id' => $this->request->data['lead_email_message_id']])
+              ->first()
+            ;
+
+            $subject = "Re : " . $this->request->data['subject'];
+
+            $data_email = [
+                'sender' => LEAD_EMAIL_SENDER,
+                'lead_id' => $this->request->data['lead_id'],
+                'recipient' => $leadEmailMessage->sender,
+                'subject' => $subject,
+                'date_time' => date("Y-m-d H:i:s"),
+                'content' => $this->request->data['reply-message']
+            ];
+            $leadEmail = $this->LeadEmailMessages->newEntity();
+            $leadEmail = $this->LeadEmailMessages->patchEntity($leadEmail, $data_email);
+            if( $newEmail = $this->LeadEmailMessages->save($leadEmail) ){
+              $attachments = array();
+              foreach( $this->request->data['attachments'] as $a ){
+                  if( $a['name'] != '' && $a['size'] > 0 ){
+                      //Upload attachment
+                      $attachment = $this->LeadEmailMessages->uploadAttachment($newEmail, $a);
+                      $attachments[] = $this->LeadEmailMessages->getAttachmentFolderLocation() . $newEmail->id   . DS . $attachment;
+
+                      //Save attachment
+                      $data_attachment = [
+                          'lead_email_message_id' => $newEmail->id,
+                          'attachment' => $attachment
+                      ];
+
+                      $emailAttachment = $this->LeadEmailAttachments->newEntity();
+                      $emailAttachment = $this->LeadEmailAttachments->patchEntity($emailAttachment, $data_attachment);
+                      $this->LeadEmailAttachments->save($emailAttachment);
+                  }
+              }
+
+              //Send Email
+              $email_smtp = new Email('holistic_mailer_a');
+              $recipient = $leadEmailMessage->sender;  
+              $content   = $this->request->data['content'];
+              if( !empty($attachments) ){
+                  $email_smtp->from(['websystem@holisticwebpresencecrm.com' => 'Holistic'])
+                    ->template('lead_email_message')
+                    ->emailFormat('html')
+                    ->to($recipient)                                                                                                     
+                    ->subject($subject)
+                    ->viewVars(['content' => $content, 'lead_id' => $this->request->data['lead_id']])
+                    ->attachments($attachments)
+                  ->send();
+              }else{
+                  $email_smtp->from(['websystem@holisticwebpresencecrm.com' => 'Holistic'])
+                    ->template('lead_email_message')
+                    ->emailFormat('html')
+                    ->to($recipient)                                                                                                     
+                    ->subject($subject)
+                    ->viewVars(['content' => $content, 'lead_id' => $this->request->data['lead_id']])
+                  ->send();
+              }
+              $this->Flash->success(__('Email was successfully sent.'));
+              return $this->redirect(['controller' => 'lead_email_messages', 'action' => 'list', $this->request->data['lead_id']]);  
+            }else{
+              $this->Flash->error(__('Email could not be sent.'));   
+              return $this->redirect(['controller' => 'lead_email_messages', 'action' => 'list', $this->request->data['lead_id']]);  
+            }
+          }else{
+            $this->Flash->error(__('The lead could not be found.'));   
+            return $this->redirect(['controller' => 'leads', 'action' => 'index']);  
+          }
+        }else{
+          $this->Flash->error(__('The lead could not be found.'));   
+          return $this->redirect(['controller' => 'leads', 'action' => 'index']);  
+        }
     }
 }

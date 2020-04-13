@@ -72,7 +72,22 @@ class ExternalRequestsController extends AppController
         ];
         $lead = $this->Leads->patchEntity($lead, $data_leads);        
         if ($new_lead = $this->Leads->save($lead)) {
+            //Save Lead Types
+            $data_lead_type = [
+              'lead_id' => $new_lead->id,
+              'lead_type_id' => 1
+            ];
 
+            $leadLeadType = $this->Leads->LeadLeadTypes->newEntity();
+            $leadLeadType = $this->Leads->LeadLeadTypes->patchEntity($leadLeadType, $data_lead_type);
+            $this->Leads->LeadLeadTypes->save($leadLeadType);
+
+            $leadType = $this->Leads->LeadTypes->find()
+              ->where(['LeadTypes.id' => 1])
+              ->first()
+            ;
+            $string_lead_types = $leadType->name;
+            
             $source_users = $this->SourceUsers->find('all')
                 ->contain(['Users'])
                 ->where(['SourceUsers.source_id' => $data['lead-source-id']])
@@ -84,24 +99,24 @@ class ExternalRequestsController extends AppController
             }    
 
             //add other emails to be sent - start
-              foreach($source_users as $users){            
-                  $other_email_to_explode = $users->user->other_email;
+            foreach($source_users as $users){            
+                $other_email_to_explode = $users->user->other_email;
 
-                  if( !empty($other_email_to_explode) || $other_email_to_explode != '' ) {
+                if( !empty($other_email_to_explode) || $other_email_to_explode != '' ) {
 
-                    $other_email = explode(";", $other_email_to_explode);
+                  $other_email = explode(";", $other_email_to_explode);
 
-                    foreach($other_email as $oekey => $em) {
+                  foreach($other_email as $oekey => $em) {
 
-                      if (trim($em) != '') {
-                          $other_email_to_add = $em; //ltrim($em);
-                          $users_email[$other_email_to_add] = $other_email_to_add;  
-                      }
-
+                    if (trim($em) != '') {
+                        $other_email_to_add = $em; //ltrim($em);
+                        $users_email[$other_email_to_add] = $other_email_to_add;  
                     }
-                    
+
                   }
-              }    
+                  
+                }
+            }    
             //add other emails to be sent - end                   
 
             if( !empty($users_email) ){
@@ -123,7 +138,7 @@ class ExternalRequestsController extends AppController
                 ->emailFormat('html')          
                 ->cc($users_email)                                                                                               
                 ->subject($subject)
-                ->viewVars(['new_lead' => $leadData->toArray()])
+                ->viewVars(['new_lead' => $leadData->toArray(), 'string_lead_types' => $string_lead_types])
                 ->send();
             }
             
@@ -144,7 +159,7 @@ class ExternalRequestsController extends AppController
     public function ajax_post_register_leads()
     {
       $this->SourceUsers = TableRegistry::get('SourceUsers');
-      $this->Sources     = TableRegistry::get('Sources');     
+      $this->Sources     = TableRegistry::get('Sources');           
 
       $data = $this->request->data;
       $json['is_success'] = false;      
@@ -167,26 +182,43 @@ class ExternalRequestsController extends AppController
           $address = $data['lead-address'];
         }
 
+        $cooling_repair = 0;
+        if( isset($data['lead-service-repair']) && $data['lead-service-repair'] == 1 ){
+          $cooling_repair = $data['lead-service-repair'];
+          //$source_id = 77;
+          $source_id = $this->Sources->sourceToCooling($data['lead-source-id']);
+          $interest_type_id = 5;
+        }else{
+          $source_id = $data['lead-source-id'];
+          $interest_type_id = 6;
+        }
+
         $data_leads = [
           'firstname' => $data['lead-firstname'],
           'surname' => $data['lead-lastname'],
+          'cooling_system_repair' => $cooling_repair,
           'email' => $data['lead-email'],
           'phone' => $data['lead-phone'],
           'address' => $address,
           'city' => $data['lead-city'],
           'state' => $data['lead-state'],
-          'source_id' => $data['lead-source-id'],
+          'source_id' => $source_id,
           'lead_action' => $lead_action,
           'status_id' => 2,
           'lead_type_id' => 1,
           'source_url' => $source_url,
-          'interest_type_id' => 6,          
+          'interest_type_id' => $interest_type_id,          
           'allocation_date' => date("Y-m-d"),
           'followup_date' => date("Y-m-d"),
           'followup_action_reminder_date' => date("Y-m-d")
         ];
         $lead = $this->Leads->patchEntity($lead, $data_leads);        
         if ($new_lead = $this->Leads->save($lead)) {
+            $data_lead_type = ['lead_id' => $new_lead->id, 'lead_type_id' => 1];
+            $leadLeadType   = $this->Leads->LeadLeadTypes->newEntity();
+            $leadLeadType   = $this->Leads->LeadLeadTypes->patchEntity($leadLeadType, $data_lead_type);
+            $this->Leads->LeadLeadTypes->save($leadLeadType);
+            
             $enable_attach_csv = false;
 
             $source = $this->Sources->find()
@@ -202,7 +234,7 @@ class ExternalRequestsController extends AppController
 
             $source_users = $this->SourceUsers->find('all')
                 ->contain(['Users'])
-                ->where(['SourceUsers.source_id' => $data['lead-source-id']])
+                ->where(['SourceUsers.source_id' => $source_id])
             ;
 
             $users_email = array();
@@ -238,7 +270,7 @@ class ExternalRequestsController extends AppController
               ]);  
               
               $leadData = santizeLeadsData($leadData);
-              $source           = $this->Sources->get($data['lead-source-id']); 
+              $source           = $this->Sources->get($source_id); 
               $source_name      = !empty($source->name) ? $source->name : "";
               $surname          = $leadData->surname != "" ? $leadData->surname : "Not Specified";
               $lead_client_name = $leadData->firstname . " " . $surname;
